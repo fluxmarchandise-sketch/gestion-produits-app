@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Gestion Produits</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: Arial, sans-serif; margin: 10px; }
+h2 { text-align:center; color:#2c3e50; }
+.inputs-container { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
+input, button { padding:10px; font-size:16px; flex:1 1 45%; border-radius:6px; border:1px solid #ccc; }
+button { cursor:pointer; color:#fff; border:none; }
+#addButton { background:#3498db; } #addButton:hover { background:#2980b9; }
+#downloadBtn { background:#2ecc71; } #downloadBtn:hover { background:#27ae60; }
+.cards-container { margin-top:15px; }
+.card { border:1px solid #ccc; border-radius:6px; padding:8px; margin-bottom:8px; }
+.card-footer button { background:#e74c3c; padding:4px 8px; border-radius:4px; cursor:pointer; color:#fff; border:none; }
+.card-footer button:hover { background:#c0392b; }
+</style>
+</head>
+<body>
+
+<h2>Gestion Produits</h2>
+
+<div class="inputs-container">
+    <input id="codeInput" placeholder="Code produit">
+    <input id="nameOutput" placeholder="Nom produit" readonly>
+    <input id="expiryInput" type="text" placeholder="Date (DD/MM/YYYY)">
+    <input id="quantityInput" type="number" placeholder="Quantité">
+    <button id="addButton">Ajouter</button>
+    <button id="downloadBtn">Télécharger Excel</button>
+</div>
+
+<div class="cards-container" id="cardsContainer"></div>
+
+<script src="JS/exports.js"></script>
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+// إضافة منتوج
+document.getElementById("addButton").addEventListener("click",()=>{
+    const code = document.getElementById("codeInput").value.trim();
+    const name = document.getElementById("nameOutput").value.trim();
+    const expiry = document.getElementById("expiryInput").value.trim();
+    const quantity = document.getElementById("quantityInput").value.trim();
+    if(!code||!name||!expiry||!quantity){ alert("Remplissez tous les champs!"); return; }
+
+    products.push({code,name,expiry,quantity});
+    localStorage.setItem("products", JSON.stringify(products));
+
+    document.getElementById("codeInput").value="";
+    document.getElementById("nameOutput").value="";
+    document.getElementById("expiryInput").value="";
+    document.getElementById("quantityInput").value="";
+
+    renderCards();
+});
+
+// عرض المنتجات
+function renderCards(){
+    const container = document.getElementById("cardsContainer");
+    container.innerHTML="";
+    products.forEach((p,i)=>{
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`Code: ${p.code}<br>Nom: ${p.name}<br>Date: ${p.expiry}<br>Quantité: ${p.quantity}
+        <div class="card-footer"><button onclick="deleteProduct(${i})">Supprimer</button></div>`;
+        container.appendChild(card);
+    });
+}
+
+function deleteProduct(index){
+    products.splice(index,1);
+    localStorage.setItem("products", JSON.stringify(products));
+    renderCards();
+}
+
+// زر تحميل Excel/CSV
+document.getElementById("downloadBtn").addEventListener("click",()=>{
+    if(products.length===0){ alert("Aucun produit!"); return; }
+    exportToExcel(products,'Produits.xlsx');
+});
+
+renderCards();
+</script>
+
+<script src="JS/exports.js"></script>
+</body>
+</html>
