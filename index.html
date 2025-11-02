@@ -2,105 +2,30 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Gestion Produits - Excel Download</title>
+<title>Gestion Produits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-h2 { text-align: center; margin: 15px 0; color: #2c3e50; }
-
-.inputs-container {
-    width: 95%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-input, button {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    flex: 1 1 45%;
-}
-input:focus { border-color: #3498db; outline: none; }
-button { border: none; color: #fff; font-weight: bold; cursor: pointer; }
-#addButton { background: #3498db; } #addButton:hover { background: #2980b9; }
-#downloadBtn { background: #2ecc71; } #downloadBtn:hover { background: #27ae60; }
-
-#productCount { font-weight: 600; margin: 10px 0; width: 95%; }
-
-.cards-container {
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.card {
-    background: #fff;
-    padding: 8px 12px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.card-row-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.card-row-name {
-    display: block;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.card-footer {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.days-left {
-    padding: 2px 6px;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 14px;
-}
-
-.card-footer button {
-    background: #e74c3c;
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-}
-.card-footer button:hover { background: #c0392b; }
-
-@media(max-width:500px){
-    input, button { flex:1 1 100%; }
-    .card-row-flex { flex-direction: column; align-items:flex-start; gap:2px; }
-}
+body { margin:0; font-family:Arial,sans-serif; background:#f5f7fa; display:flex; flex-direction:column; align-items:center; }
+h2 { text-align:center; margin:15px 0; color:#2c3e50; }
+.inputs-container { width:95%; display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
+input, button { padding:10px; font-size:16px; border-radius:8px; border:1px solid #ccc; flex:1 1 45%; }
+input:focus { border-color:#3498db; outline:none; }
+button { border:none; color:#fff; font-weight:bold; cursor:pointer; }
+#addButton { background:#3498db; } #addButton:hover { background:#2980b9; }
+#downloadBtn { background:#2ecc71; } #downloadBtn:hover { background:#27ae60; }
+#productCount { font-weight:600; margin:10px 0; width:95%; }
+.cards-container { width:95%; display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.card { background:#fff; padding:8px 12px; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,0.1); display:flex; flex-direction:column; gap:4px; }
+.card-row-flex { display:flex; justify-content:space-between; align-items:center; }
+.card-row-name { display:block; font-weight:bold; font-size:16px; }
+.card-footer { display:flex; justify-content:flex-end; }
+.days-left { padding:2px 6px; border-radius:6px; color:#fff; font-size:14px; }
+.card-footer button { background:#e74c3c; color:#fff; padding:4px 10px; border-radius:6px; font-size:14px; cursor:pointer; }
+.card-footer button:hover { background:#c0392b; }
+@media(max-width:500px){ input,button{flex:1 1 100%;} .card-row-flex{flex-direction:column;align-items:flex-start;gap:2px;} }
 </style>
 </head>
 <body>
-
-<div style="text-align:center; margin:15px 0;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Marjane-logo.png" 
-         alt="Logo Marjane" style="max-width:200px; width:50%; height:auto;">
-</div>
 
 <h2>Gestion Produits</h2>
 
@@ -116,53 +41,35 @@ button { border: none; color: #fff; font-weight: bold; cursor: pointer; }
 <p id="productCount">Nombre de produits: 0</p>
 <div class="cards-container" id="cardsContainer"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-let database = [];
 let products = JSON.parse(localStorage.getItem("products")) || [];
 
-// Google Sheet CSV (optionnel)
-const url = "https://docs.google.com/spreadsheets/d/1r0QSoLDzekCfgkZxJ6UlbCpfKf6X57-woxeQDCjNjzU/export?format=csv";
-Papa.parse(url, { download: true, header: true, complete: function(results){ database = results.data; } });
-
-// Afficher nom en fonction du code
-document.getElementById("codeInput").addEventListener("input", function(){
-    const code = this.value.trim().toLowerCase();
-    const product = database.find(item => item.Code?.trim().toLowerCase() === code);
-    document.getElementById("nameOutput").value = product ? product.Nom : "";
-});
-
-// Formatage automatique de la date
 const expiryInput = document.getElementById("expiryInput");
 expiryInput.addEventListener("input", function(){
-    let val = this.value.replace(/[^0-9]/g, '');
-    if(val.length > 2 && val.length <=4) val = val.slice(0,2)+'/'+val.slice(2);
-    else if(val.length>4) val = val.slice(0,2)+'/'+val.slice(2,4)+'/'+val.slice(4,8);
-    this.value = val.slice(0,10);
+    let val=this.value.replace(/[^0-9]/g,'');
+    if(val.length>2 && val.length<=4) val=val.slice(0,2)+'/'+val.slice(2);
+    else if(val.length>4) val=val.slice(0,2)+'/'+val.slice(2,4)+'/'+val.slice(4,8);
+    this.value=val.slice(0,10);
 });
 
 function formatDateInput(input){
-    let parts = input.split('/');
-    if(parts.length !==3) return null;
-    return parts.map(p => p.padStart(2,'0')).join('/');
+    let parts=input.split('/');
+    if(parts.length!==3) return null;
+    return parts.map(p=>p.padStart(2,'0')).join('/');
 }
-
 function isValidDate(dateStr){
-    const [d,m,y] = dateStr.split("/").map(Number);
-    const date = new Date(y,m-1,d);
+    const [d,m,y]=dateStr.split("/").map(Number);
+    const date=new Date(y,m-1,d);
     return date.getFullYear()===y && date.getMonth()===m-1 && date.getDate()===d;
 }
-
 function daysLeft(expiry){
-    const [d,m,y] = expiry.split("/").map(Number);
-    const expiryDate = new Date(y,m-1,d);
-    const today = new Date();
-    const diffTime = expiryDate - today;
+    const [d,m,y]=expiry.split("/").map(Number);
+    const expiryDate=new Date(y,m-1,d);
+    const today=new Date();
+    const diffTime=expiryDate-today;
     return Math.ceil(diffTime/(1000*60*60*24));
 }
-
 function daysColor(days){
     if(days<0) return "#7f8c8d";
     if(days<=3) return "#e74c3c";
@@ -170,50 +77,35 @@ function daysColor(days){
     return "#2ecc71";
 }
 
-// Ajouter un produit
 document.getElementById("addButton").addEventListener("click", function(){
-    const code = document.getElementById("codeInput").value.trim();
-    const name = document.getElementById("nameOutput").value;
-    let expiry = document.getElementById("expiryInput").value.trim();
-    const quantity = document.getElementById("quantityInput").value;
-
-    expiry = formatDateInput(expiry);
+    const code=document.getElementById("codeInput").value.trim();
+    const name=document.getElementById("nameOutput").value || code;
+    let expiry=document.getElementById("expiryInput").value.trim();
+    const quantity=document.getElementById("quantityInput").value;
+    expiry=formatDateInput(expiry);
     if(!expiry || !isValidDate(expiry)){ alert("Date invalide!"); return;}
     if(!code || !quantity){ alert("Remplissez tous les champs!"); return;}
-
     products.push({code,name,expiry,quantity});
-    localStorage.setItem("products", JSON.stringify(products));
-
+    localStorage.setItem("products",JSON.stringify(products));
     document.getElementById("codeInput").value="";
     document.getElementById("nameOutput").value="";
     document.getElementById("expiryInput").value="";
     document.getElementById("quantityInput").value="";
-
     renderCards();
 });
 
-// Afficher les produits
 function renderCards(){
-    const container = document.getElementById("cardsContainer");
-    container.innerHTML = "";
-
-    const sortedProducts = [...products].sort((a,b)=>{
-        const [d1,m1,y1] = a.expiry.split("/").map(Number);
-        const [d2,m2,y2] = b.expiry.split("/").map(Number);
-        return new Date(y1,m1-1,d1) - new Date(y2,m2-1,d2);
-    });
-
-    sortedProducts.forEach(p => {
-        const originalIndex = products.indexOf(p);
-        const remaining = daysLeft(p.expiry);
-        const color = daysColor(remaining);
-
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
+    const container=document.getElementById("cardsContainer");
+    container.innerHTML="";
+    products.forEach((p,index)=>{
+        const remaining=daysLeft(p.expiry);
+        const color=daysColor(remaining);
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
             <div class="card-row-flex">
-                <span style="display:inline-block;">${p.code}</span>
-                <span class="days-left" style="background:${color};display:inline-block;">${remaining} jour(s)</span>
+                <span>${p.code}</span>
+                <span class="days-left" style="background:${color};">${remaining} jour(s)</span>
             </div>
             <div class="card-row-name">${p.name}</div>
             <div class="card-row-flex">
@@ -221,42 +113,31 @@ function renderCards(){
                 <span>Date: ${p.expiry}</span>
             </div>
             <div class="card-footer">
-                <button onclick="deleteProduct(${originalIndex})">Supprimer</button>
+                <button onclick="deleteProduct(${index})">Supprimer</button>
             </div>
         `;
         container.appendChild(card);
     });
-
-    document.getElementById("productCount").textContent = `Nombre de produits: ${products.length}`;
+    document.getElementById("productCount").textContent=`Nombre de produits: ${products.length}`;
 }
-
 function deleteProduct(index){
     if(!confirm("Voulez-vous vraiment supprimer ce produit ?")) return;
     products.splice(index,1);
-    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("products",JSON.stringify(products));
     renderCards();
 }
 
-// Télécharger Excel
 document.getElementById("downloadBtn").addEventListener("click", function(){
-    if(products.length===0){ alert("Aucun produit à télécharger!"); return;}
-
-    const data = products.map(p => ({
-        Code: p.code,
-        Nom: p.name,
-        Date: p.expiry,
-        Quantité: p.quantity
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Produits");
-
-    XLSX.writeFile(wb, "produits.xlsx");
+    if(products.length===0){ alert("Aucun produit à exporter!"); return;}
+    const wb=XLSX.utils.book_new();
+    const ws_data=[["Code","Nom","Date","Quantité"]];
+    products.forEach(p=>ws_data.push([p.code,p.name,p.expiry,p.quantity]));
+    const ws=XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb,ws,"Produits");
+    XLSX.writeFile(wb,"produits.xlsx");
 });
 
 renderCards();
 </script>
-
 </body>
 </html>
