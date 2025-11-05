@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Gestion Produits - Card 4 Lignes Final</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+h2 { text-align: center; margin: 15px 0; color: #2c3e50; }
+
+.inputs-container {
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+input, button {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+input:focus { border-color: #3498db; outline: none; }
+button { border: none; color: #fff; font-weight: bold; cursor: pointer; }
+#addButton { background: #3498db; } #addButton:hover { background: #2980b9; }
+#importButton { background: #9b59b6; } #importButton:hover { background: #8e44ad; }
+#downloadXLSX { background: #2ecc71; } #downloadXLSX:hover { background: #27ae60; }
+#shareXLSX { background:#1abc9c; } #shareXLSX:hover { background:#16a085; }
+#scanButton { background:#e67e22; font-size:14px; padding:6px 10px; border-radius:6px; }
+
+#productCount { font-weight: 600; margin: 10px 0; width: 95%; }
+
+.cards-container {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-row-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-row-name {
+    display: block;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.days-left {
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.card-footer button {
+    background: #e74c3c;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.card-footer button:hover { background: #c0392b; }
+
+#reader {
+    display: none;
+    width:100%; 
+    height:200px; 
+    border:1px solid #ccc; 
+    border-radius:8px; 
+    margin-top:5px; 
+    overflow:hidden;
+}
+
+@media(max-width:500px){
+    input, button { flex:1 1 100%; }
+    .card-row-flex { flex-direction: column; align-items:flex-start; gap:2px; }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div style="text-align:center; margin:15px 0;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Marjane-logo.png" 
+         alt="Logo Marjane" style="max-width:200px; width:50%; height:auto;">
+</div>
+
+<h2>Gestion Produits - Card 4 Lignes Final</h2>
+
+<div class="inputs-container">
+    <div style="display:flex; flex-direction:column; flex:1 1 45%;">
+        <div style="display:flex; align-items:center; gap:5px;">
+            <input id="codeInput" placeholder="Code produit" style="flex:1;">
+            <button id="scanButton">🏷️</button>
+        </div>
+        <div id="reader"></div>
+    </div>
+
+    <input id="nameOutput" placeholder="Nom produit" readonly style="flex:1 1 30%;">
+    <input id="expiryInput" type="text" placeholder="Date (DD/MM/YYYY)" maxlength="10" inputmode="numeric" style="flex:1 1 30%;">
+    <input id="quantityInput" type="number" placeholder="Quantité" style="flex:1 1 20%;">
+    <button id="addButton">Ajouter</button>
+    <button id="importButton">Importer</button>
+    <button id="shareXLSX">Partage XLSX</button>
+</div>
+
+<p id="productCount">Nombre de produits: 0</p>
+<div class="cards-container" id="cardsContainer"></div>
+
+<script>
+let database = [];
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+// Google Sheet CSV
+const url = "https://docs.google.com/spreadsheets/d/1r0QSoLDzekCfgkZxJ6UlbCpfKf6X57-woxeQDCjNjzU/export?format=csv";
+Papa.parse(url, { download: true, header: true, complete: function(results){ database = results.data; } });
+
+// Nom produit automatiquement
+document.getElementById("codeInput").addEventListener("input", function(){
+    const code = this.value.trim().toLowerCase();
+    const product = database.find(item => item.Code?.trim().toLowerCase() === code);
+    document.getElementById("nameOutput").value = product ? product.Nom : "";
+});
+
+// Scanner QR
+let html5QrCode;
+document.getElementById("scanButton").addEventListener("click", () => {
+    const readerDiv = document.getElementById("reader");
+    readerDiv.style.display = "block";
+
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+            document.getElementById("codeInput").value = decodedText;
+            const product = database.find(item => item.Code?.trim().toLowerCase() === decodedText.trim().toLowerCase());
+            document.getElementById("nameOutput").value = product ? product.Nom : "";
+            html5QrCode.stop();
+            readerDiv.style.display = "none";
+        },
+        (errorMessage) => {}
+    ).catch(err => alert("Erreur caméra: " + err));
+});
+
+// auto-slash date
+const expiryInput = document.getElementById("expiryInput");
+expiryInput.addEventListener("input", function(){
+    let val = this.value.replace(/[^0-9]/g, '');
+    if(val.length > 2 && val.length <=4) val = val.slice(0,2)+'/'+val.slice(2);
+    else if(val.length>4) val = val.slice(0,2)+'/'+val.slice(2,4)+'/'+val.slice(4,8);
+    this.value = val.slice(0,10);
+});
+
+function formatDateInput(input){ let parts = input.split('/'); if(parts.length !==3) return null; return parts.map(p => p.padStart(2,'0')).join('/'); }
+function isValidDate(dateStr){ const [d,m,y] = dateStr.split("/").map(Number); const date = new Date(y,m-1,d); return date.getFullYear()===y && date.getMonth()===m-1 && date.getDate()===d; }
+function daysLeft(expiry){ const [d,m,y] = expiry.split("/").map(Number); const expiryDate = new Date(y,m-1,d); const today = new Date(); return Math.ceil((expiryDate - today)/(1000*60*60*24)); }
+function daysColor(days){ if(days<0) return "#7f8c8d"; if(days<=3) return "#e74c3c"; if(days<=7) return "#f39c12"; return "#2ecc71"; }
+
+// Ajouter produit
+document.getElementById("addButton").addEventListener("click", function(){
+    const code = document.getElementById("codeInput").value.trim();
+    const name = document.getElementById("nameOutput").value;
+    let expiry = document.getElementById("expiryInput").value.trim();
+    const quantity = document.getElementById("quantityInput").value;
+
+    expiry = formatDateInput(expiry);
+    if(!expiry || !isValidDate(expiry)){ alert("Date invalide!"); return;}
+    if(!code || !quantity){ alert("Remplissez tous les champs!"); return;}
+
+    products.push({code,name,expiry,quantity});
+    localStorage.setItem("products", JSON.stringify(products));
+
+    document.getElementById("codeInput").value="";
+    document.getElementById("nameOutput").value="";
+    document.getElementById("expiryInput").value="";
+    document.getElementById("quantityInput").value="";
+
+    renderCards();
+});
+
+// Importer XLSX
+document.getElementById("importButton").addEventListener("click", () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".xlsx,.xls";
+    fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, {type:"array"});
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, {header:1});
+
+            for(let i=1; i<jsonData.length; i++){
+                const row = jsonData[i];
+                const code = row[0]?.toString() || "";
+                const name = row[1]?.toString() || "";
+                let expiry = row[2];
+
+                if(typeof expiry === "number") {
+                    const date = XLSX.SSF.parse_date_code(expiry);
+                    if(date){ expiry = `${String(date.d).padStart(2,'0')}/${String(date.m).padStart(2,'0')}/${date.y}`; }
+                    else { expiry = ""; }
+                } else if(typeof expiry === "string") {
+                    expiry = expiry.replace(/-/g,'/');
+                    const parts = expiry.split('/');
+                    if(parts.length === 3 && parts[0].length === 4) expiry = `${parts[2].padStart(2,'0')}/${parts[1].padStart(2,'0')}/${parts[0]}`;
+                } else { expiry = ""; }
+
+                const quantity = row[3]?.toString() || "";
+                if(code && name && expiry && quantity) products.push({code, name, expiry, quantity});
+            }
+            localStorage.setItem("products", JSON.stringify(products));
+            renderCards();
+        };
+        reader.readAsArrayBuffer(file);
+    });
+    fileInput.click();
+});
+
+// Afficher produits
+function renderCards(){
+    const container = document.getElementById("cardsContainer");
+    container.innerHTML = "";
+
+    const sortedProducts = [...products].sort((a,b)=>{
+        const [d1,m1,y1] = a.expiry.split("/").map(Number);
+        const [d2,m2,y2] = b.expiry.split("/").map(Number);
+        return new Date(y1,m1-1,d1) - new Date(y2,m2-1,d2);
+    });
+
+    sortedProducts.forEach(p => {
+        const originalIndex = products.indexOf(p);
+        const remaining = daysLeft(p.expiry);
+        const color = daysColor(remaining);
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="card-row-flex">
+                <span style="display:inline-block;">${p.code}</span>
+                <span class="days-left" style="background:${color};display:inline-block;">${remaining} jour(s)</span>
+            </div>
+            <div class="card-row-name">${p.name}</div>
+            <div class="card-row-flex">
+                <span>Quantité: ${p.quantity}</span>
+                <span>Date: ${p.expiry}</span>
+            </div>
+            <div class="card-footer">
+                <button onclick="deleteProduct(${originalIndex})">Supprimer</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    document.getElementById("productCount").textContent = `Nombre de produits: ${products.length}`;
+}
+
+function deleteProduct(index){
+    if(!confirm("Voulez-vous vraiment supprimer ce produit ?")) return;
+    products.splice(index,1);
+    localStorage.setItem("products", JSON.stringify(products));
+    renderCards();
+}
+
+// Partage XLSX
+document.getElementById("shareXLSX").addEventListener("click", async () => {
+    if(products.length === 0){ alert("Aucun produit à partager!"); return; }
+
+    let sheetData = [["Code","Nom","Date","Quantité"]];
+    products.forEach(p => sheetData.push([p.code,p.name,p.expiry,p.quantity]));
+
+    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "SUIVI DLC");
+
+    const wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+    const blob = new Blob([wbout], {type:"application/octet-stream"});
+    const file = new File([blob], "SUIVI DLC.xlsx", {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{
+            await navigator.share({files:[file], title:"SUIVI DLC"});
+            alert("Fichier partagé avec succès !");
+        }catch(err){
+            alert("Erreur lors du partage: " + err);
+        }
+    } else {
+        XLSX.writeFile(wb, "SUIVI DLC.xlsx");
+        alert("Web Share non supporté, fichier téléchargé.");
+    }
+});
+
+renderCards();
+</script>
+
+</body>
+</html>
