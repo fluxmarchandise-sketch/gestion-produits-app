@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gestion Produits - CSV Share (Web2App)</title>
+<style>
+  body{font-family:Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fa;margin:0;padding:18px;color:#222}
+  h1{font-size:18px;margin:0 0 12px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  input,button,select{padding:8px;border-radius:6px;border:1px solid #ccc;font-size:14px}
+  button{background:#3498db;color:#fff;border:none;cursor:pointer}
+  .btn-import{background:#9b59b6}
+  .btn-download{background:#2ecc71}
+  .btn-share{background:#16a085}
+  .cards{margin-top:12px}
+  .card{background:#fff;padding:10px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .danger{background:#e74c3c;color:#fff;border:none;padding:6px 8px;border-radius:6px;cursor:pointer}
+  #note{font-size:13px;color:#555;margin-top:10px}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+
+<h1>Gestion Produits — CSV (Web2App friendly)</h1>
+
+<div class="row">
+  <input id="code" placeholder="Code produit" />
+  <input id="name" placeholder="Nom produit" />
+  <input id="date" placeholder="Date (DD/MM/YYYY)" maxlength="10" />
+  <input id="qty" placeholder="Quantité" type="number" style="width:100px" />
+  <button id="add">Ajouter</button>
+  <button id="import" class="btn-import">Importer CSV</button>
+  <button id="download" class="btn-download">Télécharger CSV</button>
+  <button id="share" class="btn-share">Partager CSV</button>
+</div>
+
+<p id="note">ملاحظة: زر "Partager CSV" يحاول يشارك الملف مباشرة. إذا WebView ما يدعمش مشاركة الملفات، الملف سيُحمّل تلقائياً — بعد التحميل استعمل مدير الملفات في الهاتف باش تشارك الملف.</p>
+
+<p id="count">Nombre de produits: 0</p>
+<div id="list" class="cards"></div>
+
+<script>
+/* ---------- state ---------- */
+let products = JSON.parse(localStorage.getItem("products") || "[]");
+
+/* ---------- helpers ---------- */
+function save() {
+  localStorage.setItem("products", JSON.stringify(products));
+  render();
+}
+function escapeCell(v){
+  if(v===undefined||v===null) return "";
+  const s = String(v).replace(/\r?\n/g, " ");
+  if(s.includes(',') || s.includes('"') || s.includes('\n')) return `"${s.replace(/"/g,'""')}"`;
+  return s;
+}
+function buildCSVString(){
+  const headers = ["Code","Nom","Date","Quantité"];
+  let csv = headers.join(",") + "\n";
+  products.forEach(p=>{
+    csv += [escapeCell(p.code), escapeCell(p.name), escapeCell(p.date), escapeCell(p.qty)].join(",") + "\n";
+  });
+  return csv;
+}
+function fileName(){
+  const d = new Date();
+  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+  return `produits_${stamp}.csv`;
+}
+
+/* ---------- render UI ---------- */
+function render(){
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  products.forEach((p,i)=>{
+    const card = document.createElement("div"); card.className="card";
+    card.innerHTML = `<div>
+        <strong>${p.code || ""}</strong> — ${p.name || ""} <br>
+        <small>${p.date || ""} • Qty: ${p.qty || ""}</small>
+      </div>
+      <div><button class="danger" data-i="${i}">X</button></div>`;
+    list.appendChild(card);
+  });
+  document.getElementById("count").textContent = `Nombre de produits: ${products.length}`;
+  // attach delete handlers
+  Array.from(document.querySelectorAll('.danger')).forEach(btn=>{
+    btn.onclick = e=>{
+      const i = Number(btn.getAttribute('data-i'));
+      if(confirm("Supprimer ce produit ?")) {
+        products.splice(i,1); save();
+      }
+    }
+  });
+}
+render();
+
+/* ---------- add ---------- */
+document.getElementById("add").addEventListener("click", ()=>{
+  const code = document.getElementById("code").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const date = document.getElementById("date").value.trim();
+  const qty = document.getElementById("qty").value.trim();
+  if(!code || !qty){ alert("Remplissez au moins Code et Quantité."); return; }
+  products.push({ code, name, date, qty });
+  save();
+  document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("date").value=""; document.getElementById("qty").value="";
+});
+
+/* ---------- import CSV (simple) ---------- */
+document.getElementById("import").addEventListener("click", ()=>{
+  const input = document.createElement("input"); input.type="file"; input.accept=".csv";
+  input.onchange = e => {
+    const f = e.target.files[0];
+    if(!f) return;
+    Papa.parse(f,{ header:true, skipEmptyLines:true, complete: res=>{
+      const arr = res.data;
+      arr.forEach(row=>{
+        // expect headers Code, Nom, Date, Quantité (case-insensitive)
+        const code = row.Code || row.code || row.Codee || "";
+        const name = row.Nom || row.nom || row.Name || row.name || "";
+        const date = row.Date || row.date || "";
+        const qty = row["Quantité"] || row["quantité"] || row.Quantite || row.Quantite || row.qty || row.Qty || "";
+        if(code) products.push({ code: String(code), name: String(name), date: String(date), qty: String(qty) });
+      });
+      save();
+      alert("Import terminé: " + arr.length + " lignes (les lignes vides ignorées).");
+    }});
+  };
+  input.click();
+});
+
+/* ---------- download CSV (always download via blob URL) ---------- */
+document.getElementById("download").addEventListener("click", ()=>{
+  if(products.length === 0){ alert("Aucun produit à télécharger!"); return; }
+  const csv = buildCSVString();
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName();
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // revoke after a short delay
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+});
+
+/* ---------- share CSV (attempt file share; fallback -> download + message) ---------- */
+document.getElementById("share").addEventListener("click", async ()=>{
+  if(products.length === 0){ alert("Aucun produit à partager!"); return; }
+  const csv = buildCSVString();
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const file = new File([blob], fileName(), { type: 'text/csv' });
+  // try native file sharing (works if Web2App supports file sharing)
+  try{
+    if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'Produits' });
+      return;
+    }
+  }catch(e){
+    // ignore and fallback
+  }
+  // fallback: download file and instruct user to share via file manager
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = file.name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  // show clear instructions in user's language
+  alert("ملف CSV تحمّل. باش تشاركو: افتح مدير الملفات في الهاتف، لقا الملف في مجلد التنزيلات (Downloads)، واستعمل زر المشاركة.");
+});
+
+/* ---------- notes: no text share used anywhere ---------- */
+/* ---------- end ---------- */
+</script>
+</body>
+</html>
