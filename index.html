@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Gestion Produits - Card 4 Lignes Final</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana,sans-serif;
+    background:#f5f7fa; color:#333; display:flex; flex-direction:column; align-items:center;
+}
+h2 { text-align:center; margin:15px 0; color:#2c3e50; }
+.inputs-container { width:95%; display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
+input, button { padding:10px; font-size:16px; border-radius:8px; border:1px solid #ccc; }
+input:focus { border-color:#3498db; outline:none; }
+button { border:none; color:#fff; font-weight:bold; cursor:pointer; }
+#addButton { background:#3498db; } #addButton:hover { background:#2980b9; }
+#importButton { background:#9b59b6; } #importButton:hover { background:#8e44ad; }
+#downloadXLSX { background:#2ecc71; } #downloadXLSX:hover { background:#27ae60; }
+#scanButton { background:#e67e22; font-size:14px; padding:6px 10px; border-radius:6px; }
+#cameraButton, #stockButton { background:#3498db; font-size:14px; padding:6px 10px; border-radius:6px; flex:1; color:#fff; cursor:pointer; }
+#productCount { font-weight:600; margin:10px 0; width:95%; }
+.cards-container { width:95%; display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.card { background:#fff; padding:8px 12px; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,0.1); display:flex; flex-direction:row; gap:10px; align-items:center; position:relative; opacity:0; transform:translateY(12px); animation: fadeSlide 0.35s ease forwards; }
+@keyframes fadeSlide { to { opacity:1; transform:translateY(0); } }
+.card img { width:80px; height:80px; object-fit:cover; border-radius:8px; }
+.card-info { display:flex; flex-direction:column; gap:4px; flex:1; }
+.card-row-flex { display:flex; justify-content:space-between; align-items:center; }
+.card-row-name { display:block; font-weight:bold; font-size:16px; }
+.days-left { padding:2px 6px; border-radius:6px; color:#fff; font-size:14px; }
+.card-footer { position:absolute; top:6px; right:6px; display:flex; justify-content:flex-end; z-index:999; }
+.card-footer button { background:#e74c3c; color:#fff; width:32px; height:32px; border-radius:50%; font-size:20px; padding:0; display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:bold; }
+.card-footer button:hover { background:#c0392b; }
+/* === شاشة الماسح === */
+#reader { 
+    display:none; 
+    width:100%; 
+    height:300px; /* ارتفاع الشاشة كبير */
+    border:1px solid #ccc; 
+    border-radius:8px; 
+    margin-top:5px; 
+    overflow:hidden; 
+}
+#previewImage { width:80px; height:80px; object-fit:cover; border:1px solid #ccc; border-radius:6px; margin-top:4px; }
+#cameraOverlay { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; flex-direction:column; }
+#cameraOverlay video { width:100%; height:100%; object-fit:cover; }
+#cameraOverlay button { position:absolute; bottom:20px; padding:10px 20px; font-size:16px; }
+#captureButton { left:20px; } #closeCameraButton { right:20px; }
+.image-buttons { display:flex; gap:5px; margin-top:5px; }
+@media(max-width:500px){ input, button { flex:1 1 100%; } .card-row-flex { flex-direction:column; align-items:flex-start; gap:2px; } }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div style="text-align:center; margin:15px 0;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Marjane-logo.png" alt="" style="max-width:200px; width:50%; height:auto;">
+</div>
+
+<h2>Gestion Produits - Card 4 Lignes Final</h2>
+
+<div class="inputs-container">
+    <div style="display:flex; flex-direction:column; flex:1 1 45%;">
+        <div style="display:flex; align-items:center; gap:5px;">
+            <input id="codeInput" placeholder="Code produit" style="flex:1;">
+            <button id="scanButton">🏷️</button>
+        </div>
+        <div id="reader"></div>
+    </div>
+
+    <input id="nameOutput" placeholder="Nom produit" readonly style="flex:1 1 30%;">
+    <input id="expiryInput" type="text" placeholder="Date (DD/MM/YYYY)" maxlength="10" inputmode="numeric" style="flex:1 1 20%;">
+    <input id="quantityInput" type="number" placeholder="Quantité" style="flex:1 1 20%;">
+
+    <div style="flex:1 1 100%; display:flex; flex-direction:column; align-items:flex-start;">
+        <img id="previewImage" src="" alt="">
+        <div class="image-buttons">
+            <button id="cameraButton">📷 Camera</button>
+            <button id="stockButton">🖼️ Stock</button>
+            <input type="file" id="imageInput" accept="image/*" style="display:none;">
+        </div>
+    </div>
+
+    <button id="addButton">Ajouter</button>
+    <button id="importButton">Importer</button>
+    <button id="downloadXLSX">Télécharger XLSX</button>
+</div>
+
+<p id="productCount">Nombre de produits: 0</p>
+<div class="cards-container" id="cardsContainer"></div>
+
+<div id="cameraOverlay">
+    <video id="cameraVideo" autoplay></video>
+    <button id="captureButton">📸 Capturer</button>
+    <button id="closeCameraButton">❌ Fermer</button>
+</div>
+
+<script>
+// ==== DATA ====
+let database=[]; 
+let products=JSON.parse(localStorage.getItem("products"))||[];
+let selectedImageFile=null;
+
+// ==== LOAD GOOGLE SHEET CSV ====
+const url="https://docs.google.com/spreadsheets/d/1r0QSoLDzekCfgkZxJ6UlbCpfKf6X57-woxeQDCjNjzU/export?format=csv";
+Papa.parse(url, { download:true, header:true, complete: results=>{ database=results.data; } });
+
+// ==== SEARCH PRODUCT BY CODE ====
+document.getElementById("codeInput").addEventListener("input", function(){
+    const code=this.value.trim().toLowerCase();
+    const product=database.find(item=>(item.Code||"").trim().toLowerCase()===code);
+    document.getElementById("nameOutput").value=product?(product.Nom||"").trim():"";
+});
+
+// ==== QR CODE SCANNER ====
+let html5QrCode;
+document.getElementById("scanButton").addEventListener("click",()=>{
+    const readerDiv=document.getElementById("reader");
+    readerDiv.style.display="block";
+    html5QrCode=new Html5Qrcode("reader");
+    html5QrCode.start({facingMode:"environment"}, {fps:10, qrbox:280},
+        decodedText=>{
+            document.getElementById("codeInput").value=decodedText;
+            const product=database.find(item=>(item.Code||"").trim().toLowerCase()===decodedText.trim().toLowerCase());
+            document.getElementById("nameOutput").value=product?(product.Nom||"").trim():"";
+            html5QrCode.stop(); readerDiv.style.display="none";
+        },
+        ()=>{}
+    ).catch(err=>alert("خطأ في تشغيل الكاميرا: "+err));
+});
+
+// ==== DATE FORMATTING ====
+const expiryInput=document.getElementById("expiryInput");
+expiryInput.addEventListener("input",function(){
+    let val=this.value.replace(/[^0-9]/g,'');
+    if(val.length>2 && val.length<=4) val=val.slice(0,2)+'/'+val.slice(2);
+    else if(val.length>4) val=val.slice(0,2)+'/'+val.slice(2,4)+'/'+val.slice(4,8);
+    this.value=val.slice(0,10);
+});
+function formatDateInput(input){ let parts=input.split('/'); if(parts.length!==3) return null; return parts.map(p=>p.padStart(2,'0')).join('/'); }
+function isValidDate(dateStr){ const [d,m,y]=dateStr.split("/").map(Number); const date=new Date(y,m-1,d); return date.getFullYear()===y && date.getMonth()===m-1 && date.getDate()===d; }
+function daysLeft(expiry){ const [d,m,y]=expiry.split("/").map(Number); const expiryDate=new Date(y,m-1,d); const today=new Date(); return Math.ceil((expiryDate-today)/(1000*60*60*24)); }
+function daysColor(days){ if(days<0) return "#7f8c8d"; if(days<=3) return "#e74c3c"; if(days<=7) return "#f39c12"; return "#2ecc71"; }
+
+// ==== IMAGE RESIZE ====
+function resizeImage(file,maxWidth,maxHeight,callback){
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const img=new Image();
+        img.onload=function(){
+            let canvas=document.createElement('canvas'); let ctx=canvas.getContext('2d');
+            let width=img.width,height=img.height;
+            if(width>height){ if(width>maxWidth){ height=Math.round(height*(maxWidth/width)); width=maxWidth; } }
+            else{ if(height>maxHeight){ width=Math.round(width*(maxHeight/height)); height=maxHeight; } }
+            canvas.width=width; canvas.height=height;
+            ctx.drawImage(img,0,0,width,height);
+            callback(canvas.toDataURL('image/jpeg',0.7));
+        }
+        img.src=e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+
+// ==== STOCK IMAGE ====
+document.getElementById("stockButton").addEventListener("click",()=>{
+    const input=document.getElementById("imageInput");
+    input.click();
+    input.onchange=e=>{
+        if(e.target.files.length>0){
+            selectedImageFile=e.target.files[0];
+            const reader=new FileReader();
+            reader.onload=evt=>{ document.getElementById("previewImage").src=evt.target.result; }
+            reader.readAsDataURL(selectedImageFile);
+        }
+    }
+});
+
+// ==== CAMERA FULLSCREEN ====
+document.getElementById("cameraButton").addEventListener("click", async ()=>{
+    const overlay=document.getElementById("cameraOverlay");
+    const video=document.getElementById("cameraVideo");
+    overlay.style.display="flex";
+
+    let stream = null;
+    try{
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } }, audio: false });
+    }catch(err){
+        try{ stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false }); }
+        catch(err2){ overlay.style.display="none"; alert("خطأ في الكاميرا: "+err2); return; }
+    }
+
+    video.srcObject = stream;
+
+    document.getElementById("closeCameraButton").onclick = () => {
+        stream.getTracks().forEach(track=>track.stop());
+        overlay.style.display="none";
+    };
+
+    document.getElementById("captureButton").onclick = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video,0,0,canvas.width,canvas.height);
+        canvas.toBlob(blob=>{
+            selectedImageFile = new File([blob],"camera.jpg",{type:"image/jpeg"});
+            resizeImage(selectedImageFile,600,600,resizedData=>{
+                document.getElementById("previewImage").src=resizedData;
+            });
+        },"image/jpeg",0.9);
+
+        stream.getTracks().forEach(track=>track.stop());
+        overlay.style.display="none";
+    };
+});
+
+// ==== ADD PRODUCT ====
+function addProduct(code,name,expiry,quantity,imgData){
+    products.push({code,name,expiry,quantity,img:imgData});
+    localStorage.setItem("products",JSON.stringify(products));
+    document.getElementById("codeInput").value="";
+    document.getElementById("nameOutput").value="";
+    document.getElementById("expiryInput").value="";
+    document.getElementById("quantityInput").value="";
+    document.getElementById("previewImage").src="";
+    selectedImageFile=null;
+    renderCards();
+}
+document.getElementById("addButton").addEventListener("click",()=>{
+    const code=document.getElementById("codeInput").value.trim();
+    const name=document.getElementById("nameOutput").value.trim();
+    let expiry=document.getElementById("expiryInput").value.trim();
+    const quantity=document.getElementById("quantityInput").value;
+    expiry=formatDateInput(expiry);
+    if(!expiry||!isValidDate(expiry)){ alert("Date invalide!"); return; }
+    if(!code||!quantity){ alert("Remplissez tous les champs!"); return; }
+    if(selectedImageFile){
+        resizeImage(selectedImageFile,600,600,resizedData=> addProduct(code,name,expiry,quantity,resizedData));
+    }else addProduct(code,name,expiry,quantity,null);
+});
+
+// ==== IMPORT EXCEL ====
+document.getElementById("importButton").addEventListener("click",()=>{
+    const input=document.createElement("input");
+    input.type="file"; input.accept=".xlsx,.xls";
+    input.onchange=e=>{
+        const file=e.target.files[0];
+        const reader=new FileReader();
+        reader.onload=evt=>{
+            const data=new Uint8Array(evt.target.result);
+            const workbook=XLSX.read(data,{type:'array'});
+            const sheetName=workbook.SheetNames[0];
+            const sheet=workbook.Sheets[sheetName];
+            const jsonData=XLSX.utils.sheet_to_json(sheet);
+            jsonData.forEach(p=>{
+                addProduct(p.Code||"",p.Nom||"",p.Date||"",p.Quantité||"",null);
+            });
+        }
+        reader.readAsArrayBuffer(file);
+    };
+    input.click();
+});
+
+// ==== RENDER CARDS ====
+function renderCards(){
+    const container=document.getElementById("cardsContainer");
+    container.innerHTML="";
+    const sortedProducts=[...products].sort((a,b)=>{
+        const [d1,m1,y1]=a.expiry.split("/").map(Number);
+        const [d2,m2,y2]=b.expiry.split("/").map(Number);
+        return new Date(y1,m1-1,d1)-new Date(y2,m2-1,d2);
+    });
+    sortedProducts.forEach(p=>{
+        const originalIndex=products.indexOf(p);
+        const remaining=daysLeft(p.expiry);
+        const color=daysColor(remaining);
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+            ${p.img?`<img src="${p.img}" alt="">`:""}
+            <div class="card-info">
+                <div class="card-row-flex">
+                    <span>${p.code}</span>
+                    <span class="days-left" style="background:${color}">${remaining} jour(s)</span>
+                </div>
+                <div class="card-row-name">${p.name}</div>
+                <div class="card-row-flex">
+                    <span>Quantité: ${p.quantity}</span>
+                    <span>Date: ${p.expiry}</span>
+                </div>
+            </div>
+            <div class="card-footer"><button onclick="deleteProduct(${originalIndex})">X</button></div>
+        `;
+        container.appendChild(card);
+    });
+    document.getElementById("productCount").textContent=`Nombre de produits: ${products.length}`;
+}
+
+function deleteProduct(index){
+    if(!confirm("Voulez-vous vraiment supprimer ce produit ?")) return;
+    products.splice(index,1);
+    localStorage.setItem("products",JSON.stringify(products));
+    renderCards();
+}
+
+// ==== DOWNLOAD XLSX ====
+document.getElementById("downloadXLSX").addEventListener("click", function () {
+    if (products.length === 0) {
+        alert("Aucun produit à télécharger!");
+        return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(products.map(p => ({
+        Code: p.code,
+        Nom: p.name,
+        Date: p.expiry,
+        Quantité: p.quantity
+    })));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits");
+
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+
+    window.location.href = url;
+});
+
+// ==== INITIAL RENDER ====
+renderCards();
+</script>
+</body>
+</html>
