@@ -49,7 +49,6 @@ input, button {
     border:1px solid #ccc; 
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-sizing: border-box;
-    width: 100%;
 }
 input:focus { border-color:#3498db; outline:none; }
 button { border:none; color:#fff; cursor:pointer; }
@@ -81,10 +80,12 @@ button { border:none; color:#fff; cursor:pointer; }
 #scanButton { 
     background:#e67e22; 
     font-size:14px; 
-    padding:6px 10px; 
-    border-radius:6px; 
+    padding:10px 15px; 
+    border-radius:8px; 
     width: auto;
-    min-width: 100px;
+    min-width: 120px;
+    height: 42px;
+    white-space: nowrap;
 }
 #scanButton.flash-on { background:#f39c12; }
 
@@ -169,6 +170,28 @@ button { border:none; color:#fff; cursor:pointer; }
     margin: 0 10px !important;
 }
 
+/* إصلاح مشكلة زر SCANNER - الحل النهائي */
+.code-input-container {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+#codeInput {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+#scanButton {
+    flex-shrink: 0 !important;
+    width: auto !important;
+    display: block !important;
+    white-space: nowrap !important;
+}
+
 .image-buttons { display:flex; flex-direction: column; gap:10px; align-items: center; }
 .image-container { display: flex; flex-direction: column; align-items: center; }
 .icons-container { display: flex; gap: 20px; margin-top: 10px; }
@@ -208,13 +231,6 @@ button { border:none; color:#fff; cursor:pointer; }
     background-color: #1a237e;
     border: 2px solid #0d1459;
     color: white;
-}
-
-.code-input-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
 }
 
 /* تحسينات للشاشات الصغيرة جدًا */
@@ -267,7 +283,7 @@ button { border:none; color:#fff; cursor:pointer; }
 <div class="inputs-container">
     <div class="input-group">
         <div class="code-input-container">
-            <!-- التعديل: جعل الحقل رقمي فقط -->
+            <!-- الحقل والزر في نفس السطر -->
             <input id="codeInput" type="number" placeholder="Code produit" maxlength="13">
             <button id="scanButton">SCANNER</button>
         </div>
