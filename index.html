@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SUIVI DLC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* CSS محسن للعرض الكامل على جميع الشاشات */
+body {
+    margin:0; 
+    padding: 0;
+    font-family:'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    background:#f5f7fa; 
+    color:#333; 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* مؤشر التخزين فوق العنوان */
+.storage-info {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin: 10px 0 5px 0;
+    text-align: center;
+    width: 95%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+h2 { 
+    text-align:center; 
+    margin:5px 0 15px 0; 
+    color:#1a237e; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px;
+}
+
+.inputs-container { 
+    width:95%; 
+    max-width: 600px;
+    display:flex; 
+    flex-wrap:wrap; 
+    gap:15px; 
+    margin-bottom:10px; 
+    box-sizing: border-box;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+input, button, select { 
+    padding:8px; 
+    font-size:14px; 
+    border-radius:6px; 
+    border:2px solid #1a237e;
+    font-family:'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+input:focus, select:focus { border-color:#3498db; outline:none; }
+button { border:none; color:#fff; cursor:pointer; }
+
+#nameOutput {
+    width: 100%;
+    text-align: center;
+}
+
+/* Code produit و Scanner في سطر واحد */
+.code-scan-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+}
+
+#expiryInput, #quantityInput, #codeInput {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    flex: 0 0 auto !important;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: 2px solid #1a237e;
+}
+
+#codeInput {
+    margin: 0;
+}
+
+/* تعديل زر السكانر */
+#scanButton { 
+    background: linear-gradient(145deg, #e67e22, #d35400); 
+    font-size:14px; 
+    padding:8px 12px; 
+    border-radius:6px; 
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    height: 36px;
+    white-space: nowrap;
+    border: 2px solid #ffffff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.camera-icon, .stock-icon {
+    background:#3498db; 
+    font-size:16px; 
+    padding:6px; 
+    border-radius:6px; 
+    color:#fff; 
+    cursor:pointer; 
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+#previewImage {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid #1a237e;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin: 0 10px;
+    background: transparent;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 15px 0;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.button-row button {
+    flex: 1;
+    padding: 12px 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    gap: 8px;
+}
+
+#addButton { 
+    background: linear-gradient(145deg, #00acc1, #00838f); 
+} 
+#addButton:hover { background: linear-gradient(145deg, #0097a7, #006974); }
+
+#importButton { 
+    background: linear-gradient(145deg, #6a1b9a, #4a148c); 
+} 
+#importButton:hover { background: linear-gradient(145deg, #7b1fa2, #5e35b1); }
+
+#downloadXLSX { 
+    background: linear-gradient(145deg, #2e7d32, #1b5e20); 
+} 
+#downloadXLSX:hover { background: linear-gradient(145deg, #388e3c, #2e7d32); }
+
+#shareButton { 
+    background: linear-gradient(145deg, #8e44ad, #6c3483); 
+} 
+#shareButton:hover { background: linear-gradient(145deg, #7d3c98, #5e3370); }
+
+/* تعديل زر البحث */
+#searchButton {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    width: 95%;
+    max-width: 600px;
+    margin: 15px 0;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+}
+
+#searchButton:hover {
+    background: linear-gradient(145deg, #2980b9, #2471a3);
+}
+
+/* تعديل إطار عدد المنتجات */
+#productCount { 
+    margin:10px 0; 
+    width:95%; 
+    max-width: 600px;
+    text-align: center;
+    padding: 12px;
+    background: #ffffff;
+    color: #ff0000;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-transform: uppercase;
+    font-weight: bold;
+    box-sizing: border-box;
+    border: 2px solid #ffcc00;
+}
+
+.cards-container { 
+    width:95%; 
+    max-width: 600px;
+    display:flex; 
+    flex-direction:column; 
+    gap:10px; 
+    margin-bottom:20px; 
+    box-sizing: border-box;
+}
+
+.card { 
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); 
+    padding:12px;
+    border-radius:12px; 
+    box-shadow:0 4px 15px rgba(0,0,0,0.1); 
+    display:flex; 
+    flex-direction:row; 
+    gap:12px; 
+    align-items:flex-start; 
+    position:relative; 
+    opacity:0; 
+    transform:translateY(12px); 
+    animation: fadeSlide 0.35s ease forwards; 
+    box-sizing: border-box;
+    width: 100%;
+    border-left: 4px solid #3498db;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+@keyframes fadeSlide { to { opacity:1; transform:translateY(0); } }
+
+.card-image-container {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #1a237e;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2px;
+}
+
+.days-left {
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    margin-right: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.card-code {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+    border-radius: 6px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.card-name {
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    word-break: break-word;
+    margin-bottom: 4px;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.card-details {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #2c3e50;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.card-date {
+    font-weight: 600;
+    color: #e74c3c;
+    padding: 2px 6px;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 4px;
+}
+
+.card-quantity {
+    font-weight: 600;
+    color: #27ae60;
+    padding: 2px 6px;
+    background: rgba(39, 174, 96, 0.1);
+    border-radius: 4px;
+}
+
+.card-footer { 
+    position: absolute; 
+    top: 8px; 
+    right: 8px; 
+    z-index: 999; 
+    display: flex;
+    gap: 5px;
+}
+.card-footer button { 
+    background: linear-gradient(145deg, #e74c3c, #c0392b); 
+    color:#fff; 
+    width:28px; 
+    height:28px; 
+    border-radius:50%; 
+    font-size:16px; 
+    padding:0; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    cursor:pointer; 
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+.card-footer button:hover { 
+    background: linear-gradient(145deg, #c0392b, #a93226); 
+    transform: scale(1.1);
+}
+
+/* زر التعديل في الكارد */
+.edit-button {
+    background: linear-gradient(145deg, #3498db, #2980b9) !important;
+}
+
+/* حذف شهر كامل */
+.delete-month-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+}
+
+#monthDeleteSelect {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    flex: 0 0 auto !important;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: 2px solid #1a237e;
+}
+
+#deleteMonthButton {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+#deleteMonthButton:hover {
+    background: linear-gradient(145deg, #c0392b, #a93226);
+}
+
+/* نافذة التعديل */
+.edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.edit-form h3 {
+    margin-top: 0;
+    color: #1a237e;
+    text-align: center;
+}
+
+.edit-form-group {
+    margin-bottom: 15px;
+}
+
+.edit-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #1a237e;
+}
+
+.edit-form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.edit-form-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.edit-form-buttons button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#saveEditButton {
+    background: #2ecc71;
+    color: white;
+}
+
+#cancelEditButton {
+    background: #e74c3c;
+    color: white;
+}
+
+/* بقية الأنماط تبقى كما هي */
+.date-quantity-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+#reader { 
+    display:none; 
+    width:100%; 
+    height:200px; 
+    border:1px solid #ccc; 
+    border-radius:8px; 
+    margin-top:5px; 
+    overflow:hidden; 
+    position: relative; 
+    box-sizing: border-box; 
+    background: #000;
+}
+
+#cameraOverlay { 
+    display:none; 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100vw; 
+    height:100vh; 
+    background:rgba(0,0,0,0.85); 
+    z-index:9999; 
+    justify-content:center; 
+    align-items:center; 
+    flex-direction:column; 
+}
+#cameraOverlay video { 
+    width:100%; 
+    height:100%; 
+    object-fit:cover; 
+}
+
+.camera-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 10000;
+}
+
+#captureButton, #closeCameraButton {
+    width: 140px !important;
+    min-width: 140px !important;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+#captureButton { 
+    background: linear-gradient(145deg, #2ecc71, #27ae60); 
+}
+#captureButton:hover { 
+    background: linear-gradient(145deg, #27ae60, #219653); 
+}
+
+#closeCameraButton { 
+    background: linear-gradient(145deg, #e74c3c, #c0392b); 
+}
+#closeCameraButton:hover { 
+    background: linear-gradient(145deg, #c0392b, #a93226); 
+}
+
+.scanner-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 12px;
+}
+
+.month-section {
+    margin: 15px 0 5px 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    letter-spacing: 1px;
+}
+
+.expired-section {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    border: none;
+}
+
+.future-section {
+    background: linear-gradient(145deg, #1a237e, #0d1459);
+    border: none;
+    color: white;
+}
+
+.scanner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.scanner-frame {
+    width: 90%;
+    max-width: 400px;
+    height: 300px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+}
+
+.scanner-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #3498db, transparent);
+    animation: scanLine 2s linear infinite;
+}
+
+@keyframes scanLine {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+.scanner-controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.scanner-controls button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#closeScanner {
+    background: #e74c3c;
+}
+
+#toggleTorch {
+    background: #3498db;
+}
+
+.loading-spinner {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.success-message {
+    display: none;
+    background: #2ecc71;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    text-align: center;
+    animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    20%, 80% { opacity: 1; }
+}
+
+.search-page {
+    display: none;
+    width: 95%;
+    max-width: 600px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.search-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.search-input-group label {
+    font-weight: bold;
+    color: #1a237e;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.search-input-group select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.search-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.search-buttons button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#searchBackButton {
+    background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+}
+
+#searchBackButton:hover {
+    background: linear-gradient(145deg, #7f8c8d, #6c7b7d);
+}
+
+#performSearchButton {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+}
+
+#performSearchButton:hover {
+    background: linear-gradient(145deg, #2980b9, #2471a3);
+}
+
+.pdf-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.pdf-buttons button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#downloadPDF {
+    background: linear-gradient(145deg, #2e7d32, #1b5e20);
+}
+
+#downloadPDF:hover {
+    background: linear-gradient(145deg, #388e3c, #2e7d32);
+}
+
+#sharePDF {
+    background: linear-gradient(145deg, #8e44ad, #6c3483);
+}
+
+#sharePDF:hover {
+    background: linear-gradient(145deg, #7d3c98, #5e3370);
+}
+
+.search-results-title {
+    background: linear-gradient(145deg, #795548, #5d4037);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.page-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (max-width: 480px) {
+    .card {
+        flex-direction: row;
+        text-align: left;
+        padding: 10px;
+    }
+    
+    .card-image-container {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .card-header {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .days-left {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+    
+    .card-code {
+        font-size: 13px;
+    }
+    
+    .card-name {
+        font-size: 14px;
+        text-align: center;
+    }
+    
+    .card-details {
+        flex-direction: row;
+        gap: 10px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .date-quantity-container {
+        flex-direction: row;
+        gap: 6px;
+        justify-content: center;
+    }
+    
+    .camera-controls {
+        bottom: 20px;
+        gap: 10px;
+    }
+    
+    #captureButton, #closeCameraButton {
+        width: 120px !important;
+        min-width: 120px !important;
+        padding: 10px 15px !important;
+        font-size: 14px !important;
+    }
+    
+    .button-row {
+        flex-direction: row;
+        gap: 6px;
+    }
+    
+    .button-row button {
+        min-height: 40px;
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+    
+    #codeInput, #expiryInput, #quantityInput {
+        width: 150px !important;
+        max-width: 150px !important;
+        min-width: 150px !important;
+        font-size: 13px;
+    }
+    
+    #scanButton {
+        width: 150px !important;
+        max-width: 150px !important;
+        min-width: 150px !important;
+        font-size: 12px;
+    }
+    
+    @media (max-width: 320px) {
+        .button-row button {
+            font-size: 11px;
+            padding: 8px 4px;
+        }
+        
+        .date-quantity-container {
+            gap: 4px;
+        }
+        
+        #codeInput, #expiryInput, #quantityInput {
+            width: 140px !important;
+            max-width: 140px !important;
+            min-width: 140px !important;
+            font-size: 12px;
+        }
+        
+        #scanButton {
+            width: 140px !important;
+            max-width: 140px !important;
+            min-width: 140px !important;
+            font-size: 11px;
+        }
+        
+        .camera-controls {
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #captureButton, #closeCameraButton {
+            width: 160px !important;
+            min-width: 160px !important;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .buttons-container {
+        gap: 10px;
+    }
+    
+    .button-row button {
+        padding: 14px 10px;
+        font-size: 15px;
+        min-height: 48px;
+    }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</head>
+<body>
+
+<!-- الصفحة الرئيسية -->
+<div id="mainPage" class="page-container">
+    <!-- مؤشر التخزين فوق العنوان -->
+    <div class="storage-info" id="storageInfo">
+        💾 Chargement des données...
+    </div>
+    
+    <h2>SUIVI DLC</h2>
+
+    <div class="inputs-container">
+        <div class="input-group">
+            <!-- Code produit و Scanner في سطر واحد -->
+            <div class="code-scan-container">
+                <input id="codeInput" type="number" placeholder="Code produit" maxlength="13">
+                <button id="scanButton">SCANNER</button>
+            </div>
+            <div id="reader"></div>
+        </div>
+
+        <div class="input-group">
+            <input id="nameOutput" placeholder="Nom produit" readonly>
+        </div>
+
+        <!-- التاريخ والكمية في نفس السطر -->
+        <div class="input-group">
+            <div class="date-quantity-container">
+                <input id="expiryInput" type="text" placeholder="Date (DD/MM/YY)" maxlength="8" inputmode="numeric">
+                <input id="quantityInput" type="number" placeholder="Quantité" max="9999">
+            </div>
+        </div>
+
+        <!-- الكاميرا والستوكاج والصورة في سطر واحد -->
+        <div class="input-group">
+            <div class="image-container">
+                <div class="stock-icon" id="stockButton">🖼️</div>
+                <img id="previewImage" src="" alt="">
+                <div class="camera-icon" id="cameraButton">📷</div>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" style="display:none;">
+        </div>
+
+        <!-- تصميم جديد للأزرار - صفين فقط مع أيقونات -->
+        <div class="buttons-container">
+            <div class="button-row">
+                <button id="addButton">➕ AJOUTER</button>
+                <button id="importButton">📥 IMPORTER</button>
+            </div>
+            <div class="button-row">
+                <button id="downloadXLSX">📊 TÉLÉCHARGER</button>
+                <button id="shareButton">🔗 PARTAGER</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر البحث -->
+    <button id="searchButton">🔍 RECHERCHE</button>
+
+    <!-- حذف شهر كامل -->
+    <div class="delete-month-container">
+        <select id="monthDeleteSelect">
+            <option value="">Sélectionnez un mois</option>
+        </select>
+        <button id="deleteMonthButton">🗑️ SUPPRIMER MOIS</button>
+    </div>
+
+    <p id="productCount">NOMBRE DE PRODUITS: 0</p>
+    <div class="cards-container" id="cardsContainer"></div>
+</div>
+
+<!-- صفحة البحث -->
+<div id="searchPage" class="search-page">
+    <h2>RECHERCHE</h2>
+
+    <div class="search-inputs">
+        <div class="search-input-group">
+            <label for="dateSearch">Recherche par Date (DD/MM/YY)</label>
+            <select id="dateSearch">
+                <option value="">Sélectionnez une date</option>
+            </select>
+        </div>
+
+        <div class="search-input-group">
+            <label for="monthSearch">Recherche par Mois (MM/YYYY)</label>
+            <select id="monthSearch">
+                <option value="">Sélectionnez un mois</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="search-buttons">
+        <button id="searchBackButton">⬅️ RETOUR</button>
+        <button id="performSearchButton">🔍 RECHERCHER</button>
+    </div>
+
+    <div class="search-results-title" id="searchResultsTitle" style="display: none;">
+        RÉSULTATS DE RECHERCHE
+    </div>
+
+    <div class="cards-container" id="searchResultsContainer"></div>
+
+    <div class="pdf-buttons" id="pdfButtons" style="display: none;">
+        <button id="downloadPDF">📥 TÉLÉCHARGER PDF</button>
+        <button id="sharePDF">🔗 PARTAGER PDF</button>
+    </div>
+</div>
+
+<!-- نافذة التعديل -->
+<div id="editModal" class="edit-modal">
+    <div class="edit-form">
+        <h3>MODIFIER LE PRODUIT</h3>
+        <div class="edit-form-group">
+            <label for="editImage">Image</label>
+            <input type="file" id="editImage" accept="image/*">
+        </div>
+        <div class="edit-form-group">
+            <label for="editDate">Date (DD/MM/YY)</label>
+            <input type="text" id="editDate" placeholder="Date (DD/MM/YY)" maxlength="8">
+        </div>
+        <div class="edit-form-group">
+            <label for="editQuantity">Quantité</label>
+            <input type="number" id="editQuantity" placeholder="Quantité" max="9999">
+        </div>
+        <div class="edit-form-buttons">
+            <button id="saveEditButton">SAUVEGARDER</button>
+            <button id="cancelEditButton">ANNULER</button>
+        </div>
+    </div>
+</div>
+
+<!-- الكاميرا -->
+<div id="cameraOverlay">
+    <video id="cameraVideo" autoplay></video>
+    <div class="camera-controls">
+        <button id="captureButton">📸 CAPTURER</button>
+        <button id="closeCameraButton">❌ FERMER</button>
+    </div>
+</div>
+
+<!-- ماسح ضوئي محسن -->
+<div id="scannerOverlay" class="scanner-overlay" style="display: none;">
+    <div class="scanner-frame" id="scannerFrame"></div>
+    <div class="scanner-controls">
+        <button id="toggleTorch">💡 FLASH</button>
+        <button id="closeScanner">❌ FERMER</button>
+    </div>
+    <div class="loading-spinner" id="scannerLoading"></div>
+</div>
+
+<!-- رسالة نجاح -->
+<div class="success-message" id="successMessage"></div>
+
+<script>
+// ==== DATA ====
+let database = []; 
+let products = [];
+let selectedImageFile = null;
+let flashEnabled = false;
+let currentStream = null;
+let html5QrCode;
+let db = null;
+let searchResults = [];
+let currentEditId = null;
+
+// ==== إدارة الصفحات ====
+const mainPage = document.getElementById('mainPage');
+const searchPage = document.getElementById('searchPage');
+
+// الانتقال إلى صفحة البحث
+document.getElementById('searchButton').addEventListener('click', () => {
+    mainPage.style.display = 'none';
+    searchPage.style.display = 'flex';
+    initializeSearchPage();
+});
+
+// العودة إلى الصفحة الرئيسية - التصحيح
+document.getElementById('searchBackButton').addEventListener('click', () => {
+    searchPage.style.display = 'none';
+    mainPage.style.display = 'flex';
+    // إعادة تحميل الصفحة الرئيسية
+    renderCards();
+});
+
+// تهيئة صفحة البحث
+function initializeSearchPage() {
+    populateDateSearch();
+    populateMonthSearch();
+    document.getElementById('searchResultsTitle').style.display = 'none';
+    document.getElementById('pdfButtons').style.display = 'none';
+    document.getElementById('searchResultsContainer').innerHTML = '';
+    // إعادة تعيين الحقول
+    document.getElementById('dateSearch').value = '';
+    document.getElementById('monthSearch').value = '';
+}
+
+// تعبئة قائمة البحث بالتاريخ - تحديث: 3 أشهر من اليوم
+function populateDateSearch() {
+    const dateSelect = document.getElementById('dateSearch');
+    dateSelect.innerHTML = '<option value="">Sélectionnez une date</option>';
+    
+    const today = new Date();
+    const threeMonthsLater = new Date(today);
+    threeMonthsLater.setMonth(today.getMonth() + 3);
+    
+    const dates = [];
+    const currentDate = new Date(today);
+    
+    while (currentDate <= threeMonthsLater) {
+        const dateStr = formatDateForSearch(currentDate);
+        dates.push(dateStr);
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    dates.forEach(date => {
+        const option = document.createElement('option');
+        option.value = date;
+        option.textContent = date;
+        dateSelect.appendChild(option);
+    });
+}
+
+// تنسيق التاريخ للبحث
+function formatDateForSearch(date) {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}/${month}/${year}`;
+}
+
+// تعبئة قائمة البحث بالشهر - تحديث: 24 شهر من الشهر الحالي
+function populateMonthSearch() {
+    const monthSelect = document.getElementById('monthSearch');
+    monthSelect.innerHTML = '<option value="">Sélectionnez un mois</option>';
+    
+    const today = new Date();
+    const months = [];
+    
+    for (let i = 0; i < 24; i++) {
+        const monthDate = new Date(today);
+        monthDate.setMonth(today.getMonth() + i);
+        const monthStr = `${(monthDate.getMonth() + 1).toString().padStart(2, '0')}/${monthDate.getFullYear()}`;
+        months.push(monthStr);
+    }
+    
+    months.forEach(month => {
+        const option = document.createElement('option');
+        option.value = month;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+    });
+}
+
+// تعبئة قائمة حذف الشهر
+function populateMonthDelete() {
+    const monthDeleteSelect = document.getElementById('monthDeleteSelect');
+    monthDeleteSelect.innerHTML = '<option value="">Sélectionnez un mois</option>';
+    
+    const today = new Date();
+    const months = [];
+    
+    for (let i = 0; i < 24; i++) {
+        const monthDate = new Date(today);
+        monthDate.setMonth(today.getMonth() + i);
+        const monthStr = `${(monthDate.getMonth() + 1).toString().padStart(2, '0')}/${monthDate.getFullYear()}`;
+        months.push(monthStr);
+    }
+    
+    months.forEach(month => {
+        const option = document.createElement('option');
+        option.value = month;
+        option.textContent = month;
+        monthDeleteSelect.appendChild(option);
+    });
+}
+
+// حذف شهر كامل
+document.getElementById('deleteMonthButton').addEventListener('click', async () => {
+    const monthToDelete = document.getElementById('monthDeleteSelect').value;
+    
+    if (!monthToDelete) {
+        alert('Veuillez sélectionner un mois');
+        return;
+    }
+    
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer tous les produits du mois ${monthToDelete}?`)) {
+        return;
+    }
+    
+    const [month, year] = monthToDelete.split('/');
+    const productsToDelete = products.filter(product => {
+        const [d, m, y] = product.expiry.split('/');
+        return m === month && y === year;
+    });
+    
+    if (productsToDelete.length === 0) {
+        alert('Aucun produit trouvé pour ce mois');
+        return;
+    }
+    
+    try {
+        for (const product of productsToDelete) {
+            await deleteProductById(product.id);
+        }
+        
+        products = products.filter(product => {
+            const [d, m, y] = product.expiry.split('/');
+            return !(m === month && y === year);
+        });
+        
+        renderCards();
+        updateStorageInfo();
+        showSuccessMessage(`${productsToDelete.length} produits supprimés pour le mois ${monthToDelete}`);
+        
+        // إعادة تعيين القائمة
+        document.getElementById('monthDeleteSelect').value = '';
+    } catch (error) {
+        console.error('Error deleting month:', error);
+        alert('Erreur lors de la suppression du mois');
+    }
+});
+
+// تنفيذ البحث - إصلاح البحث بالأشهر
+document.getElementById('performSearchButton').addEventListener('click', () => {
+    const dateSearch = document.getElementById('dateSearch').value;
+    const monthSearch = document.getElementById('monthSearch').value;
+    
+    if (!dateSearch && !monthSearch) {
+        alert('Veuillez sélectionner une date ou un mois');
+        return;
+    }
+    
+    searchResults = [];
+    
+    if (dateSearch) {
+        // البحث بالتاريخ المحدد
+        const [day, month, year] = dateSearch.split('/');
+        const searchDateFormatted = `${day}/${month}/20${year}`;
+        
+        searchResults = products.filter(product => {
+            return product.expiry === searchDateFormatted;
+        });
+        
+        document.getElementById('searchResultsTitle').textContent = `RÉSULTATS POUR: ${dateSearch}`;
+    } else if (monthSearch) {
+        // البحث بالشهر المحدد - إصلاح
+        const [month, year] = monthSearch.split('/');
+        searchResults = products.filter(product => {
+            const [d, m, y] = product.expiry.split('/');
+            return m === month && y === year;
+        });
+        
+        document.getElementById('searchResultsTitle').textContent = `RÉSULTATS POUR: ${monthSearch}`;
+    }
+    
+    displaySearchResults();
+});
+
+// عرض نتائج البحث
+function displaySearchResults() {
+    const container = document.getElementById('searchResultsContainer');
+    const title = document.getElementById('searchResultsTitle');
+    const pdfButtons = document.getElementById('pdfButtons');
+    
+    container.innerHTML = '';
+    
+    if (searchResults.length === 0) {
+        container.innerHTML = '<div class="card"><div class="card-content"><div class="card-name">Aucun produit trouvé</div></div></div>';
+        title.style.display = 'block';
+        pdfButtons.style.display = 'none';
+        return;
+    }
+    
+    title.style.display = 'block';
+    pdfButtons.style.display = 'flex';
+    
+    searchResults.forEach((p, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="card-image-container">
+                ${p.img ? `<img src="${p.img}" alt="">` : ""}
+            </div>
+            <div class="card-content">
+                <div class="card-header">
+                    <span class="days-left" style="background:#3498db">TROUVÉ</span>
+                </div>
+                <span class="card-code">${p.code}</span>
+                <div class="card-name">${p.name}</div>
+                <div class="card-details">
+                    <span class="card-date">DATE: ${p.expiry}</span>
+                    <span class="card-quantity">QUANTITÉ: ${p.quantity}</span>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// ==== نافذة التعديل ====
+const editModal = document.getElementById('editModal');
+const editImage = document.getElementById('editImage');
+const editDate = document.getElementById('editDate');
+const editQuantity = document.getElementById('editQuantity');
+const saveEditButton = document.getElementById('saveEditButton');
+const cancelEditButton = document.getElementById('cancelEditButton');
+
+// فتح نافذة التعديل
+function openEditModal(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    currentEditId = productId;
+    editDate.value = product.expiry;
+    editQuantity.value = product.quantity;
+    editImage.value = '';
+    
+    editModal.style.display = 'flex';
+}
+
+// إغلاق نافذة التعديل
+function closeEditModal() {
+    editModal.style.display = 'none';
+    currentEditId = null;
+}
+
+// حفظ التعديلات
+saveEditButton.addEventListener('click', async () => {
+    if (!currentEditId) return;
+    
+    const product = products.find(p => p.id === currentEditId);
+    if (!product) return;
+    
+    const newDate = formatDateInput(editDate.value);
+    if (!newDate || !isValidDate(newDate)) {
+        alert('DATE INVALIDE!');
+        return;
+    }
+    
+    const newQuantity = editQuantity.value;
+    if (!newQuantity) {
+        alert('QUANTITÉ INVALIDE!');
+        return;
+    }
+    
+    // تحديث المنتج
+    product.expiry = newDate;
+    product.quantity = newQuantity;
+    
+    // تحديث الصورة إذا تم اختيار واحدة
+    if (editImage.files.length > 0) {
+        const file = editImage.files[0];
+        resizeImage(file, 400, 400, resizedData => {
+            product.img = resizedData;
+            updateProductInDB(product);
+        });
+    } else {
+        await updateProductInDB(product);
+    }
+    
+    closeEditModal();
+    renderCards();
+    showSuccessMessage('Produit modifié avec succès!');
+});
+
+// إلغاء التعديلات
+cancelEditButton.addEventListener('click', closeEditModal);
+
+// تحديث المنتج في قاعدة البيانات
+async function updateProductInDB(product) {
+    if (!db) db = await openDatabase();
+    
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.put(product);
+        
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// ==== INDEXEDDB - تخزين بسعة كبيرة ====
+const DB_NAME = 'ProduitsDLC';
+const DB_VERSION = 1;
+const STORE_NAME = 'products';
+
+// فتح قاعدة البيانات
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                store.createIndex('code', 'code', { unique: false });
+                store.createIndex('expiry', 'expiry', { unique: false });
+            }
+        };
+    });
+}
+
+// تحميل جميع المنتجات
+async function loadProducts() {
+    try {
+        if (!db) db = await openDatabase();
+        
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+            
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    } catch (error) {
+        console.error('Error loading products:', error);
+        return [];
+    }
+}
+
+// حفظ منتج
+async function saveProduct(product) {
+    if (!db) db = await openDatabase();
+    
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.add(product);
+        
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// حذف منتج
+async function deleteProductById(id) {
+    if (!db) db = await openDatabase();
+    
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(id);
+        
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// تحديث مؤشر التخزين
+async function updateStorageInfo() {
+    const storageInfo = document.getElementById('storageInfo');
+    const products = await loadProducts();
+    
+    const estimatedSize = products.length * 30;
+    const maxSize = 50000;
+    
+    const percentage = Math.min((estimatedSize / maxSize) * 100, 100);
+    const status = percentage < 80 ? '✅' : percentage < 95 ? '⚠️' : '🔴';
+    
+    storageInfo.innerHTML = 
+        `${status} Stockage: ${products.length} produits (${Math.round(percentage)}% utilisé) | 
+        Capacité: 1000+ produits avec photos`;
+}
+
+// ==== LOAD GOOGLE SHEET CSV ====
+const url = "https://docs.google.com/spreadsheets/d/1r0QSoLDzekCfgkZxJ6UlbCpfKf6X57-woxeQDCjNjzU/export?format=csv";
+Papa.parse(url, { 
+    download: true, 
+    header: true, 
+    complete: results => { 
+        database = results.data; 
+    } 
+});
+
+// ==== تهيئة التطبيق ====
+async function initApp() {
+    try {
+        products = await loadProducts();
+        renderCards();
+        updateStorageInfo();
+        populateMonthDelete();
+    } catch (error) {
+        console.error('Error initializing app:', error);
+        document.getElementById('storageInfo').innerHTML = 
+            '⚠️ Mode hors ligne - Données locales uniquement';
+    }
+}
+
+// ==== SEARCH PRODUCT BY CODE ====
+document.getElementById("codeInput").addEventListener("input", function(){
+    this.value = this.value.replace(/[^0-9]/g, '');
+    
+    if (this.value.length > 13) {
+        this.value = this.value.substring(0, 13);
+    }
+    
+    const code = this.value.trim().toLowerCase();
+    const product = database.find(item => (item.Code || "").trim().toLowerCase() === code);
+    document.getElementById("nameOutput").value = product ? (product.Nom || "").trim().toUpperCase() : "";
+});
+
+// ==== QR CODE SCANNER محسن ====
+document.getElementById("scanButton").addEventListener("click", async () => {
+    await startScanner();
+});
+
+// بدء الماسح الضوئي
+async function startScanner() {
+    const scannerOverlay = document.getElementById("scannerOverlay");
+    const scannerFrame = document.getElementById("scannerFrame");
+    const scannerLoading = document.getElementById("scannerLoading");
+    
+    scannerOverlay.style.display = "flex";
+    scannerLoading.style.display = "block";
+    
+    try {
+        if (html5QrCode && html5QrCode.isScanning) {
+            await html5QrCode.stop();
+        }
+        
+        html5QrCode = new Html5Qrcode("scannerFrame");
+        
+        const config = {
+            fps: 15,
+            qrbox: { width: 250, height: 150 },
+            aspectRatio: 1.0,
+            disableFlip: false
+        };
+        
+        await html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            onScanSuccess,
+            onScanFailure
+        );
+        
+        scannerLoading.style.display = "none";
+        
+    } catch (err) {
+        console.error("Error starting scanner:", err);
+        scannerOverlay.style.display = "none";
+        alert("Impossible de démarrer le scanner. Vérifiez les permissions de la caméra.");
+    }
+}
+
+// إيقاف الماسح الضوئي
+function stopScanner() {
+    const scannerOverlay = document.getElementById("scannerOverlay");
+    
+    if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().then(() => {
+            scannerOverlay.style.display = "none";
+        }).catch(err => {
+            console.log("Error stopping scanner:", err);
+            scannerOverlay.style.display = "none";
+        });
+    } else {
+        scannerOverlay.style.display = "none";
+    }
+}
+
+// معالجة المسح الناجح
+function onScanSuccess(decodedText) {
+    let scannedCode = decodedText.trim();
+    if (scannedCode.length > 13) {
+        scannedCode = scannedCode.substring(0, 13);
+    }
+    
+    document.getElementById("codeInput").value = scannedCode;
+    const product = database.find(item => (item.Code || "").trim().toLowerCase() === scannedCode.trim().toLowerCase());
+    document.getElementById("nameOutput").value = product ? (product.Nom || "").trim().toUpperCase() : "";
+    
+    showSuccessMessage("Code scanné avec succès!");
+    stopScanner();
+}
+
+// معالجة فشل المسح
+function onScanFailure(error) {
+    // لا تفعل شيئاً، الماسح سيستمر في المحاولة
+}
+
+// إغلاق الماسح الضوئي
+document.getElementById("closeScanner").addEventListener("click", stopScanner);
+
+// عرض رسالة نجاح
+function showSuccessMessage(message) {
+    const successMessage = document.getElementById("successMessage");
+    successMessage.textContent = message;
+    successMessage.style.display = "block";
+    
+    setTimeout(() => {
+        successMessage.style.display = "none";
+    }, 3000);
+}
+
+// ==== باقي الكود ====
+// DATE FORMATTING
+const expiryInput = document.getElementById("expiryInput");
+expiryInput.addEventListener("input", function(){
+    let val = this.value.replace(/[^0-9]/g,'');
+    if(val.length > 2 && val.length <= 4) val = val.slice(0,2) + '/' + val.slice(2);
+    else if(val.length > 4) val = val.slice(0,2) + '/' + val.slice(2,4) + '/' + val.slice(4,6);
+    this.value = val.slice(0,8);
+});
+
+function formatDateInput(input){ 
+    let parts = input.split('/'); 
+    if(parts.length !== 3) return null; 
+    if(parts[2].length === 2) {
+        parts[2] = '20' + parts[2];
+    }
+    return parts.map(p => p.padStart(2,'0')).join('/'); 
+}
+
+function isValidDate(dateStr){ 
+    const [d,m,y] = dateStr.split("/").map(Number); 
+    const date = new Date(y,m-1,d); 
+    return date.getFullYear() === y && date.getMonth() === m-1 && date.getDate() === d; 
+}
+
+function daysLeft(expiry){ 
+    const [d,m,y] = expiry.split("/").map(Number); 
+    const expiryDate = new Date(y,m-1,d); 
+    const today = new Date(); 
+    return Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24)); 
+}
+
+function daysColor(days){ 
+    if(days < 0) return "#e74c3c";
+    if(days <= 30) return "#f1c40f";
+    if(days <= 60) return "#e67e22";
+    if(days <= 90) return "#3498db";
+    return "#2ecc71";
+}
+
+// IMAGE RESIZE
+function resizeImage(file, maxWidth, maxHeight, callback){
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+            let canvas = document.createElement('canvas'); 
+            let ctx = canvas.getContext('2d');
+            let width = img.width, height = img.height;
+            
+            if(width > height){ 
+                if(width > maxWidth){ 
+                    height = Math.round(height * (maxWidth / width)); 
+                    width = maxWidth; 
+                } 
+            } else { 
+                if(height > maxHeight){ 
+                    width = Math.round(width * (maxHeight / height)); 
+                    height = maxHeight; 
+                } 
+            }
+            
+            canvas.width = width; 
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            callback(canvas.toDataURL('image/jpeg', 0.7));
+        }
+        img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+
+// STOCK IMAGE
+document.getElementById("stockButton").addEventListener("click", () => {
+    const input = document.getElementById("imageInput");
+    input.click();
+    input.onchange = e => {
+        if(e.target.files.length > 0){
+            selectedImageFile = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = evt => { 
+                document.getElementById("previewImage").src = evt.target.result; 
+            }
+            reader.readAsDataURL(selectedImageFile);
+        }
+    }
+});
+
+// ==== الكاميرا ====
+document.getElementById("cameraButton").addEventListener("click", async () => {
+    const overlay = document.getElementById("cameraOverlay");
+    const video = document.getElementById("cameraVideo");
+    overlay.style.display = "flex";
+
+    let stream = null;
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: { exact: "environment" } }, 
+            audio: false 
+        });
+        currentStream = stream;
+    } catch(err) {
+        try { 
+            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            currentStream = stream;
+        } catch(err2) { 
+            overlay.style.display = "none"; 
+            alert("خطأ في الكاميرا: " + err2); 
+            return; 
+        }
+    }
+
+    video.srcObject = stream;
+
+    document.getElementById("closeCameraButton").onclick = () => {
+        stream.getTracks().forEach(track => track.stop());
+        overlay.style.display = "none";
+        currentStream = null;
+    };
+
+    document.getElementById("captureButton").onclick = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth; 
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(blob => {
+            selectedImageFile = new File([blob], "camera.jpg", { type: "image/jpeg" });
+            resizeImage(selectedImageFile, 400, 400, resizedData => {
+                document.getElementById("previewImage").src = resizedData;
+            });
+        }, "image/jpeg", 0.8);
+
+        stream.getTracks().forEach(track => track.stop());
+        overlay.style.display = "none";
+        currentStream = null;
+    };
+});
+
+// ADD PRODUCT
+async function addProduct(code, name, expiry, quantity, imgData) {
+    const product = {
+        code,
+        name: name.toUpperCase(),
+        expiry,
+        quantity,
+        img: imgData,
+        timestamp: new Date().getTime()
+    };
+    
+    try {
+        await saveProduct(product);
+        products.push(product);
+        
+        document.getElementById("codeInput").value = "";
+        document.getElementById("nameOutput").value = "";
+        document.getElementById("expiryInput").value = "";
+        document.getElementById("quantityInput").value = "";
+        document.getElementById("previewImage").src = "";
+        selectedImageFile = null;
+        
+        renderCards();
+        updateStorageInfo();
+        showSuccessMessage("Produit ajouté avec succès!");
+    } catch (error) {
+        console.error('Error saving product:', error);
+        alert("Erreur lors de l'ajout du produit");
+    }
+}
+
+document.getElementById("addButton").addEventListener("click", async () => {
+    const code = document.getElementById("codeInput").value.trim();
+    const name = document.getElementById("nameOutput").value.trim();
+    let expiry = document.getElementById("expiryInput").value.trim();
+    const quantity = document.getElementById("quantityInput").value;
+    
+    expiry = formatDateInput(expiry);
+    
+    if(!expiry || !isValidDate(expiry)){ 
+        alert("DATE INVALIDE!"); 
+        return; 
+    }
+    if(!code || !quantity){ 
+        alert("REMPLISSEZ TOUS LES CHAMPS!"); 
+        return; 
+    }
+    
+    const duplicate = products.find(p => p.code === code && p.expiry === expiry);
+    if(duplicate){ 
+        alert("DÉJÀ AJOUTÉ"); 
+        return; 
+    }
+    
+    if(selectedImageFile){
+        resizeImage(selectedImageFile, 400, 400, resizedData => 
+            addProduct(code, name, expiry, quantity, resizedData)
+        );
+    } else {
+        await addProduct(code, name, expiry, quantity, null);
+    }
+});
+
+// IMPORT EXCEL
+document.getElementById("importButton").addEventListener("click", () => {
+    const input = document.createElement("input");
+    input.type = "file"; 
+    input.accept = ".xlsx,.xls";
+    input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = evt => {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
+            
+            jsonData.forEach(async p => {
+                await addProduct(p.Code || "", p.Nom || "", p.Date || "", p.Quantité || "", null);
+            });
+        }
+        reader.readAsArrayBuffer(file);
+    };
+    input.click();
+});
+
+// RENDER CARDS مع إضافة زر التعديل
+function renderCards() {
+    const container = document.getElementById("cardsContainer");
+    container.innerHTML = "";
+    
+    const sortedProducts = [...products].sort((a,b) => {
+        const [d1,m1,y1] = a.expiry.split("/").map(Number);
+        const [d2,m2,y2] = b.expiry.split("/").map(Number);
+        return new Date(y1,m1-1,d1) - new Date(y2,m2-1,d2);
+    });
+    
+    const expiredProducts = [];
+    const futureProducts = [];
+    
+    sortedProducts.forEach(p => {
+        const remaining = daysLeft(p.expiry);
+        if(remaining < 0) {
+            expiredProducts.push(p);
+        } else {
+            futureProducts.push(p);
+        }
+    });
+    
+    if(expiredProducts.length > 0) {
+        const sectionTitle = document.createElement("div");
+        sectionTitle.className = "month-section expired-section";
+        sectionTitle.textContent = "PÉRIMÉ";
+        container.appendChild(sectionTitle);
+        
+        expiredProducts.forEach(p => {
+            const remaining = daysLeft(p.expiry);
+            const color = daysColor(remaining);
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <div class="card-image-container">
+                    ${p.img ? `<img src="${p.img}" alt="">` : ""}
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <span class="days-left" style="background:${color}">- ${Math.abs(remaining)} JOURS</span>
+                    </div>
+                    <span class="card-code">${p.code}</span>
+                    <div class="card-name">${p.name}</div>
+                    <div class="card-details">
+                        <span class="card-date">DATE: ${p.expiry}</span>
+                        <span class="card-quantity">QUANTITÉ: ${p.quantity}</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="edit-button" onclick="openEditModal(${p.id})">✏️</button>
+                    <button onclick="deleteProduct(${p.id})">X</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+    
+    const productsByMonth = {};
+    
+    futureProducts.forEach(p => {
+        const [d,m,y] = p.expiry.split("/").map(Number);
+        const monthKey = `${m.toString().padStart(2, '0')}-${y}`;
+        if(!productsByMonth[monthKey]) {
+            productsByMonth[monthKey] = [];
+        }
+        productsByMonth[monthKey].push(p);
+    });
+    
+    Object.keys(productsByMonth).sort((a,b) => {
+        const [m1,y1] = a.split("-").map(Number);
+        const [m2,y2] = b.split("-").map(Number);
+        return new Date(y1, m1-1) - new Date(y2, m2-1);
+    }).forEach(monthKey => {
+        const sectionTitle = document.createElement("div");
+        sectionTitle.className = "month-section future-section";
+        sectionTitle.textContent = `MOIS ${monthKey}`;
+        container.appendChild(sectionTitle);
+        
+        productsByMonth[monthKey].forEach(p => {
+            const remaining = daysLeft(p.expiry);
+            const color = daysColor(remaining);
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <div class="card-image-container">
+                    ${p.img ? `<img src="${p.img}" alt="">` : ""}
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <span class="days-left" style="background:${color}">${remaining} JOURS RESTANT</span>
+                    </div>
+                    <span class="card-code">${p.code}</span>
+                    <div class="card-name">${p.name}</div>
+                    <div class="card-details">
+                        <span class="card-date">DATE: ${p.expiry}</span>
+                        <span class="card-quantity">QUANTITÉ: ${p.quantity}</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="edit-button" onclick="openEditModal(${p.id})">✏️</button>
+                    <button onclick="deleteProduct(${p.id})">X</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    });
+    
+    document.getElementById("productCount").textContent = `NOMBRE DE PRODUITS: ${products.length}`;
+}
+
+// DELETE PRODUCT
+async function deleteProduct(id) {
+    if(!confirm("VOULEZ-VOUS VRAIMENT SUPPRIMER CE PRODUIT ?")) return;
+    
+    try {
+        await deleteProductById(id);
+        products = products.filter(p => p.id !== id);
+        renderCards();
+        updateStorageInfo();
+        showSuccessMessage("Produit supprimé avec succès!");
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        alert("Erreur lors de la suppression du produit");
+    }
+}
+
+// DOWNLOAD XLSX
+document.getElementById("downloadXLSX").addEventListener("click", function () {
+    if (products.length === 0) {
+        alert("AUCUN PRODUIT À TÉLÉCHARGER!");
+        return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(products.map(p => ({
+        Code: p.code,
+        Nom: p.name,
+        Date: p.expiry,
+        Quantité: p.quantity
+    })));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits");
+
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+
+    window.location.href = url;
+});
+
+// ==== زر المشاركة (PARTAGER) ====
+document.getElementById("shareButton").addEventListener("click", async function() {
+    if (products.length === 0) {
+        alert("AUCUN PRODUIT À PARTAGER!");
+        return;
+    }
+
+    try {
+        const ws = XLSX.utils.json_to_sheet(products.map(p => ({
+            Code: p.code,
+            Nom: p.name,
+            Date: p.expiry,
+            Quantité: p.quantity,
+            "Jours Restants": daysLeft(p.expiry)
+        })));
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Produits DLC");
+
+        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+        if (navigator.share) {
+            try {
+                const file = new File([blob], "Produits_DLC.xlsx", { 
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                });
+                
+                await navigator.share({
+                    files: [file],
+                    title: "Produits DLC",
+                    text: `📋 SUIVI DLC - Liste des Produits\n${products.length} produits\nGénéré le: ${new Date().toLocaleDateString('fr-FR')}`
+                });
+                
+                showSuccessMessage("Fichier partagé avec succès!");
+                return;
+                
+            } catch (shareError) {
+                console.log('Web Share API failed:', shareError);
+            }
+        }
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "Produits_DLC.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showSuccessMessage("Fichier téléchargé! Vous pouvez maintenant le partager manuellement.");
+        
+    } catch (err) {
+        console.error('Erreur de partage:', err);
+        alert("❌ Erreur lors du partage du fichier: " + err.message);
+    }
+});
+
+// ==== وظائف PDF الجديدة ====
+document.getElementById("downloadPDF").addEventListener("click", async () => {
+    if (searchResults.length === 0) {
+        alert("AUCUN RÉSULTAT À EXPORTER EN PDF!");
+        return;
+    }
+    
+    await generatePDF('download');
+});
+
+document.getElementById("sharePDF").addEventListener("click", async () => {
+    if (searchResults.length === 0) {
+        alert("AUCUN RÉSULTAT À PARTAGER EN PDF!");
+        return;
+    }
+    
+    await generatePDF('share');
+});
+
+// إنشاء PDF محسن
+async function generatePDF(action = 'download') {
+    const dataToExport = searchResults;
+    
+    if (dataToExport.length === 0) {
+        alert('Aucune donnée à exporter');
+        return;
+    }
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // إعدادات الصفحة
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 15;
+        const tableWidth = pageWidth - 2 * margin;
+        
+        // العنوان الرئيسي
+        doc.setFontSize(20);
+        doc.setTextColor(26, 35, 126); // Bleu marine
+        doc.text('SUIVI DLC', pageWidth / 2, 20, { align: 'center' });
+        
+        // نوع التقرير
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text('RAPPORT DE RECHERCHE', pageWidth / 2, 30, { align: 'center' });
+        
+        // عدد المنتجات
+        doc.setFontSize(12);
+        doc.text(`NOMBRE DES PRODUITS: ${dataToExport.length}`, pageWidth / 2, 40, { align: 'center' });
+        
+        // تاريخ التقرير
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('fr-FR');
+        doc.text(`Date de génération: ${dateStr}`, pageWidth / 2, 50, { align: 'center' });
+        
+        // إعداد الجدول
+        const tableTop = 60;
+        const rowHeight = 25;
+        const colWidths = [25, 30, 45, 45, 25]; // عرض الأعمدة
+        const headers = ['Image', 'Code', 'Nom', 'Date', 'Qté'];
+        
+        // رأس الجدول
+        let xPos = margin;
+        doc.setFillColor(26, 35, 126); // Bleu marine
+        doc.setTextColor(255, 255, 255);
+        doc.setFont(undefined, 'bold');
+        
+        headers.forEach((header, i) => {
+            doc.rect(xPos, tableTop, colWidths[i], rowHeight, 'F');
+            doc.text(header, xPos + colWidths[i] / 2, tableTop + rowHeight / 2, { align: 'center', baseline: 'middle' });
+            xPos += colWidths[i];
+        });
+        
+        // بيانات الجدول
+        let yPos = tableTop + rowHeight;
+        doc.setTextColor(0, 0, 0);
+        doc.setFont(undefined, 'normal');
+        
+        for (let i = 0; i < dataToExport.length; i++) {
+            const product = dataToExport[i];
+            
+            // التحقق من المساحة في الصفحة
+            if (yPos > pageHeight - 30) {
+                doc.addPage();
+                yPos = 20;
+            }
+            
+            xPos = margin;
+            
+            // صورة المنتج
+            if (product.img) {
+                try {
+                    const imgData = product.img;
+                    doc.addImage(imgData, 'JPEG', xPos + 2, yPos + 2, 20, 20);
+                } catch (imgError) {
+                    doc.text('N/A', xPos + colWidths[0] / 2, yPos + rowHeight / 2, { align: 'center', baseline: 'middle' });
+                }
+            } else {
+                doc.text('N/A', xPos + colWidths[0] / 2, yPos + rowHeight / 2, { align: 'center', baseline: 'middle' });
+            }
+            xPos += colWidths[0];
+            
+            // الكود
+            doc.text(product.code, xPos + colWidths[1] / 2, yPos + rowHeight / 2, { align: 'center', baseline: 'middle' });
+            xPos += colWidths[1];
+            
+            // الاسم
+            const nameLines = doc.splitTextToSize(product.name, colWidths[2] - 4);
+            doc.text(nameLines, xPos + colWidths[2] / 2, yPos + rowHeight / 2, { align: 'center', baseline: 'middle' });
+            xPos += colWidths[2];
+            
+            // التاريخ
+            doc.text(product.expiry, xPos + colWidths[3] / 2, yPos + rowHeight / 2, { align: 'center', baseline: 'middle' });
+            xPos += colWidths[3];
+            
+            // الكمية
+            doc.text(product.quantity.toString(), xPos + colWidths[4] / 2, yPos + rowHeight / 2, { align: 'center', baseline: 'middle' });
+            
+            // خط فاصل
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPos + rowHeight, pageWidth - margin, yPos + rowHeight);
+            
+            yPos += rowHeight;
+        }
+        
+        // حفظ أو مشاركة الملف
+        const fileName = 'Recherche_DLC.pdf';
+        
+        if (action === 'download') {
+            doc.save(fileName);
+            showSuccessMessage('PDF téléchargé avec succès!');
+        } else {
+            const pdfBlob = doc.output('blob');
+            await sharePDF(pdfBlob, fileName);
+        }
+        
+    } catch (error) {
+        console.error('Erreur génération PDF:', error);
+        alert('Erreur lors de la génération du PDF');
+    }
+}
+
+// مشاركة PDF
+async function sharePDF(pdfBlob, fileName) {
+    try {
+        if (navigator.share) {
+            const file = new File([pdfBlob], fileName, { 
+                type: "application/pdf" 
+            });
+            
+            await navigator.share({
+                files: [file],
+                title: fileName,
+                text: `📋 SUIVI DLC - Rapport de Recherche\nGénéré le: ${new Date().toLocaleDateString('fr-FR')}`
+            });
+            
+            showSuccessMessage("PDF partagé avec succès!");
+        } else {
+            // بديل إذا لم يكن Web Share API مدعوم
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showSuccessMessage("PDF téléchargé! Vous pouvez maintenant le partager manuellement.");
+        }
+    } catch (err) {
+        console.error('Erreur partage PDF:', err);
+        alert("❌ Erreur lors du partage du PDF");
+    }
+}
+
+// ==== INITIAL RENDER ====
+initApp();
+</script>
+</body>
+</html>
