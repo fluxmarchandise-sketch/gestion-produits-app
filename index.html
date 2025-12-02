@@ -5297,5 +5297,11 @@ function renderCards() {
 // ==== INITIAL RENDER ====
 initApp();
 </script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(() => console.log('Service Worker registered ✔'))
+    .catch(err => console.error('SW error:', err));
+}
+</script>
 </body>
 </html>
