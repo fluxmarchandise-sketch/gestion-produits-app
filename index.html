@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <!-- OneSignal SDK -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "21c46004-5baa-48c7-bdea-2cb7beb12b4a",
+      serviceWorkerPath: "/service-worker.js",
+      serviceWorkerUpdaterPath: "/service-worker.js",
+    });
+  });
+</script>
 <meta charset="UTF-8">
 <title>SUIVI DLC PRO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
