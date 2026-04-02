@@ -1,0 +1,5529 @@
+<!DOTYPE html>
+<html lang="fr">
+<head>
+<meta harset="UTF-8">
+<title>SUIVI DL PRO</title>
+<meta name="viewport" ontent="width=devie-width, initial-sale=1.0, maximum-sale=1.0, user-salable=no">
+<style>
+/* SS محسن للعرض الكامل على جميع الشاشات */
+* {
+    -webkit-user-selet: none;
+    -moz-user-selet: none;
+    -ms-user-selet: none;
+    user-selet: none;
+    -webkit-touh-allout: none;
+    -webkit-tap-highlight-olor: transparent;
+}
+
+body {
+    margin:0; 
+    padding: 0;
+    font-family: 'Playfair Display', serif;
+    bakground:#f5f7fa; 
+    olor:#333; 
+    display:flex; 
+    flex-diretion:olumn; 
+    align-items:enter;
+    min-height: 100vh;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
+    touh-ation: pan-x pan-y;
+}
+h2 { 
+    text-align:enter; 
+    margin:15px 0; 
+    olor:#1a237e; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-transform: upperase;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+/* ==== التعديل 1: إطارات المستخدم والرايون بحجم أصفر ==== */
+.user-inputs-ontainer {
+    width: 95%;
+    max-width: 600px;
+    display: flex;
+    flex-diretion: row;
+    gap: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.user-input-group {
+    display: flex;
+    flex-diretion: olumn;
+    flex: 1;
+}
+
+.user-input-group input, .user-input-group selet {
+    padding: 8px; /* تم تصغير الحشوة */
+    font-size: 14px; /* تم تصغير الخط */
+    border-radius: 6px;
+    border: 2px solid #1a237e;
+    font-family: 'Playfair Display', serif;
+    box-sizing: border-box;
+    font-weight: bold;
+    text-align: enter;
+    width: 100%;
+    height: 40px; /* ارتفاع ثابت */
+}
+
+.user-input-group input:fous, .user-input-group selet:fous {
+    border-olor: #3498db;
+    outline: none;
+}
+
+/* ==== التعديل: حقل إسم المنتج كم textarea ==== */
+.produt-name-textarea {
+    width: 100%;
+    text-align: enter;
+    border: 2px solid #1a237e !important;
+    bakground: white !important;
+    olor: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    line-height: 1.3;
+    min-height: 60px;
+    height: 60px;
+    max-height: 60px;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    word-break: break-word;
+    overflow: hidden;
+    resize: none;
+    border-radius: 6px;
+    font-family: 'Playfair Display', serif;
+    box-sizing: border-box;
+}
+
+/* ==== نافذة الحوار المخصصة ==== */
+.ustom-onfirm-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.7);
+    z-index: 10001;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.onfirm-dialog {
+    bakground: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: enter;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeInSale 0.3s ease;
+}
+
+@keyframes fadeInSale {
+    from { opaity: 0; transform: sale(0.8); }
+    to { opaity: 1; transform: sale(1); }
+}
+
+.onfirm-title {
+    font-size: 20px;
+    font-weight: bold;
+    olor: #e743;
+    margin-bottom: 15px;
+    text-transform: upperase;
+}
+
+.onfirm-message {
+    font-size: 16px;
+    margin-bottom: 25px;
+    olor: #333;
+    line-height: 1.5;
+}
+
+.onfirm-buttons {
+    display: flex;
+    gap: 15px;
+    justify-ontent: enter;
+}
+
+.onfirm-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    ursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    text-transform: upperase;
+}
+
+.onfirm-anel {
+    bakground: linear-gradient(145deg, #95a5a6, #7f88d);
+    olor: white;
+}
+
+.onfirm-anel:hover {
+    bakground: linear-gradient(145deg, #7f88d, #67b7d);
+    transform: translateY(-2px);
+}
+
+.onfirm-ok {
+    bakground: linear-gradient(145deg, #3498db, #2980b9);
+    olor: white;
+}
+
+.onfirm-ok:hover {
+    bakground: linear-gradient(145deg, #2980b9, #2471a3);
+    transform: translateY(-2px);
+}
+
+.alert-ok {
+    bakground: linear-gradient(145deg, #2e71, #27ae60);
+    olor: white;
+}
+
+.alert-ok:hover {
+    bakground: linear-gradient(145deg, #27ae60, #219653);
+    transform: translateY(-2px);
+}
+
+/* ==== نافذة اختيار التحميل والمشاركة ==== */
+.download-share-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.7);
+    z-index: 10002;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.download-share-ontent {
+    bakground: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: enter;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeInSale 0.3s ease;
+}
+
+.download-share-title {
+    font-size: 20px;
+    font-weight: bold;
+    olor: #1a237e;
+    margin-bottom: 15px;
+    text-transform: upperase;
+}
+
+.download-share-options {
+    display: flex;
+    flex-diretion: olumn;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.download-share-option {
+    padding: 15px;
+    border: 2px solid #1a237e;
+    border-radius: 8px;
+    bakground: #f8f9fa;
+    ursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.download-share-option:hover {
+    bakground: #e9eef;
+    transform: translateY(-2px);
+}
+
+.download-share-option.seleted {
+    bakground: #1a237e;
+    olor: white;
+}
+
+.month-seletion, .day-seletion {
+    display: none;
+    margin-top: 15px;
+}
+
+.month-seletion selet, .day-seletion selet {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #1a237e;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* ==== نافذة اختيار التحميل والمشاركة لصفحة البحث ==== */
+.download-share-modal-searh {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.7);
+    z-index: 10003;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.download-share-ontent-searh {
+    bakground: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: enter;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeInSale 0.3s ease;
+}
+
+.download-share-title-searh {
+    font-size: 20px;
+    font-weight: bold;
+    olor: #1a237e;
+    margin-bottom: 15px;
+    text-transform: upperase;
+}
+
+.download-share-options-searh {
+    display: flex;
+    flex-diretion: olumn;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.download-share-option-searh {
+    padding: 15px;
+    border: 2px solid #1a237e;
+    border-radius: 8px;
+    bakground: #f8f9fa;
+    ursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.download-share-option-searh:hover {
+    bakground: #e9eef;
+    transform: translateY(-2px);
+}
+
+.download-share-option-searh.seleted {
+    bakground: #1a237e;
+    olor: white;
+}
+
+/* ==== التعديل 3: زر SANNER برتقالي ==== */
+#sanButton, #asseFraisSanButton {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    margin-top: 0;
+    border: none !important;
+    bakground: linear-gradient(145deg, #e67e22, #d35400) !important;
+    olor: white !important;
+    font-weight: bold;
+}
+
+#sanButton:hover, #asseFraisSanButton:hover {
+    bakground: linear-gradient(145deg, #d35400, #e67e22) !important;
+    transform: translateY(-2px);
+}
+
+/* ==== التعديل 3: أزرار بألوان إحترافية مع أيقونات 3D ==== */
+/* زر AJOUTER باللون الأخضر */
+#addButton, #asseFraisAddButton { 
+    bakground: linear-gradient(145deg, #2e71, #27ae60) !important;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+} 
+#addButton:hover, #asseFraisAddButton:hover { 
+    bakground: linear-gradient(145deg, #27ae60, #219653) !important;
+    transform: translateY(-2px);
+}
+
+/* زر IMPORT باللون البنفسجي */
+#importButton { 
+    bakground: linear-gradient(145deg, #9b59b6, #8e44ad) !important;
+    box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+} 
+#importButton:hover { 
+    bakground: linear-gradient(145deg, #8e44ad, #7d398) !important;
+    transform: translateY(-2px);
+}
+
+/* زر TELEHARGER باللون الأزرق */
+#downloadXLSX, #asseFraisDownloadXLSX { 
+    bakground: linear-gradient(145deg, #3498db, #2980b9) !important;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+} 
+#downloadXLSX:hover, #asseFraisDownloadXLSX:hover { 
+    bakground: linear-gradient(145deg, #2980b9, #2471a3) !important;
+    transform: translateY(-2px);
+}
+
+/* زر PARTAGER باللون الأصفر */
+#shareButton, #asseFraisShareButton { 
+    bakground: linear-gradient(145deg, #f140f, #f3912) !important;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+} 
+#shareButton:hover, #asseFraisShareButton:hover { 
+    bakground: linear-gradient(145deg, #f3912, #e67e22) !important;
+    transform: translateY(-2px);
+}
+
+/* زر REHERHE باللون الأخضر المزرق */
+#searhButton {
+    bakground: linear-gradient(145deg, #1ab9, #16a085) !important;
+    box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+}
+#searhButton:hover {
+    bakground: linear-gradient(145deg, #16a085, #138a72) !important;
+    transform: translateY(-2px);
+}
+
+/* زر ASSE FRAIS باللون الأحمر */
+#asseFraisButton {
+    bakground: linear-gradient(145deg, #e743, #0392b) !important;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+#asseFraisButton:hover {
+    bakground: linear-gradient(145deg, #0392b, #a93226) !important;
+    transform: translateY(-2px);
+}
+
+/* ==== التعديل 2: تحسين إسم المنتج لسطرين ==== */
+.ard-name {
+    font-size: 16px !important;
+    font-weight: 700;
+    text-transform: upperase;
+    word-break: break-word;
+    margin-bottom: 4px;
+    olor: #000000;
+    letter-spaing: 0.5px;
+    text-align: enter;
+    line-height: 1.3;
+    min-height: 2.8em;
+    max-height: 3.6em;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    padding: 4px 8px;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-lamp: 2;
+    -webkit-box-orient: vertial;
+}
+
+/* ==== التعديل 5: تغيير لون NOMBRE DES PRODUITS ==== */
+#produtount, #asseFraisProdutount { 
+    margin: 10px 0 !important; /* تم زيادة المسافة */
+    width: auto !important;
+    max-width: none !important;
+    text-align: enter;
+    padding: 8px 16px !important;
+    bakground: #1a237e !important; /* خلفية زرقاء */
+    olor: #ffeb3b !important; /* لون النص أصفر */
+    border-radius: 6px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    text-transform: upperase;
+    font-weight: bold;
+    box-sizing: border-box;
+    border: none !important;
+    font-size: 16px;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    gap: 10px;
+    white-spae: nowrap;
+}
+
+/* ==== التعديل 4: زر العودة للأعلى ==== */
+.sroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    bakground: linear-gradient(145deg, #1a237e, #0d1459);
+    olor: white;
+    border: none;
+    font-size: 24px;
+    ursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sroll-to-top:hover {
+    bakground: linear-gradient(145deg, #0d1459, #1a237e);
+    transform: sale(1.1);
+}
+
+/* ==== التعديل 4: دائرة صفراء باللون الأحمر ==== */
+.month-ount {
+    bakground: #ffeb3b;
+    olor: #e743 !important;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: enter;
+    justify-ontent: enter;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ==== نافذة عرض المنتجات السابقة ==== */
+.produt-history-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.7);
+    z-index: 10002;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.produt-history-ontent {
+    bakground: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeInSale 0.3s ease;
+}
+
+.produt-history-title {
+    font-size: 20px;
+    font-weight: bold;
+    olor: #1a237e;
+    margin-bottom: 15px;
+    text-align: enter;
+    text-transform: upperase;
+}
+
+.produt-history-list {
+    margin: 15px 0;
+}
+
+.produt-history-item {
+    bakground: linear-gradient(135deg, #f8f9fa 0%, #e9eef 100%);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid #3498db;
+}
+
+.produt-history-details {
+    display: flex;
+    justify-ontent: spae-between;
+    align-items: enter;
+    margin-bottom: 5px;
+}
+
+.produt-history-date {
+    font-weight: bold;
+    olor: #e743;
+}
+
+.produt-history-quantity {
+    font-weight: bold;
+    olor: #27ae60;
+}
+
+.produt-history-days {
+    font-size: 12px;
+    olor: #7f88d;
+    text-align: enter;
+}
+
+/* ==== زر SUPPRIMER TOUT - تم إزالته من الصفحة الرئيسية ==== */
+/* تمت إزالة كود زر SUPPRIMER TOUT من الصفحة الرئيسية */
+
+/* باقي الSS */
+.inputs-ontainer { 
+    width:95%; 
+    max-width: 600px;
+    display:flex; 
+    flex-wrap:wrap; 
+    gap:8px; 
+    margin-bottom:10px; 
+    box-sizing: border-box;
+}
+.input-group {
+    display: flex;
+    flex-diretion: olumn;
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    width: 100%;
+}
+input, button, selet { 
+    padding:8px; 
+    font-size:14px; 
+    border-radius:6px; 
+    border:2px solid #1a237e;
+    font-family:'Playfair Display', serif;
+    box-sizing: border-box;
+    font-weight: bold;
+}
+input:fous, selet:fous { border-olor:#3498db; outline:none; }
+button { border:none; olor:#fff; ursor:pointer; }
+
+/* ==== التعديل 2: تحسين إسم المنتج لسطرين في الصفحة الأولى والثالثة ==== */
+#nameOutput, #asseFraisNameOutput {
+    width: 100%;
+    text-align: enter;
+    border: none !important;
+    bakground: transparent !important;
+    olor: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 0;
+    line-height: 1.3;
+    min-height: 2.6em;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-lamp: 2;
+    -webkit-box-orient: vertial;
+}
+
+.date-quantity-ontainer {
+    display: flex;
+    flex-diretion: row;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-ontent: enter;
+}
+
+#expiryInput, #quantityInput, #odeInput, 
+#asseFraisExpiryInput, #asseFraisQuantityInput, #asseFraisodeInput {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    flex: 0 0 auto !important;
+    text-align: enter;
+    font-weight: bold;
+    letter-spaing: 1px;
+    border: 2px solid #1a237e;
+}
+
+.ode-san-ontainer {
+    display: flex;
+    flex-diretion: row;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+/* ==== التعديل 1: تغيير حاوية الصورة لتصبح مثل نافذة التعديل ==== */
+.image-ontainer {
+    display: flex;
+    flex-diretion: row;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+    align-items: enter;
+    justify-ontent: enter;
+}
+
+.main-image-preview {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #1a237e;
+    border-radius: 8px;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    overflow: hidden;
+    bakground: linear-gradient(135deg, #f8f9fa 0%, #e9eef 100%);
+}
+
+.main-image-preview img {
+    width: 100%;
+    height: 100%;
+    objet-fit: over;
+}
+
+.image-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: enter;
+}
+
+/* ==== التعديل الجديد: أيقونات فقط بدون نص ==== */
+.amera-ion, .stok-ion {
+    bakground: linear-gradient(145deg, #3498db, #2980b9);
+    olor: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-weight: bold;
+    ursor: pointer;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    font-size: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.amera-ion:hover, .stok-ion:hover {
+    bakground: linear-gradient(145deg, #2980b9, #2471a3);
+    transform: sale(1.1);
+}
+
+/* ==== التعديل 3: إعادة تنظيم الأزرار ==== */
+.buttons-ontainer {
+    display: flex;
+    flex-diretion: olumn;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 15px;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.button-row button {
+    flex: 1;
+    padding: 10px 6px;
+    font-size: 13px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: upperase;
+    letter-spaing: 0.5px;
+    min-height: 40px;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    text-align: enter;
+    line-height: 1.2;
+    gap: 8px;
+}
+
+/* ==== التعديل 3: زرين REHERHE و ASSE FRAIS بحجم مناسب ==== */
+#searhButton, #asseFraisButton {
+    bakground: linear-gradient(145deg, #3498db, #2980b9);
+    flex: 1;
+    padding: 10px 6px;
+    font-size: 13px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: upperase;
+    letter-spaing: 0.5px;
+    min-height: 40px;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    text-align: enter;
+    line-height: 1.2;
+    gap: 8px;
+}
+
+#searhButton:hover, #asseFraisButton:hover {
+    bakground: linear-gradient(145deg, #2980b9, #2471a3);
+}
+
+.ards-ontainer { 
+    width:95%; 
+    max-width: 600px;
+    display:flex; 
+    flex-diretion:olumn; 
+    gap:10px; 
+    margin-bottom:20px; 
+    box-sizing: border-box;
+}
+
+.ard { 
+    bakground: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); 
+    padding:12px;
+    border-radius:12px; 
+    box-shadow:0 4px 15px rgba(0,0,0,0.1); 
+    display:flex; 
+    flex-diretion:row; 
+    gap:12px; 
+    align-items:flex-start; 
+    position:relative; 
+    opaity:0; 
+    transform:translateY(12px); 
+    animation: fadeSlide 0.35s ease forwards; 
+    box-sizing: border-box;
+    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* ==== التعديل: إضافة حد أيسر ==== */
+    border-left: 4px solid #3498db; /* اللون الافتراضي - سيتم تغييره ديناميكياً */
+}
+.ard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+@keyframes fadeSlide { to { opaity:1; transform:translateY(0); } }
+
+.ard-image-ontainer {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    border: 2px solid #1a237e;
+    border-radius: 10px;
+    bakground: linear-gradient(135deg, #f8f9fa 0%, #e9eef 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+    ursor: pointer;
+}
+
+.ard-image-ontainer img {
+    width: 100%;
+    height: 100%;
+    objet-fit: over;
+    border-radius: 8px;
+}
+
+.ard-image-ontainer .edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    olor: white;
+    font-size: 12px;
+    opaity: 0;
+    transition: opaity 0.3s ease;
+}
+
+.ard-image-ontainer:hover .edit-overlay {
+    opaity: 1;
+}
+
+.ard-ontent {
+    flex: 1;
+    display: flex;
+    flex-diretion: olumn;
+    gap: 8px;
+    min-width: 0;
+}
+
+.ard-header {
+    display: flex;
+    justify-ontent: spae-between;
+    align-items: flex-start;
+    margin-bottom: 2px;
+}
+
+.days-left {
+    padding: 6px 10px;
+    border-radius: 8px;
+    olor: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    white-spae: nowrap;
+    margin-right: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.ard-ode {
+    font-size: 14px;
+    font-weight: bold;
+    olor: #23e50;
+    margin-top: 4px;
+    padding: 4px 8px;
+    bakground: linear-gradient(135deg, #ef0f1 0%, #bd37 100%);
+    border-radius: 6px;
+    display: inline-blok;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    /* ==== التعديل 1: السماح بنسخ الكود فقط ==== */
+    -webkit-user-selet: text;
+    -moz-user-selet: text;
+    -ms-user-selet: text;
+    user-selet: text;
+    ursor: text;
+}
+
+.ard-details {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    olor: #23e50;
+    margin-top: 4px;
+    bakground: linear-gradient(135deg, #f8f9fa 0%, #e9eef 100%);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.ard-date, .ard-quantity {
+    ursor: pointer;
+    transition: bakground-olor 0.3s ease;
+    position: relative;
+}
+
+.ard-date:hover, .ard-quantity:hover {
+    bakground: rgba(0,0,0,0.1);
+}
+
+.ard-date {
+    font-weight: 600;
+    olor: #e743;
+    padding: 2px 6px;
+    bakground: rgba(231, 76, 60, 0.1);
+    border-radius: 4px;
+}
+
+.ard-quantity {
+    font-weight: 600;
+    olor: #27ae60;
+    padding: 2px 6px;
+    bakground: rgba(39, 174, 96, 0.1);
+    border-radius: 4px;
+}
+
+.ard-footer { 
+    position: absolute; 
+    top: 8px; 
+    right: 8px; 
+    z-index: 999; 
+    display: flex;
+    gap: 5px;
+}
+.ard-footer button { 
+    width:28px; 
+    height:28px; 
+    border-radius:50%; 
+    font-size:16px; 
+    padding:0; 
+    display:flex; 
+    justify-ontent:enter; 
+    align-items:enter; 
+    ursor:pointer; 
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+.ard-footer .delete-btn { 
+    bakground: linear-gradient(145deg, #e743, #0392b); 
+}
+.ard-footer .edit-btn { 
+    bakground: linear-gradient(145deg, #3498db, #2980b9); 
+}
+.ard-footer button:hover { 
+    transform: sale(1.1);
+}
+
+.ard-footer .delete-btn:hover { 
+    bakground: linear-gradient(145deg, #0392b, #a93226); 
+}
+.ard-footer .edit-btn:hover { 
+    bakground: linear-gradient(145deg, #2980b9, #2471a3); 
+}
+
+.storage-info {
+    bakground: linear-gradient(145deg, #3498db, #2980b9);
+    olor: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin: 5px 0 15px 0;
+    text-align: enter;
+    width: 95%;
+    max-width: 600px;
+    box-sizing: border-box;
+    order: -1;
+}
+
+/* ==== التعديل 4: زر حذف جميع المنتجات في القسم - عرض ثابت ==== */
+.setion-delete-btn {
+    bakground: linear-gradient(145deg, #e743, #0392b);
+    olor: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    ursor: pointer;
+    margin-left: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+    white-spae: nowrap;
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.setion-delete-btn:hover {
+    bakground: linear-gradient(145deg, #0392b, #a93226);
+    transform: sale(1.05);
+}
+
+/* ==== التعديل 4: تحسين عرض الأقسام مع زر SUPPRIMER في نفس السطر ==== */
+.month-setion {
+    margin: 8px 0 3px 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    olor: white;
+    text-align: enter;
+    text-transform: upperase;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    letter-spaing: 1px;
+    display: flex;
+    justify-ontent: spae-between;
+    align-items: enter;
+    flex-wrap: nowrap;
+}
+
+.expired-setion {
+    bakground: linear-gradient(145deg, #e743, #0392b);
+    border: none;
+}
+
+.future-setion {
+    bakground: linear-gradient(145deg, #1a237e, #0d1459);
+    border: none;
+    olor: white;
+}
+
+/* ==== التعديل 2: تغيير نافذة الكاميرا الرئيسية لتصبح مثل نافذة التعديل ==== */
+.main-amera-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.85);
+    z-index: 10001;
+    justify-ontent: enter;
+    align-items: enter;
+    flex-diretion: olumn;
+}
+
+.main-amera-video {
+    width: 90%;
+    max-width: 500px;
+    height: 70%;
+    objet-fit: over;
+    border-radius: 10px;
+}
+
+.main-amera-ontrols {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.main-amera-ontrols button {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    olor: white;
+    font-weight: bold;
+    ursor: pointer;
+    font-size: 16px;
+    min-width: 140px;
+}
+
+#mainaptureButton {
+    bakground: linear-gradient(145deg, #2e71, #27ae60);
+}
+
+#mainloseameraButton {
+    bakground: linear-gradient(145deg, #e743, #0392b);
+}
+
+/* ==== الماسح الضوئي ==== */
+.sanner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    flex-diretion: olumn;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.sanner-frame {
+    width: 90%;
+    max-width: 400px;
+    height: 300px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+}
+
+.sanner-frame::before {
+    ontent: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    bakground: linear-gradient(90deg, transparent, #3498db, transparent);
+    animation: sanLine 2s linear infinite;
+}
+
+@keyframes sanLine {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+.sanner-ontrols {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.sanner-ontrols button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    olor: white;
+    font-weight: bold;
+    ursor: pointer;
+}
+
+#loseSanner, #asseFraisloseSanner {
+    bakground: #e743;
+}
+
+#toggleTorh, #asseFraisToggleTorh {
+    bakground: #3498db;
+}
+
+.loading-spinner {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.suess-message {
+    display: none;
+    bakground: #2e71;
+    olor: white;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    text-align: enter;
+    animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opaity: 0; }
+    20%, 80% { opaity: 1; }
+}
+
+/* ==== صفحة البحث ==== */
+.searh-page {
+    display: none;
+    width: 95%;
+    max-width: 600px;
+    flex-diretion: olumn;
+    align-items: enter;
+}
+
+.searh-inputs {
+    display: flex;
+    flex-diretion: olumn;
+    gap: 15px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.searh-input-group {
+    display: flex;
+    flex-diretion: olumn;
+    gap: 8px;
+    width: 100%;
+}
+
+.searh-input-group label {
+    font-weight: bold;
+    olor: #1a237e;
+    text-transform: upperase;
+    font-size: 14px;
+}
+
+.searh-input-group selet {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* ==== التعديل: حاوية الكود والماسح في صفحة البحث ==== */
+.searh-ode-san-ontainer {
+    display: flex;
+    flex-diretion: row;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.searh-ode-san-ontainer input {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    flex: 0 0 auto !important;
+    text-align: enter;
+    font-weight: bold;
+    letter-spaing: 1px;
+    border: 2px solid #1a237e;
+}
+
+.searh-ode-san-ontainer button {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    margin-top: 0;
+    border: none !important;
+    bakground: linear-gradient(145deg, #e67e22, #d35400) !important;
+    olor: white !important;
+    font-weight: bold;
+}
+
+.searh-ode-san-ontainer button:hover {
+    bakground: linear-gradient(145deg, #d35400, #e67e22) !important;
+    transform: translateY(-2px);
+}
+
+.searh-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.searh-buttons button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: upperase;
+}
+
+#searhBakButton {
+    bakground: linear-gradient(145deg, #95a5a6, #7f88d);
+}
+
+#searhBakButton:hover {
+    bakground: linear-gradient(145deg, #7f88d, #67b7d);
+}
+
+#performSearhButton {
+    bakground: linear-gradient(145deg, #3498db, #2980b9);
+}
+
+#performSearhButton:hover {
+    bakground: linear-gradient(145deg, #2980b9, #2471a3);
+}
+
+.pdf-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.pdf-buttons button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: upperase;
+    display: flex;
+    align-items: enter;
+    justify-ontent: enter;
+    gap: 8px;
+}
+
+#downloadPDF {
+    bakground: linear-gradient(145deg, #2e7d32, #1b5e20);
+}
+
+#downloadPDF:hover {
+    bakground: linear-gradient(145deg, #388e3, #2e7d32);
+}
+
+#sharePDF {
+    bakground: linear-gradient(145deg, #8e44ad, #63483);
+}
+
+#sharePDF:hover {
+    bakground: linear-gradient(145deg, #7d398, #5e3370);
+}
+
+.searh-results-title {
+    bakground: linear-gradient(145deg, #795548, #5d4037);
+    olor: white;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: enter;
+    margin: 20px 0;
+    font-weight: bold;
+    text-transform: upperase;
+    width: 100%;
+}
+
+.page-ontainer {
+    width: 100%;
+    display: flex;
+    flex-diretion: olumn;
+    align-items: enter;
+}
+
+/* ==== صفحة ASSE FRAIS ==== */
+.asse-frais-page {
+    display: none;
+    width: 95%;
+    max-width: 600px;
+    flex-diretion: olumn;
+    align-items: enter;
+}
+
+/* ==== نافذة التعديل ==== */
+.edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.8);
+    z-index: 10000;
+    justify-ontent: enter;
+    align-items: enter;
+}
+
+.edit-ontent {
+    bakground: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.edit-input-group {
+    margin-bottom: 15px;
+}
+
+.edit-input-group label {
+    display: blok;
+    margin-bottom: 5px;
+    font-weight: bold;
+    olor: #1a237e;
+}
+
+.edit-input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #1a237e;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.edit-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    ursor: pointer;
+}
+
+#saveEditButton {
+    bakground: linear-gradient(145deg, #2e71, #27ae60);
+    olor: white;
+}
+
+#anelEditButton {
+    bakground: linear-gradient(145deg, #95a5a6, #7f88d);
+    olor: white;
+}
+
+/* ==== التعديل 1: إعادة تصميم قسم الصورة في نافذة التعديل ==== */
+.edit-image-ontainer {
+    display: flex;
+    flex-diretion: row;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: enter;
+    justify-ontent: enter;
+}
+
+/* ==== نافذة الكاميرا في التعديل ==== */
+.edit-amera-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    bakground: rgba(0,0,0,0.85);
+    z-index: 10001;
+    justify-ontent: enter;
+    align-items: enter;
+    flex-diretion: olumn;
+}
+
+.edit-amera-video {
+    width: 90%;
+    max-width: 500px;
+    height: 70%;
+    objet-fit: over;
+    border-radius: 10px;
+}
+
+.edit-amera-ontrols {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.edit-amera-ontrols button {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    olor: white;
+    font-weight: bold;
+    ursor: pointer;
+    font-size: 16px;
+    min-width: 140px;
+}
+
+#editaptureButton {
+    bakground: linear-gradient(145deg, #2e71, #27ae60);
+}
+
+#editloseameraButton {
+    bakground: linear-gradient(145deg, #e743, #0392b);
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 480px) {
+    .user-inputs-ontainer {
+        flex-diretion: olumn;
+    }
+    
+    .ard {
+        flex-diretion: row;
+        text-align: left;
+        padding: 10px;
+    }
+    
+    .ard-image-ontainer {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .ard-header {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .days-left {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+    
+    .ard-ode {
+        font-size: 13px;
+    }
+    
+    .ard-details {
+        flex-diretion: row;
+        gap: 10px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .date-quantity-ontainer {
+        flex-diretion: row;
+        gap: 6px;
+        justify-ontent: enter;
+    }
+    
+    .ode-san-ontainer {
+        flex-diretion: row;
+        gap: 6px;
+    }
+    
+    #odeInput, #sanButton, #asseFraisodeInput, #asseFraisSanButton {
+        width: 150px !important;
+        max-width: 150px !important;
+        min-width: 150px !important;
+        font-size: 13px;
+    }
+    
+    .searh-ode-san-ontainer input, .searh-ode-san-ontainer button {
+        width: 150px !important;
+        max-width: 150px !important;
+        min-width: 150px !important;
+        font-size: 13px;
+    }
+    
+    .main-amera-ontrols, .edit-amera-ontrols {
+        bottom: 20px;
+        gap: 10px;
+    }
+    
+    #mainaptureButton, #mainloseameraButton,
+    #editaptureButton, #editloseameraButton {
+        width: 120px !important;
+        min-width: 120px !important;
+        padding: 10px 15px !important;
+        font-size: 14px !important;
+    }
+    
+    .button-row {
+        flex-diretion: row;
+        gap: 6px;
+    }
+    
+    .button-row button {
+        min-height: 40px;
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+    
+    #expiryInput, #quantityInput, #asseFraisExpiryInput, #asseFraisQuantityInput {
+        width: 150px !important;
+        max-width: 150px !important;
+        min-width: 150px !important;
+        font-size: 13px;
+    }
+    
+    .month-setion {
+        flex-wrap: nowrap;
+        padding: 8px 10px;
+    }
+    
+    .setion-delete-btn {
+        width: 100px;
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+    
+    .month-ount {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+    }
+    
+    @media (max-width: 320px) {
+        .button-row button {
+            font-size: 11px;
+            padding: 8px 4px;
+        }
+        
+        .date-quantity-ontainer {
+            gap: 4px;
+        }
+        
+        #odeInput, #sanButton, #expiryInput, #quantityInput, 
+        #asseFraisodeInput, #asseFraisSanButton, #asseFraisExpiryInput, #asseFraisQuantityInput {
+            width: 140px !important;
+            max-width: 140px !important;
+            min-width: 140px !important;
+            font-size: 12px;
+        }
+        
+        .searh-ode-san-ontainer input, .searh-ode-san-ontainer button {
+            width: 140px !important;
+            max-width: 140px !important;
+            min-width: 140px !important;
+            font-size: 12px;
+        }
+        
+        .main-amera-ontrols, .edit-amera-ontrols {
+            flex-diretion: olumn;
+            align-items: enter;
+            gap: 10px;
+        }
+        
+        #mainaptureButton, #mainloseameraButton,
+        #editaptureButton, #editloseameraButton {
+            width: 160px !important;
+            min-width: 160px !important;
+        }
+    }
+}
+</style>
+
+<sript sr="https://dnjs.loudflare.om/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></sript>
+<sript sr="https://dnjs.loudflare.om/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></sript>
+<sript sr="https://unpkg.om/html5-qrode" type="text/javasript"></sript>
+<sript sr="https://dnjs.loudflare.om/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></sript>
+<sript sr="https://dnjs.loudflare.om/ajax/libs/html2anvas/1.4.1/html2anvas.min.js"></sript>
+
+</head>
+<body>
+
+<!-- الصفحة الرئيسية -->
+<div id="mainPage" lass="page-ontainer">
+    <div lass="storage-info" id="storageInfo">
+        💾 hargement des données...
+    </div>
+    
+    <h2>SUIVI DL PRO</h2>
+
+    <!-- ==== التعديل 1: إطارات المستخدم والرايون بحجم أصغر ==== -->
+    <div lass="user-inputs-ontainer">
+        <div lass="user-input-group">
+            <input type="text" id="userNameInput" plaeholder="NOM D'EMPLOYÉ">
+        </div>
+        <div lass="user-input-group">
+            <selet id="rayonSelet">
+                <option value="">RAYON</option>
+                <option value="LIQUIDE">LIQUIDE</option>
+                <option value="EPIERIE">EPIERIE</option>
+                <option value="BISUITERIE">BISUITERIE</option>
+                <option value="ENTRETIEN">ENTRETIEN</option>
+                <option value="BEAUTE-SANTE">BEAUTE-SANTE</option>
+                <option value="STAND TRAITEUR">STAND TRAITEUR</option>
+                <option value="HARUTERIE">HARUTERIE</option>
+                <option value="STAND">STAND</option>
+                <option value="REMERIE">REMERIE</option>
+                <option value="SURGELE">SURGELE</option>
+                <option value="BOUHERIE">BOUHERIE</option>
+                <option value="VOLAILLE">VOLAILLE</option>
+                <option value="BOULANGERIE">BOULANGERIE</option>
+                <option value="PATISSERIE">PATISSERIE</option>
+                <option value="POISSONNERIE">POISSONNERIE</option>
+                <option value="BOULANGERIE PATISSERIE NEGOE">BOULANGERIE PATISSERIE NEGOE</option>
+                <option value="FRUIT ET LEGUM">FRUIT ET LEGUM</option>
+                <option value="PRODUITS VRAS">PRODUITS VRAS</option>
+            </selet>
+        </div>
+    </div>
+
+    <div lass="inputs-ontainer">
+        <div lass="input-group">
+            <div lass="ode-san-ontainer">
+                <input id="odeInput" type="number" plaeholder="ode produit" maxlength="13">
+                <button id="sanButton">SANNER</button>
+            </div>
+            <div id="reader"></div>
+        </div>
+
+        <div lass="input-group">
+            <!-- ==== التعديل: حقل إسم المنتج كم textarea ==== -->
+            <textarea id="nameOutput" lass="produt-name-textarea" plaeholder="Nom produit" readonly rows="2"></textarea>
+        </div>
+
+        <div lass="input-group">
+            <div lass="date-quantity-ontainer">
+                <input id="expiryInput" type="text" plaeholder="DATE" maxlength="10" inputmode="numeri">
+                <!-- ==== التعديل 1: تغيير كلمة QUANTITÉ (Optionnel) إلى QUANTITÉ ==== -->
+                <input id="quantityInput" type="number" plaeholder="QUANTITÉ" max="9999">
+            </div>
+        </div>
+
+        <!-- ==== التعديل 1: تغيير حاوية الصورة ==== -->
+        <div lass="input-group">
+            <div lass="image-ontainer">
+                <button lass="stok-ion" id="stokButton" title="Stok">📁</button>
+                <div lass="main-image-preview" id="mainImagePreview">
+                    <span style="olor: #7f88d; font-size: 12px;">Auune image</span>
+                </div>
+                <button lass="amera-ion" id="ameraButton" title="apture">📷</button>
+            </div>
+            <input type="file" id="imageInput" aept="image/*" style="display:none;">
+        </div>
+
+        <!-- ==== التعديل 3: إعادة تنظيم الأزرار ==== -->
+        <div lass="buttons-ontainer">
+            <div lass="button-row">
+                <button id="addButton">➕ AJOUTER</button>
+                <button id="importButton">📥 IMPORTER</button>
+            </div>
+            <div lass="button-row">
+                <button id="downloadXLSX">📊 TELEHARGER</button>
+                <button id="shareButton">🔗 PARTAGER</button>
+            </div>
+            <!-- ==== التعديل 3: زرين REHERHE و ASSE FRAIS في نفس الحاوية ==== -->
+            <div lass="button-row">
+                <button id="searhButton">🔍 REHERHE</button>
+                <button id="asseFraisButton">📦 ASSE FRAIS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==== التعديل 4: توسيع المسافة بين NOMBRE DES PRODUITS والأزرار ==== -->
+    <div style="height: 15px;"></div>
+
+    <!-- ==== التعديل 5: تغيير لون NOMBRE DES PRODUITS ==== -->
+    <p id="produtount">NOMBRE DES PRODUITS: <span id="produtountNumber" lass="month-ount">0</span></p>
+    
+    <!-- ==== تمت إزالة زر SUPPRIMER TOUT من الصفحة الرئيسية ==== -->
+    
+    <div lass="ards-ontainer" id="ardsontainer"></div>
+</div>
+
+<!-- صفحة البحث -->
+<div id="searhPage" lass="searh-page">
+    <h2>REHERHE</h2>
+    <div lass="searh-inputs">
+        <!-- ==== التعديل: إضافة حاوية الكود والماسح في صفحة البحث ==== -->
+        <div lass="searh-input-group">
+            <label for="odeSearh">Reherhe par ode Produit</label>
+            <div lass="searh-ode-san-ontainer">
+                <!-- ==== التعديل 2: تغيير النص من "Entrez le ode produit" إلى "ode produit" ==== -->
+                <input type="number" id="odeSearh" plaeholder="ode produit" maxlength="13">
+                <button id="searhSanButton">SANNER</button>
+            </div>
+        </div>
+        <div lass="searh-input-group">
+            <label for="dateSearh">Reherhe par Date (DD/MM/YYYY)</label>
+            <selet id="dateSearh">
+                <option value="">Séletionnez une date</option>
+            </selet>
+        </div>
+        <div lass="searh-input-group">
+            <label for="monthSearh">Reherhe par Mois (MM/YYYY)</label>
+            <selet id="monthSearh">
+                <option value="">Séletionnez un mois</option>
+            </selet>
+        </div>
+    </div>
+    <div lass="searh-buttons">
+        <button id="searhBakButton">⬅️ RETOUR</button>
+        <button id="performSearhButton">🔍 REHERHER</button>
+    </div>
+    <div lass="searh-results-title" id="searhResultsTitle" style="display: none;">
+        RÉSULTATS DE REHERHE
+    </div>
+    <div lass="ards-ontainer" id="searhResultsontainer"></div>
+    <div lass="pdf-buttons" id="pdfButtons" style="display: none;">
+        <button id="downloadPDF">📥 TELEHARGER</button>
+        <button id="sharePDF">🔗 PARTAGER</button>
+    </div>
+</div>
+
+<!-- صفحة ASSE FRAIS -->
+<div id="asseFraisPage" lass="asse-frais-page">
+    <h2>ASSE FRAIS</h2>
+
+    <!-- التعديل: إزالة إطارات المستخدم والرايون من صفحة ASSE FRAIS -->
+    <div lass="inputs-ontainer">
+        <div lass="input-group">
+            <div lass="ode-san-ontainer">
+                <input id="asseFraisodeInput" type="number" plaeholder="ode produit" maxlength="13">
+                <button id="asseFraisSanButton">SANNER</button>
+            </div>
+            <div id="asseFraisReader"></div>
+        </div>
+
+        <!-- ==== التعديل: حقل إسم المنتج كم textarea في صفحة ASSE FRAIS ==== -->
+        <div lass="input-group">
+            <textarea id="asseFraisNameOutput" lass="produt-name-textarea" plaeholder="Nom produit" readonly rows="2"></textarea>
+        </div>
+
+        <div lass="input-group">
+            <div lass="date-quantity-ontainer">
+                <input id="asseFraisExpiryInput" type="text" plaeholder="DATE" maxlength="10" inputmode="numeri">
+                <!-- ==== التعديل 3: إجبار إدخال الكمية في صفحة ASSE FRAIS ==== -->
+                <input id="asseFraisQuantityInput" type="number" plaeholder="QUANTITÉ" max="9999" required>
+            </div>
+        </div>
+
+        <div lass="buttons-ontainer">
+            <div lass="button-row">
+                <button id="asseFraisAddButton">➕ AJOUTER</button>
+            </div>
+            <div lass="button-row">
+                <button id="asseFraisDownloadXLSX">📊 TELEHARGER</button>
+                <button id="asseFraisShareButton">🔗 PARTAGER</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="asseFraisBakButton" style="width:95%; max-width:600px; margin:15px 0; bakground:linear-gradient(145deg, #95a5a6, #7f88d);">⬅️ RETOUR</button>
+
+    <!-- ==== التعديل 5: تغيير لون NOMBRE DES PRODUITS في صفحة ASSE FRAIS ==== -->
+    <p id="asseFraisProdutount">NOMBRE DES PRODUITS: <span id="asseFraisProdutountNumber" lass="month-ount">0</span></p>
+    
+    <!-- ==== زر SUPPRIMER TOUT في صفحة ASSE FRAIS ==== -->
+    <div lass="delete-all-ontainer">
+        <button id="asseFraisDeleteAllButton">SUPPRIMER TOUT</button>
+    </div>
+    
+    <div lass="ards-ontainer" id="asseFraisardsontainer"></div>
+</div>
+
+<!-- ==== التعديل 2: نافذة الكاميرا الرئيسية الجديدة ==== -->
+<div id="mainameraModal" lass="main-amera-modal">
+    <video id="mainameraVideo" lass="main-amera-video" autoplay></video>
+    <div lass="main-amera-ontrols">
+        <button id="mainaptureButton">📸 APTURER</button>
+        <button id="mainloseameraButton">❌ FERMER</button>
+    </div>
+</div>
+
+<div id="sannerOverlay" lass="sanner-overlay" style="display: none;">
+    <div lass="sanner-frame" id="sannerFrame"></div>
+    <div lass="sanner-ontrols">
+        <button id="toggleTorh">💡 FLASH</button>
+        <button id="loseSanner">❌ FERMER</button>
+    </div>
+    <div lass="loading-spinner" id="sannerLoading"></div>
+</div>
+
+<!-- ماسح ضوئي إضافي لصفحة ASSE FRAIS -->
+<div id="asseFraisSannerOverlay" lass="sanner-overlay" style="display: none;">
+    <div lass="sanner-frame" id="asseFraisSannerFrame"></div>
+    <div lass="sanner-ontrols">
+        <button id="asseFraisToggleTorh">💡 FLASH</button>
+        <button id="asseFraisloseSanner">❌ FERMER</button>
+    </div>
+    <div lass="loading-spinner" id="asseFraisSannerLoading"></div>
+</div>
+
+<!-- ماسح ضوئي إضافي لصفحة البحث -->
+<div id="searhSannerOverlay" lass="sanner-overlay" style="display: none;">
+    <div lass="sanner-frame" id="searhSannerFrame"></div>
+    <div lass="sanner-ontrols">
+        <button id="searhToggleTorh">💡 FLASH</button>
+        <button id="searhloseSanner">❌ FERMER</button>
+    </div>
+    <div lass="loading-spinner" id="searhSannerLoading"></div>
+</div>
+
+<!-- ==== التعديل 1: نافذة التعديل المعدلة ==== -->
+<div id="editModal" lass="edit-modal">
+    <div lass="edit-ontent">
+        <h3>Modifier le produit</h3>
+        <div lass="edit-input-group">
+            <label for="editExpiry">DATE</label>
+            <input type="text" id="editExpiry" plaeholder="DATE" maxlength="10" inputmode="numeri" oninput="autoAdvaneDate(this)">
+        </div>
+        <div lass="edit-input-group">
+            <label for="editQuantity">QUANTITÉ</label>
+            <input type="number" id="editQuantity" plaeholder="QUANTITÉ" max="9999" inputmode="numeri">
+        </div>
+        
+        <!-- ==== التعديل 1: إعادة تصميم قسم الصورة مثل الصفحة الرئيسية تمامًا ==== -->
+        <div lass="edit-input-group">
+            <div lass="image-ontainer">
+                <button lass="stok-ion" id="editStokButton" title="Stok">📁</button>
+                <div lass="main-image-preview" id="editImagePreview">
+                    <span style="olor: #7f88d; font-size: 12px;">Auune image</span>
+                </div>
+                <button lass="amera-ion" id="editameraButton" title="apture">📷</button>
+            </div>
+            <input type="file" id="editImageFile" aept="image/*" style="display:none;">
+        </div>
+        
+        <div lass="edit-buttons">
+            <button id="saveEditButton">💾 SAUVEGARDER</button>
+            <button id="anelEditButton">❌ ANNULER</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==== نافذة الكاميرا في التعديل ==== -->
+<div id="editameraModal" lass="edit-amera-modal">
+    <video id="editameraVideo" lass="edit-amera-video" autoplay></video>
+    <div lass="edit-amera-ontrols">
+        <button id="editaptureButton">📸 APTURER</button>
+        <button id="editloseameraButton">❌ FERMER</button>
+    </div>
+</div>
+
+<!-- ==== نافذة الحوار المخصصة ==== -->
+<div id="ustomonfirmModal" lass="ustom-onfirm-modal">
+    <div lass="onfirm-dialog">
+        <h3 lass="onfirm-title" id="onfirmTitle">onfirmation</h3>
+        <p lass="onfirm-message" id="onfirmMessage">Message</p>
+        <div lass="onfirm-buttons">
+            <button id="onfirmanelBtn" lass="onfirm-btn onfirm-anel">ANNULER</button>
+            <button id="onfirmOkBtn" lass="onfirm-btn onfirm-ok">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==== نافذة اختيار التحميل والمشاركة ==== -->
+<div id="downloadShareModal" lass="download-share-modal">
+    <div lass="download-share-ontent">
+        <h3 lass="download-share-title" id="downloadShareTitle">Séletion</h3>
+        <div lass="download-share-options">
+            <div lass="download-share-option" data-option="all">Tous les mois</div>
+            <div lass="download-share-option" data-option="month">hoisir un mois</div>
+            <div lass="download-share-option" data-option="today">hoisir un jour</div>
+        </div>
+        <div lass="month-seletion" id="monthSeletion">
+            <selet id="monthSelet">
+                <option value="">Séletionnez un mois</option>
+            </selet>
+        </div>
+        <div lass="day-seletion" id="daySeletion">
+            <selet id="daySelet">
+                <option value="">Séletionnez un jour</option>
+            </selet>
+        </div>
+        <div lass="onfirm-buttons">
+            <button id="downloadShareanelBtn" lass="onfirm-btn onfirm-anel">ANNULER</button>
+            <button id="downloadShareOkBtn" lass="onfirm-btn onfirm-ok">ONFIRMER</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==== نافذة اختيار التحميل والمشاركة لصفحة البحث ==== -->
+<div id="downloadShareModalSearh" lass="download-share-modal-searh">
+    <div lass="download-share-ontent-searh">
+        <h3 lass="download-share-title-searh" id="downloadShareTitleSearh">Séletion</h3>
+        <div lass="download-share-options-searh">
+            <div lass="download-share-option-searh" data-option="pdf">PDF</div>
+            <div lass="download-share-option-searh" data-option="exel">EXEL</div>
+        </div>
+        <div lass="onfirm-buttons">
+            <button id="downloadShareanelBtnSearh" lass="onfirm-btn onfirm-anel">ANNULER</button>
+            <button id="downloadShareOkBtnSearh" lass="onfirm-btn onfirm-ok">ONFIRMER</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==== نافذة عرض المنتجات السابقة ==== -->
+<div id="produtHistoryModal" lass="produt-history-modal">
+    <div lass="produt-history-ontent">
+        <h3 lass="produt-history-title" id="produtHistoryTitle">Historique du Produit</h3>
+        <div lass="produt-history-list" id="produtHistoryList">
+            <!-- سيتم تعبئة هذا القسم بالبيانات -->
+        </div>
+        <div lass="onfirm-buttons">
+            <button id="loseHistoryBtn" lass="onfirm-btn onfirm-anel">FERMER</button>
+        </div>
+    </div>
+</div>
+
+<!-- زر العودة للأعلى - الصفحة الرئيسية -->
+<button lass="sroll-to-top" id="srollToTopMain">↑</button>
+
+<!-- زر العودة للأعلى - صفحة البحث -->
+<button lass="sroll-to-top" id="srollToTopSearh">↑</button>
+
+<!-- زر العودة للأعلى - صفحة ASSE FRAIS -->
+<button lass="sroll-to-top" id="srollToTopasseFrais">↑</button>
+
+<!-- رسالة نجاح -->
+<div lass="suess-message" id="suessMessage"></div>
+
+<!-- ==== نافذة الإشعارات ==== -->
+<div id="notifiationsModal" lass="ustom-onfirm-modal">
+    <div lass="onfirm-dialog">
+        <h3 lass="onfirm-title" id="notifiationsTitle">⚠️ AVERTISSEMENT DL</h3>
+        <div lass="onfirm-message" id="notifiationsMessage" style="max-height: 300px; overflow-y: auto;">
+            <!-- سيتم ملء هذا القسم بالمنتجات القريبة من الانتهاء -->
+        </div>
+        <div lass="onfirm-buttons">
+            <button id="loseNotifiationsBtn" lass="onfirm-btn onfirm-anel">FERMER</button>
+            <button id="viewAllNotifiationsBtn" lass="onfirm-btn onfirm-ok">VOIR TOUS</button>
+        </div>
+    </div>
+</div>
+
+<sript>
+// ==== DATA ====
+let database = []; 
+let produts = [];
+let asseFraisProduts = [];
+let seletedImageFile = null;
+let flashEnabled = false;
+let urrentStream = null;
+let html5Qrode;
+let asseFraisHtml5Qrode;
+let searhHtml5Qrode;
+let db = null;
+let searhResults = [];
+let urrentEditingProdut = null;
+let produtImages = {};
+let urrentDownloadShareAtion = null;
+let notifiationhekInterval = null;
+let lastNotifiationhek = 0;
+let notifiationsEnabled = true;
+let editameraStream = null; // كاميرا نافذة التعديل
+let mainameraStream = null; // ==== التعديل 2: كاميرا الصفحة الرئيسية ====
+
+// ==== التصحيح: تعريف الدوال في النطاق العالمي ====
+window.autoAdvaneDate = funtion(input) {
+    let val = input.value.replae(/[^0-9]/g, '');
+    
+    if (val.length === 2) {
+        input.value = val + '/';
+    } else if (val.length === 4) {
+        input.value = val.substring(0, 2) + '/' + val.substring(2) + '/';
+    } else if (val.length > 8) {
+        input.value = val.substring(0, 2) + '/' + val.substring(2, 4) + '/' + val.substring(4, 8);
+    } else if (val.length > 10) {
+        input.value = input.value.substring(0, 10);
+    }
+};
+
+// ==== دوال النوافذ الإحترافية ====
+funtion showustomAlert(title, message, allbak = null) {
+    onst modal = doument.getElementById('ustomonfirmModal');
+    onst titleElement = doument.getElementById('onfirmTitle');
+    onst messageElement = doument.getElementById('onfirmMessage');
+    onst anelBtn = doument.getElementById('onfirmanelBtn');
+    onst okBtn = doument.getElementById('onfirmOkBtn');
+
+    titleElement.textontent = title;
+    messageElement.textontent = message;
+
+    anelBtn.style.display = 'none';
+    okBtn.textontent = 'OK';
+    okBtn.lassName = 'onfirm-btn alert-ok';
+
+    modal.style.display = 'flex';
+
+    onst handleOk = funtion() {
+        modal.style.display = 'none';
+        if (allbak) allbak();
+        okBtn.removeEventListener('lik', handleOk);
+    };
+
+    okBtn.onlik = handleOk;
+
+    onst handleOutsidelik = funtion(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            modal.removeEventListener('lik', handleOutsidelik);
+        }
+    };
+
+    modal.addEventListener('lik', handleOutsidelik);
+}
+
+funtion showustomonfirm(ount, allbak, ustomTitle = "onfirmation de suppression", ustomMessage = null) {
+    onst modal = doument.getElementById('ustomonfirmModal');
+    onst titleElement = doument.getElementById('onfirmTitle');
+    onst messageElement = doument.getElementById('onfirmMessage');
+    onst anelBtn = doument.getElementById('onfirmanelBtn');
+    onst okBtn = doument.getElementById('onfirmOkBtn');
+
+    if (ustomMessage) {
+        messageElement.textontent = ustomMessage;
+    } else {
+        messageElement.innerHTML = `Voulez-vous vraiment supprimer <span id="produtountToDelete">${ount}</span> produits ?`;
+    }
+    
+    titleElement.textontent = ustomTitle;
+    
+    anelBtn.style.display = 'blok';
+    okBtn.textontent = 'SUPPRIMER';
+    okBtn.lassName = 'onfirm-btn onfirm-ok';
+    
+    modal.style.display = 'flex';
+
+    onst handleanel = funtion() {
+        modal.style.display = 'none';
+        anelBtn.removeEventListener('lik', handleanel);
+        okBtn.removeEventListener('lik', handleOk);
+    };
+
+    onst handleOk = funtion() {
+        modal.style.display = 'none';
+        if (allbak) allbak();
+        anelBtn.removeEventListener('lik', handleanel);
+        okBtn.removeEventListener('lik', handleOk);
+    };
+
+    anelBtn.onlik = handleanel;
+    okBtn.onlik = handleOk;
+
+    onst handleOutsidelik = funtion(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            modal.removeEventListener('lik', handleOutsidelik);
+            anelBtn.removeEventListener('lik', handleanel);
+            okBtn.removeEventListener('lik', handleOk);
+        }
+    };
+
+    modal.addEventListener('lik', handleOutsidelik);
+}
+
+// ==== نظام الإشعارات المحسن ====
+funtion hekExpiringProduts() {
+    if (!notifiationsEnabled) return;
+    
+    onst now = Date.now();
+    // التحقق مرة واحدة كل 30 دقيقة فقط
+    if (now - lastNotifiationhek < 1800000) return;
+    
+    lastNotifiationhek = now;
+    
+    // الحصول على المنتجات التي ستنتهي صلاحيتها خلال الأيام القادمة
+    onst today = new Date();
+    onst warningDays = 15; // إشعارات من يوم واحد إلى 15 يوم
+    
+    let expiringProduts = [];
+    
+    produts.forEah(produt => {
+        onst remaining = daysLeft(produt.expiry);
+        
+        // التحقق إذا كان المنتج سينتهي خلال 1 إلى 15 يوم
+        if (remaining >= 0 && remaining <= warningDays) {
+            expiringProduts.push({
+                produt: produt,
+                daysLeft: remaining
+            });
+        }
+    });
+    
+    // إذا كان هناك منتجات قريبة من الانتهاء، عرض الإشعار
+    if (expiringProduts.length > 0) {
+        showExpiringProdutsNotifiation(expiringProduts);
+    }
+}
+
+funtion showExpiringProdutsNotifiation(expiringProduts) {
+    onst modal = doument.getElementById('notifiationsModal');
+    onst title = doument.getElementById('notifiationsTitle');
+    onst message = doument.getElementById('notifiationsMessage');
+    
+    // فرز المنتجات حسب الأيام المتبقية (الأقرب أولاً)
+    expiringProduts.sort((a, b) => a.daysLeft - b.daysLeft);
+    
+    let messageHTML = '';
+    
+    expiringProduts.forEah(item => {
+        onst produt = item.produt;
+        onst days = item.daysLeft;
+        
+        let urgenyolor = '#e743'; // أحمر
+        let urgenyText = 'URGENT';
+        
+        if (days === 0) {
+            urgenyolor = '#ff0000'; // أحمر داكن
+            urgenyText = 'EXPIRE AUJOURD\'HUI';
+        } else if (days <= 1) {
+            urgenyolor = '#ff4444'; // أحمر
+            urgenyText = 'EXPIRE DEMAIN';
+        } else if (days <= 3) {
+            urgenyolor = '#ff8800'; // برتقالي داكن
+            urgenyText = 'TRÈS PROHAIN';
+        } else if (days <= 7) {
+            urgenyolor = '#ffaa00'; // برتقالي
+            urgenyText = 'PROHAIN';
+        } else if (days <= 15) {
+            urgenyolor = '#ff00'; // أصفر داكن
+            urgenyText = 'ATTENTION';
+        }
+        
+        // إضافة صورة المنتج فقط إذا كانت موجودة
+        let produtImage = '';
+        if (produt.img) {
+            produtImage = `<div style="width: 50px; height: 50px; margin-right: 10px; flex-shrink: 0;">
+                <img sr="${produt.img}" alt="${produt.name}" style="width: 100%; height: 100%; objet-fit: over; border-radius: 5px; border: 1px solid #ddd;">
+            </div>`;
+        } else {
+            // لا تضف أيقونة صندوق رمادية، أتركها فارغة
+            produtImage = `<div style="width: 0; margin-right: 0;"></div>`;
+        }
+        
+        messageHTML += `
+            <div style="margin-bottom: 15px; padding: 10px; border-left: 4px solid ${urgenyolor}; bakground: #f8f9fa; border-radius: 5px; display: flex; align-items: enter;">
+                ${produtImage}
+                <div style="flex: 1; ${!produt.img ? 'margin-left: 0;' : ''}">
+                    <div style="display: flex; justify-ontent: spae-between; margin-bottom: 5px;">
+                        <strong style="olor: #1a237e;">${produt.ode}</strong>
+                        <span style="bakground: ${urgenyolor}; olor: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold;">
+                            ${urgenyText}
+                        </span>
+                    </div>
+                    <div style="margin-bottom: 5px; font-size: 14px;">
+                        <strong>${produt.name}</strong>
+                    </div>
+                    <div style="display: flex; justify-ontent: spae-between; font-size: 13px;">
+                        <span style="olor: #e743; font-weight: bold;">📅 ${produt.expiry}</span>
+                        <span style="olor: #27ae60; font-weight: bold;">📦 ${produt.quantity}</span>
+                    </div>
+                    <div style="text-align: enter; margin-top: 5px; font-weight: bold; olor: ${urgenyolor}; font-size: 12px;">
+                        ⏳ ${days === 0 ? 'EXPIRE AUJOURD\'HUI !' : `${days} JOUR${days > 1 ? 'S' : ''} RESTANT${days > 1 ? 'S' : ''}`}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    messageHTML += `<div style="text-align: enter; margin-top: 10px; olor: #7f88d; font-size: 12px; padding-top: 10px; border-top: 1px solid #eee;">
+        Total: ${expiringProduts.length} produit${expiringProduts.length > 1 ? 's' : ''} à surveiller
+    </div>`;
+    
+    title.textontent = `⚠️ ${expiringProduts.length} PRODUIT${expiringProduts.length > 1 ? 'S' : ''} À SURVEILLER`;
+    message.innerHTML = messageHTML;
+    
+    modal.style.display = 'flex';
+}
+
+// إغلاق نافذة الإشعارات
+doument.getElementById('loseNotifiationsBtn').addEventListener('lik', funtion() {
+    doument.getElementById('notifiationsModal').style.display = 'none';
+});
+
+// عرض جميع المنتجات القريبة من الانتهاء
+doument.getElementById('viewAllNotifiationsBtn').addEventListener('lik', funtion() {
+    doument.getElementById('notifiationsModal').style.display = 'none';
+    
+    // الانتقال إلى صفحة البحث وعرض المنتجات القريبة من الانتهاء
+    onst mainPage = doument.getElementById('mainPage');
+    onst searhPage = doument.getElementById('searhPage');
+    
+    mainPage.style.display = 'none';
+    searhPage.style.display = 'flex';
+    
+    // البحث عن المنتجات التي ستنتهي خلال 15 يوم
+    onst today = new Date();
+    onst warningDays = 15;
+    
+    searhResults = produts.filter(produt => {
+        onst remaining = daysLeft(produt.expiry);
+        return remaining >= 0 && remaining <= warningDays;
+    });
+    
+    // فرز النتائج من الأقرب إلى الأبعد
+    searhResults.sort((a, b) => {
+        onst remainingA = daysLeft(a.expiry);
+        onst remainingB = daysLeft(b.expiry);
+        return remainingA - remainingB;
+    });
+    
+    doument.getElementById('searhResultsTitle').textontent = `PRODUITS À SURVEILLER (${searhResults.length})`;
+    doument.getElementById('searhResultsTitle').style.display = 'blok';
+    
+    displaySearhResults();
+});
+
+// ==== تهيئة نظام الإشعارات المحسن ====
+funtion initNotifiationSystem() {
+    // التحقق من الإشعارات عند فتح التطبيق
+    setTimeout(() => {
+        hekExpiringProduts();
+    }, 3000); // تأخير 3 ثواني لتحميل جميع البيانات
+    
+    // ضبط فحص دوري كل 30 دقيقة
+    notifiationhekInterval = setInterval(() => {
+        hekExpiringProduts();
+    }, 1800000); // كل 30 دقيقة
+    
+    // التحقق من الإشعارات عند إضافة منتج جديد
+    onst originalAddButtonlik = doument.getElementById('addButton').onlik;
+    doument.getElementById('addButton').onlik = asyn funtion() {
+        await originalAddButtonlik?.();
+        // بعد إضافة المنتج، التحقق من الإشعارات
+        setTimeout(hekExpiringProduts, 1000);
+    };
+    
+    // التحقق من الإشعارات عند تعديل منتج
+    onst originalSaveEditButtonlik = doument.getElementById('saveEditButton').onlik;
+    doument.getElementById('saveEditButton').onlik = asyn funtion() {
+        await originalSaveEditButtonlik?.();
+        // بعد تعديل المنتج، التحقق من الإشعارات
+        setTimeout(hekExpiringProduts, 1000);
+    };
+    
+    // التحقق من الإشعارات عند حذف منتج
+    window.deleteProdut = asyn funtion(id) {
+        try {
+            onst produtExists = produts.find(p => p.id === id);
+            if (!produtExists) {
+                showustomAlert("ERREUR", "Le produit n'existe pas ou a déjà été supprimé.");
+                return;
+            }
+
+            showustomonfirm(1, asyn funtion() {
+                try {
+                    await deleteProdutById(id);
+                    produts = produts.filter(p => p.id !== id);
+                    renderards();
+                    updateStorageInfo();
+                    showSuessMessage("Produit supprimé ave suès!");
+                    
+                    // التحقق من الإشعارات بعد الحذف
+                    setTimeout(hekExpiringProduts, 1000);
+                    
+                    if (doument.getElementById('searhPage').style.display !== 'none') {
+                        onst dateSearh = doument.getElementById('dateSearh').value;
+                        onst monthSearh = doument.getElementById('monthSearh').value;
+                        onst odeSearh = doument.getElementById('odeSearh').value;
+                        if (dateSearh || monthSearh || odeSearh) {
+                            doument.getElementById('performSearhButton').lik();
+                        }
+                    }
+                } ath (error) {
+                    onsole.error('Error deleting produt:', error);
+                    showustomAlert("ERREUR", "Erreur lors de la suppression du produit: " + error.message);
+                }
+            });
+        } ath (error) {
+            onsole.error('Error in deleteProdut:', error);
+            showustomAlert("ERREUR", "Erreur lors de la suppression du produit: " + error.message);
+        }
+    };
+}
+
+// ==== التصحيح: دالة محسنة للتحقق من التكرار في IndexedDB ====
+asyn funtion hekDupliateInIndexedDB(ode, expiry) {
+    try {
+        if (!db) db = await openDatabase();
+        
+        return new Promise((resolve, rejet) => {
+            onst transation = db.transation([STORE_NAME], 'readonly');
+            onst store = transation.objetStore(STORE_NAME);
+            
+            // استخدام الفهرس للبحث بشكل أكثر كفاءة بدلاً من getAll
+            onst odeIndex = store.index('ode');
+            onst request = odeIndex.getAll(ode);
+            
+            request.onsuess = () => {
+                onst produtsWithSameode = request.result;
+                onst dupliate = produtsWithSameode.find(p => p.expiry === expiry);
+                resolve(!!dupliate);
+            };
+            request.onerror = () => {
+                onsole.error('Error heking dupliate:', request.error);
+                resolve(false);
+            };
+        });
+    } ath (error) {
+        onsole.error('Error in hekDupliateInIndexedDB:', error);
+        return false;
+    }
+}
+
+// ==== إزالة نافذة الاختيار من XLSX فقط ====
+// نعطل نافذة الاختيار ونستخدم الدوال مباشرة
+
+// معالج تحميل XLSX مباشرة
+funtion downloadXLSXDiret() {
+    if (produts.length === 0) {
+        showustomAlert("TELEHARGEMENT", "AUUN PRODUIT À TELEHARGER!");
+        return;
+    }
+
+    // استخدام option = 'all' مباشرة
+    downloadXLSXHandler('all');
+}
+
+// معالج مشاركة XLSX مباشرة
+asyn funtion shareXLSXDiret() {
+    if (produts.length === 0) {
+        showustomAlert("PARTAGE", "AUUN PRODUIT À PARTAGER!");
+        return;
+    }
+
+    // استخدام option = 'all' مباشرة
+    await shareXLSXHandler('all');
+}
+
+// معالج تحميل XLSX لـ ASSE FRAIS مباشرة
+funtion downloadasseFraisXLSXDiret() {
+    if (asseFraisProduts.length === 0) {
+        showustomAlert("TELEHARGEMENT", "AUUN PRODUIT À TELEHARGER!");
+        return;
+    }
+
+    // استخدام option = 'all' مباشرة
+    downloadasseFraisXLSXHandler('all');
+}
+
+// معالج مشاركة XLSX لـ ASSE FRAIS مباشرة
+asyn funtion shareasseFraisXLSXDiret() {
+    if (asseFraisProduts.length === 0) {
+        showustomAlert("PARTAGE", "AUUN PRODUIT À PARTAGER!");
+        return;
+    }
+
+    // استخدام option = 'all' مباشرة
+    await shareasseFraisXLSXHandler('all');
+}
+
+// نعطل استدعاء نافذة الاختيار ونستبدلها بالاستدعاء المباشر
+doument.getElementById('downloadXLSX').addEventListener('lik', downloadXLSXDiret);
+doument.getElementById('shareButton').addEventListener('lik', shareXLSXDiret);
+doument.getElementById('asseFraisDownloadXLSX').addEventListener('lik', downloadasseFraisXLSXDiret);
+doument.getElementById('asseFraisShareButton').addEventListener('lik', shareasseFraisXLSXDiret);
+
+// ==== نافذة اختيار التحميل والمشاركة ====
+funtion showDownloadShareModal(ation) {
+    urrentDownloadShareAtion = ation;
+    onst modal = doument.getElementById('downloadShareModal');
+    onst title = doument.getElementById('downloadShareTitle');
+    onst options = doument.querySeletorAll('.download-share-option');
+    onst monthSeletion = doument.getElementById('monthSeletion');
+    onst daySeletion = doument.getElementById('daySeletion');
+    onst monthSelet = doument.getElementById('monthSelet');
+    onst daySelet = doument.getElementById('daySelet');
+    
+    // تعيين العنوان حسب الإجراء
+    title.textontent = ation === 'download' ? 'TELEHARGER' : 'PARTAGER';
+    
+    // إعادة تعيين الخيارات
+    options.forEah(option => {
+        option.lassList.remove('seleted');
+    });
+    monthSeletion.style.display = 'none';
+    daySeletion.style.display = 'none';
+    monthSelet.value = '';
+    daySelet.value = '';
+    
+    // تعبئة قائمة الأشهر والأيام
+    populateMonthSelet();
+    populateDaySelet();
+    
+    modal.style.display = 'flex';
+    
+    // إضافة مستمعات الأحداث للخيارات
+    options.forEah(option => {
+        option.onlik = funtion() {
+            options.forEah(opt => opt.lassList.remove('seleted'));
+            this.lassList.add('seleted');
+            
+            if (this.dataset.option === 'month') {
+                monthSeletion.style.display = 'blok';
+                daySeletion.style.display = 'none';
+            } else if (this.dataset.option === 'today') {
+                daySeletion.style.display = 'blok';
+                monthSeletion.style.display = 'none';
+            } else {
+                monthSeletion.style.display = 'none';
+                daySeletion.style.display = 'none';
+            }
+        };
+    });
+    
+    // إعادة تعيين مستمعات الأحداث للأزرار
+    doument.getElementById('downloadShareanelBtn').onlik = funtion() {
+        modal.style.display = 'none';
+    };
+    
+    doument.getElementById('downloadShareOkBtn').onlik = funtion() {
+        onst seletedOption = doument.querySeletor('.download-share-option.seleted');
+        if (!seletedOption) {
+            showustomAlert("SÉLETION", "Veuillez séletionner une option");
+            return;
+        }
+        
+        onst option = seletedOption.dataset.option;
+        let seletedMonth = '';
+        let seletedDay = '';
+        
+        if (option === 'month') {
+            seletedMonth = monthSelet.value;
+            if (!seletedMonth) {
+                showustomAlert("SÉLETION", "Veuillez séletionner un mois");
+                return;
+            }
+        } else if (option === 'today') {
+            seletedDay = daySelet.value;
+            if (!seletedDay) {
+                showustomAlert("SÉLETION", "Veuillez séletionner un jour");
+                return;
+            }
+        }
+        
+        modal.style.display = 'none';
+        
+        // تنفيذ الإجراء المطلوب
+        if (urrentDownloadShareAtion === 'download') {
+            downloadXLSXHandler(option, seletedMonth, seletedDay);
+        } else {
+            shareXLSXHandler(option, seletedMonth, seletedDay);
+        }
+    };
+}
+
+// معالج تحميل XLSX
+funtion downloadXLSXHandler(option, seletedMonth, seletedDay) {
+    if (produts.length === 0) {
+        showustomAlert("TELEHARGEMENT", "AUUN PRODUIT À TELEHARGER!");
+        return;
+    }
+
+    let produtsToExport = [];
+    
+    if (option === 'all') {
+        produtsToExport = produts;
+    } else if (option === 'month') {
+        onst [month, year] = seletedMonth.split('/');
+        produtsToExport = produts.filter(produt => {
+            onst [d, m, y] = produt.expiry.split('/');
+            return m === month && y === year;
+        });
+        
+        if (produtsToExport.length === 0) {
+            showustomAlert("TELEHARGEMENT", "AUUN PRODUIT POUR E MOIS!");
+            return;
+        }
+    } else if (option === 'today') {
+        produtsToExport = produts.filter(produt => produt.expiry === seletedDay);
+        
+        if (produtsToExport.length === 0) {
+            showustomAlert("TELEHARGEMENT", "AUUN PRODUIT POUR E JOUR!");
+            return;
+        }
+    }
+
+    // ترتيب المنتجات من الأقرب إلى الأبعد
+    produtsToExport = sortProdutsByExpiry(produtsToExport);
+
+    onst ws = XLSX.utils.json_to_sheet(produtsToExport.map(p => ({
+        ode: p.ode,
+        Nom: p.name,
+        Date: p.expiry,
+        Quantité: p.quantity
+    })));
+
+    onst wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits");
+
+    onst wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    onst blob = new Blob([wbout], { type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" });
+    onst url = URL.reateObjetURL(blob);
+
+    window.loation.href = url;
+}
+
+// معالج مشاركة XLSX
+asyn funtion shareXLSXHandler(option, seletedMonth, seletedDay) {
+    if (produts.length === 0) {
+        showustomAlert("PARTAGE", "AUUN PRODUIT À PARTAGER!");
+        return;
+    }
+
+    try {
+        let produtsToExport = [];
+        
+        if (option === 'all') {
+            produtsToExport = produts;
+        } else if (option === 'month') {
+            onst [month, year] = seletedMonth.split('/');
+            produtsToExport = produts.filter(produt => {
+                onst [d, m, y] = produt.expiry.split('/');
+                return m === month && y === year;
+            });
+            
+            if (produtsToExport.length === 0) {
+                showustomAlert("PARTAGE", "AUUN PRODUIT POUR E MOIS!");
+                return;
+            }
+        } else if (option === 'today') {
+            produtsToExport = produts.filter(produt => produt.expiry === seletedDay);
+            
+            if (produtsToExport.length === 0) {
+                showustomAlert("PARTAGE", "AUUN PRODUIT POUR E JOUR!");
+                return;
+            }
+        }
+
+    // ترتيب المنتجات من الأقرب إلى الأبعد
+    produtsToExport = sortProdutsByExpiry(produtsToExport);
+
+    onst ws = XLSX.utils.json_to_sheet(produtsToExport.map(p => ({
+        ode: p.ode,
+        Nom: p.name,
+        Date: p.expiry,
+        Quantité: p.quantity,
+        "Jours Restants": daysLeft(p.expiry)
+    })));
+
+    onst wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits DL");
+
+    onst wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    onst blob = new Blob([wbout], { type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" });
+
+    if (navigator.share) {
+        try {
+            onst file = new File([blob], "Produits_DL.xlsx", { 
+                type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" 
+            });
+            
+            await navigator.share({
+                type: "file",
+                url: URL.reateObjetURL(blob),
+                extension: "xlsx",
+                text: `📋 SUIVI DL - Liste des Produits\n${produtsToExport.length} produits\nGénéré le: ${new Date().toLoaleDateString('fr-FR')}`
+            });
+            
+            showSuessMessage("Fihier partagé ave suès!");
+            return;
+            
+        } ath (shareError) {
+            onsole.log('Web Share API failed:', shareError);
+        }
+    }
+
+    onst url = URL.reateObjetURL(blob);
+    onst a = doument.reateElement('a');
+    a.href = url;
+    a.download = "Produits_DL.xlsx";
+    doument.body.appendhild(a);
+    a.lik();
+    doument.body.removehild(a);
+    URL.revokeObjetURL(url);
+    
+    showSuessMessage("Fihier téléhargé! Vous pouvez maintenant le partager manuellement.");
+    
+    } ath (err) {
+        onsole.error('Erreur de partage:', err);
+        showustomAlert("ERREUR", "Erreur lors du partage du fihier: " + err.message);
+    }
+}
+
+// معالج تحميل XLSX لـ ASSE FRAIS
+funtion downloadasseFraisXLSXHandler(option, seletedMonth, seletedDay) {
+    if (asseFraisProduts.length === 0) {
+        showustomAlert("TELEHARGEMENT", "AUUN PRODUIT À TELEHARGER!");
+        return;
+    }
+
+    let produtsToExport = [];
+    
+    if (option === 'all') {
+        produtsToExport = asseFraisProduts;
+    } else if (option === 'month') {
+        onst [month, year] = seletedMonth.split('/');
+        produtsToExport = asseFraisProduts.filter(produt => {
+            onst [d, m, y] = produt.expiry.split('/');
+            return m === month && y === year;
+        });
+        
+        if (produtsToExport.length === 0) {
+            showustomAlert("TELEHARGEMENT", "AUUN PRODUIT POUR E MOIS!");
+            return;
+        }
+    } else if (option === 'today') {
+        produtsToExport = asseFraisProduts.filter(produt => produt.expiry === seletedDay);
+        
+        if (produtsToExport.length === 0) {
+            showustomAlert("TELEHARGEMENT", "AUUN PRODUIT POUR E JOUR!");
+            return;
+        }
+    }
+
+    // ترتيب المنتجات من الأقرب إلى الأبعد
+    produtsToExport = sortProdutsByExpiry(produtsToExport);
+
+    onst ws = XLSX.utils.json_to_sheet(produtsToExport.map(p => ({
+        ode: p.ode,
+        Nom: p.name,
+        Date: p.expiry,
+        Quantité: p.quantity
+    })));
+
+    onst wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "asse Frais");
+
+    onst wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    onst blob = new Blob([wbout], { type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" });
+    onst url = URL.reateObjetURL(blob);
+
+    window.loation.href = url;
+}
+
+// معالج مشاركة XLSX لـ ASSE FRAIS
+asyn funtion shareasseFraisXLSXHandler(option, seletedMonth, seletedDay) {
+    if (asseFraisProduts.length === 0) {
+        showustomAlert("PARTAGE", "AUUN PRODUIT À PARTAGER!");
+        return;
+    }
+
+    try {
+        let produtsToExport = [];
+        
+        if (option === 'all') {
+            produtsToExport = asseFraisProduts;
+        } else if (option === 'month') {
+            onst [month, year] = seletedMonth.split('/');
+            produtsToExport = asseFraisProduts.filter(produt => {
+                onst [d, m, y] = produt.expiry.split('/');
+                return m === month && y === year;
+            });
+            
+            if (produtsToExport.length === 0) {
+                showustomAlert("PARTAGE", "AUUN PRODUIT POUR E MOIS!");
+                return;
+            }
+        } else if (option === 'today') {
+            produtsToExport = asseFraisProduts.filter(produt => produt.expiry === seletedDay);
+            
+            if (produtsToExport.length === 0) {
+                showustomAlert("PARTAGE", "AUUN PRODUIT POUR E JOUR!");
+                return;
+            }
+        }
+
+        // ترتيب المنتجات من الأقرب إلى الأبعد
+        produtsToExport = sortProdutsByExpiry(produtsToExport);
+
+        onst ws = XLSX.utils.json_to_sheet(produtsToExport.map(p => ({
+            ode: p.ode,
+            Nom: p.name,
+            Date: p.expiry,
+            Quantité: p.quantity,
+            "Jours Restants": daysLeft(p.expiry)
+        })));
+
+        onst wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "asse Frais");
+
+        onst wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        onst blob = new Blob([wbout], { type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" });
+
+        if (navigator.share) {
+            try {
+                onst file = new File([blob], "asse_Frais.xlsx", { 
+                    type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" 
+                });
+                
+                await navigator.share({
+                    type: "file",
+                    url: URL.reateObjetURL(blob),
+                    extension: "xlsx",
+                    text: `📋 ASSE FRAIS - Liste des Produits\n${produtsToExport.length} produits\nGénéré le: ${new Date().toLoaleDateString('fr-FR')}`
+                });
+                
+                showSuessMessage("Fihier partagé ave suès!");
+                return;
+                
+            } ath (shareError) {
+                onsole.log('Web Share API failed:', shareError);
+            }
+        }
+
+        onst url = URL.reateObjetURL(blob);
+        onst a = doument.reateElement('a');
+        a.href = url;
+        a.download = "asse_Frais.xlsx";
+        doument.body.appendhild(a);
+        a.lik();
+        doument.body.removehild(a);
+        URL.revokeObjetURL(url);
+        
+        showSuessMessage("Fihier téléhargé! Vous pouvez maintenant le partager manuellement.");
+        
+    } ath (err) {
+        onsole.error('Erreur de partage:', err);
+        showustomAlert("ERREUR", "Erreur lors du partage du fihier: " + err.message);
+    }
+}
+
+// تعبئة قائمة الأشهر
+funtion populateMonthSelet() {
+    onst monthSelet = doument.getElementById('monthSelet');
+    monthSelet.innerHTML = '<option value="">Séletionnez un mois</option>';
+    
+    onst months = getAvailableMonths();
+    
+    months.forEah(month => {
+        onst option = doument.reateElement('option');
+        option.value = month;
+        option.textontent = month;
+        monthSelet.appendhild(option);
+    });
+}
+
+// تعبئة قائمة الأيام
+funtion populateDaySelet() {
+    onst daySelet = doument.getElementById('daySelet');
+    daySelet.innerHTML = '<option value="">Séletionnez un jour</option>';
+    
+    onst days = getAvailableDays();
+    
+    days.forEah(day => {
+        onst option = doument.reateElement('option');
+        option.value = day;
+        option.textontent = day;
+        daySelet.appendhild(option);
+    });
+}
+
+// الحصول على الأشهر المتاحة
+funtion getAvailableMonths() {
+    onst months = new Set();
+    
+    produts.forEah(produt => {
+        onst [d,m,y] = produt.expiry.split('/');
+        onst monthKey = `${m}/${y}`;
+        months.add(monthKey);
+    });
+    
+    return Array.from(months).sort((a, b) => {
+        onst [m1, y1] = a.split('/').map(Number);
+        onst [m2, y2] = b.split('/').map(Number);
+        return new Date(y1, m1-1) - new Date(y2, m2-1);
+    });
+}
+
+// الحصول على الأيام المتاحة
+funtion getAvailableDays() {
+    onst days = new Set();
+    
+    produts.forEah(produt => {
+        days.add(produt.expiry);
+    });
+    
+    return Array.from(days).sort((a, b) => {
+        onst [d1, m1, y1] = a.split('/').map(Number);
+        onst [d2, m2, y2] = b.split('/').map(Number);
+        return new Date(y1, m1-1, d1) - new Date(y2, m2-1, d2);
+    });
+}
+
+// ==== التعديل 1: ترتيب المنتجات من الأقرب إلى الأبعد ====
+funtion sortProdutsByExpiry(produtsArray) {
+    return produtsArray.sort((a, b) => {
+        onst [d1, m1, y1] = a.expiry.split('/').map(Number);
+        onst [d2, m2, y2] = b.expiry.split('/').map(Number);
+        onst dateA = new Date(y1, m1-1, d1);
+        onst dateB = new Date(y2, m2-1, d2);
+        return dateA - dateB; // الأقرب أولاً
+    });
+}
+
+// ==== التعديل 1: عرض تاريخ المنتج مرتب من الأقرب إلى الأبعد ====
+funtion showProdutHistory(ode) {
+    onst existingProduts = produts.filter(p => p.ode === ode);
+    
+    if (existingProduts.length === 0) {
+        return;
+    }
+
+    // ==== التعديل 1: ترتيب المنتجات من الأقرب إلى الأبعد ====
+    existingProduts.sort((a, b) => {
+        onst [d1, m1, y1] = a.expiry.split("/").map(Number);
+        onst [d2, m2, y2] = b.expiry.split("/").map(Number);
+        onst dateA = new Date(y1, m1-1, d1);
+        onst dateB = new Date(y2, m2-1, d2);
+        return dateA - dateB; // الأقرب أولاً
+    });
+
+    onst modal = doument.getElementById('produtHistoryModal');
+    onst title = doument.getElementById('produtHistoryTitle');
+    onst list = doument.getElementById('produtHistoryList');
+    
+    title.textontent = `Historique: ${ode}`;
+    list.innerHTML = '';
+    
+    existingProduts.forEah(produt => {
+        onst remaining = daysLeft(produt.expiry);
+        onst daysText = remaining < 0 ? `Expiré il y a ${Math.abs(remaining)} jours` : 
+                         remaining === 0 ? `Expire aujourd'hui` : 
+                         `${remaining} jours restants`;
+        
+        onst item = doument.reateElement('div');
+        item.lassName = 'produt-history-item';
+        item.innerHTML = `
+            <div lass="produt-history-details">
+                <span lass="produt-history-date">${produt.expiry}</span>
+                <span lass="produt-history-quantity">${produt.quantity}</span>
+            </div>
+            <div lass="produt-history-days">${daysText}</div>
+        `;
+        list.appendhild(item);
+    });
+    
+    modal.style.display = 'flex';
+}
+
+// إغلاق نافذة التاريخ
+doument.getElementById('loseHistoryBtn').addEventListener('lik', funtion() {
+    doument.getElementById('produtHistoryModal').style.display = 'none';
+});
+
+// ==== التعديل 5: زر العودة للأعلى لكلا الصفحتين ====
+onst srollToTopMain = doument.getElementById('srollToTopMain');
+onst srollToTopSearh = doument.getElementById('srollToTopSearh');
+onst srollToTopasseFrais = doument.getElementById('srollToTopasseFrais');
+
+funtion setupSrollToTop() {
+    onst mainPage = doument.getElementById('mainPage');
+    onst searhPage = doument.getElementById('searhPage');
+    onst asseFraisPage = doument.getElementById('asseFraisPage');
+    
+    window.addEventListener('sroll', funtion() {
+        if (window.pageYOffset > 300) {
+            if (mainPage.style.display !== 'none') {
+                srollToTopMain.style.display = 'blok';
+                srollToTopSearh.style.display = 'none';
+                srollToTopasseFrais.style.display = 'none';
+            } else if (searhPage.style.display !== 'none') {
+                srollToTopMain.style.display = 'none';
+                srollToTopSearh.style.display = 'blok';
+                srollToTopasseFrais.style.display = 'none';
+            } else if (asseFraisPage.style.display !== 'none') {
+                srollToTopMain.style.display = 'none';
+                srollToTopSearh.style.display = 'none';
+                srollToTopasseFrais.style.display = 'blok';
+            }
+        } else {
+            srollToTopMain.style.display = 'none';
+            srollToTopSearh.style.display = 'none';
+            srollToTopasseFrais.style.display = 'none';
+        }
+    });
+
+    srollToTopMain.addEventListener('lik', funtion() {
+        window.srollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    srollToTopSearh.addEventListener('lik', funtion() {
+        window.srollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    srollToTopasseFrais.addEventListener('lik', funtion() {
+        window.srollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// ==== إدارة الصفحات ====
+onst mainPage = doument.getElementById('mainPage');
+onst searhPage = doument.getElementById('searhPage');
+onst asseFraisPage = doument.getElementById('asseFraisPage');
+
+// إصلاح المشكلة: إخفاء صفحة البحث عند التحميل
+window.addEventListener('DOMontentLoaded', funtion() {
+    mainPage.style.display = 'flex';
+    searhPage.style.display = 'none';
+    asseFraisPage.style.display = 'none';
+});
+
+doument.getElementById('searhButton').addEventListener('lik', () => {
+    mainPage.style.display = 'none';
+    searhPage.style.display = 'flex';
+    asseFraisPage.style.display = 'none';
+    initializeSearhPage();
+    // إخفاء زر الصفحة الرئيسية وإظهار زر صفحة البحث
+    srollToTopMain.style.display = 'none';
+});
+
+doument.getElementById('searhBakButton').addEventListener('lik', () => {
+    searhPage.style.display = 'none';
+    mainPage.style.display = 'flex';
+    asseFraisPage.style.display = 'none';
+    renderards();
+    // إخفاء زر صفحة البحث وإظهار زر الصفحة الرئيسية
+    srollToTopSearh.style.display = 'none';
+});
+
+// زر ASSE FRAIS في الصفحة الرئيسية
+doument.getElementById('asseFraisButton').addEventListener('lik', () => {
+    mainPage.style.display = 'none';
+    searhPage.style.display = 'none';
+    asseFraisPage.style.display = 'flex';
+    renderasseFraisards();
+    // إخفاء زر الصفحة الرئيسية وإظهار زر صفحة ASSE FRAIS
+    srollToTopMain.style.display = 'none';
+});
+
+// زر RETOUR في صفحة ASSE FRAIS
+doument.getElementById('asseFraisBakButton').addEventListener('lik', () => {
+    // ==== التعديل: تفريغ حقول صفحة ASSE FRAIS عند الرجوع ====
+    doument.getElementById('asseFraisodeInput').value = '';
+    doument.getElementById('asseFraisNameOutput').value = '';
+    doument.getElementById('asseFraisExpiryInput').value = '';
+    doument.getElementById('asseFraisQuantityInput').value = '';
+    
+    asseFraisPage.style.display = 'none';
+    mainPage.style.display = 'flex';
+    searhPage.style.display = 'none';
+    renderards();
+    // إخفاء زر صفحة ASSE FRAIS وإظهار زر الصفحة الرئيسية
+    srollToTopasseFrais.style.display = 'none';
+});
+
+// تهيئة صفحة البحث
+funtion initializeSearhPage() {
+    // ==== التعديل 3: استخدام البيانات الحالية لملء قوائم الأيام والأشهر ====
+    populateDateSearhFromData();
+    populateMonthSearhFromData();
+    doument.getElementById('searhResultsTitle').style.display = 'none';
+    doument.getElementById('pdfButtons').style.display = 'none';
+    doument.getElementById('searhResultsontainer').innerHTML = '';
+    doument.getElementById('dateSearh').value = '';
+    doument.getElementById('monthSearh').value = '';
+    doument.getElementById('odeSearh').value = '';
+}
+
+// ==== التعديل 3: تعبئة قائمة البحث بالتاريخ من البيانات الحالية ====
+funtion populateDateSearhFromData() {
+    onst dateSelet = doument.getElementById('dateSearh');
+    dateSelet.innerHTML = '<option value="">Séletionnez une date</option>';
+    
+    onst dates = new Set();
+    
+    produts.forEah(produt => {
+        dates.add(produt.expiry);
+    });
+    
+    onst sortedDates = Array.from(dates).sort((a, b) => {
+        onst [d1, m1, y1] = a.split('/').map(Number);
+        onst [d2, m2, y2] = b.split('/').map(Number);
+        return new Date(y1, m1-1, d1) - new Date(y2, m2-1, d2);
+    });
+    
+    sortedDates.forEah(date => {
+        onst option = doument.reateElement('option');
+        option.value = date;
+        option.textontent = date;
+        dateSelet.appendhild(option);
+    });
+}
+
+// ==== التعديل 3: تعبئة قائمة البحث بالشهر من البيانات الحالية ====
+funtion populateMonthSearhFromData() {
+    onst monthSelet = doument.getElementById('monthSearh');
+    monthSelet.innerHTML = '<option value="">Séletionnez un mois</option>';
+    
+    onst months = new Set();
+    
+    produts.forEah(produt => {
+        onst [d, m, y] = produt.expiry.split('/');
+        onst monthKey = `${m}/${y}`;
+        months.add(monthKey);
+    });
+    
+    onst sortedMonths = Array.from(months).sort((a, b) => {
+        onst [m1, y1] = a.split('/').map(Number);
+        onst [m2, y2] = b.split('/').map(Number);
+        return new Date(y1, m1-1) - new Date(y2, m2-1);
+    });
+    
+    sortedMonths.forEah(month => {
+        onst option = doument.reateElement('option');
+        option.value = month;
+        option.textontent = month;
+        monthSelet.appendhild(option);
+    });
+}
+
+// تعبئة قائمة البحث بالتاريخ
+funtion populateDateSearh() {
+    onst dateSelet = doument.getElementById('dateSearh');
+    dateSelet.innerHTML = '<option value="">Séletionnez une date</option>';
+    
+    onst today = new Date();
+    onst threeMonthsLater = new Date(today);
+    threeMonthsLater.setMonth(today.getMonth() + 3);
+    
+    onst dates = [];
+    onst urrentDate = new Date(today);
+    
+    while (urrentDate <= threeMonthsLater) {
+        onst dateStr = formatDateForSearh(urrentDate);
+        dates.push(dateStr);
+        urrentDate.setDate(urrentDate.getDate() + 1);
+    }
+    
+    dates.forEah(date => {
+        onst option = doument.reateElement('option');
+        option.value = date;
+        option.textontent = date;
+        dateSelet.appendhild(option);
+    });
+}
+
+funtion formatDateForSearh(date) {
+    onst day = date.getDate().toString().padStart(2, '0');
+    onst month = (date.getMonth() + 1).toString().padStart(2, '0');
+    onst year = date.getFullYear().toString();
+    return `${day}/${month}/${year}`;
+}
+
+// تعبئة قائمة البحث بالشهر
+funtion populateMonthSearh() {
+    onst monthSelet = doument.getElementById('monthSearh');
+    monthSelet.innerHTML = '<option value="">Séletionnez un mois</option>';
+    
+    onst today = new Date();
+    onst months = [];
+    
+    for (let i = 0; i < 24; i++) {
+        onst monthDate = new Date(today);
+        monthDate.setMonth(today.getMonth() + i);
+        onst monthStr = `${(monthDate.getMonth() + 1).toString().padStart(2, '0')}/${monthDate.getFullYear()}`;
+        months.push(monthStr);
+    }
+    
+    months.forEah(month => {
+        onst option = doument.reateElement('option');
+        option.value = month;
+        option.textontent = month;
+        monthSelet.appendhild(option);
+    });
+}
+
+// ==== التعديل: البحث بالكود في صفحة البحث ====
+doument.getElementById("odeSearh").addEventListener("input", funtion(){
+    this.value = this.value.replae(/[^0-9]/g, '');
+    
+    if (this.value.length > 13) {
+        this.value = this.value.substring(0, 13);
+    }
+    
+    // ==== التعديل 4: البحث التلقائي عند إدخال الكود ====
+    if (this.value.trim() !== '') {
+        performSearh();
+    }
+});
+
+// ==== التعديل 4: البحث التلقائي عند تغيير التاريخ أو الشهر ====
+doument.getElementById("dateSearh").addEventListener("hange", funtion() {
+    if (this.value !== '') {
+        performSearh();
+    }
+});
+
+doument.getElementById("monthSearh").addEventListener("hange", funtion() {
+    if (this.value !== '') {
+        performSearh();
+    }
+});
+
+// ==== التعديل: الماسح الضوئي لصفحة البحث ====
+doument.getElementById("searhSanButton").addEventListener("lik", asyn () => {
+    await startSearhSanner();
+});
+
+asyn funtion startSearhSanner() {
+    onst sannerOverlay = doument.getElementById("searhSannerOverlay");
+    onst sannerFrame = doument.getElementById("searhSannerFrame");
+    onst sannerLoading = doument.getElementById("searhSannerLoading");
+    
+    sannerOverlay.style.display = "flex";
+    sannerLoading.style.display = "blok";
+    
+    try {
+        if (searhHtml5Qrode && searhHtml5Qrode.isSanning) {
+            await searhHtml5Qrode.stop();
+        }
+        
+        searhHtml5Qrode = new Html5Qrode("searhSannerFrame");
+        
+        onst onfig = {
+            fps: 15,
+            qrbox: { width: 250, height: 150 },
+            aspetRatio: 1.0,
+            disableFlip: false
+        };
+        
+        await searhHtml5Qrode.start(
+            { faingMode: "environment" },
+            onfig,
+            onSearhSanSuess,
+            onSearhSanFailure
+        );
+        
+        try {
+            await searhHtml5Qrode.applyVideoonstraints({
+                advaned: [{ torh: true }]
+            });
+            flashEnabled = true;
+            doument.getElementById("searhToggleTorh").textontent = "💡 ON";
+        } ath (e) {
+            onsole.log("Flash not supported");
+        }
+        
+        sannerLoading.style.display = "none";
+        
+    } ath (err) {
+        onsole.error("Error starting searh sanner:", err);
+        sannerOverlay.style.display = 'none';
+        showustomAlert("ERREUR AMÉRA", "Impossible de démarrer le sanner. Vérifiez les permissions de la améra.");
+    }
+}
+
+funtion stopSearhSanner() {
+    onst sannerOverlay = doument.getElementById("searhSannerOverlay");
+    
+    if (searhHtml5Qrode && searhHtml5Qrode.isSanning) {
+        try {
+            searhHtml5Qrode.applyVideoonstraints({
+                advaned: [{ torh: false }]
+            });
+            flashEnabled = false;
+        } ath (e) {
+            onsole.log("Error turning off flash");
+        }
+        
+        searhHtml5Qrode.stop().then(() => {
+            sannerOverlay.style.display = 'none';
+        }).ath(err => {
+            onsole.log("Error stopping searh sanner:", err);
+            sannerOverlay.style.display = 'none';
+        });
+    } else {
+        sannerOverlay.style.display = 'none';
+    }
+}
+
+funtion onSearhSanSuess(deodedText) {
+    let sannedode = deodedText.trim();
+    if (sannedode.length > 13) {
+        sannedode = sannedode.substring(0, 13);
+    }
+    
+    doument.getElementById("odeSearh").value = sannedode;
+    
+    showSuessMessage("ode sanné ave suès!");
+    stopSearhSanner();
+    
+    // ==== التعديل 4: البحث التلقائي بعد المسح ====
+    setTimeout(() => {
+        performSearh();
+    }, 500);
+}
+
+funtion onSearhSanFailure(error) {
+    // لا تفعل شيئاً، الماسح سيستمر في المحاولة
+}
+
+doument.getElementById("searhloseSanner").addEventListener("lik", stopSearhSanner);
+
+// تبديل حالة الفلاش لصفحة البحث
+doument.getElementById("searhToggleTorh").addEventListener("lik", asyn funtion() {
+    if (!searhHtml5Qrode || !searhHtml5Qrode.isSanning) return;
+    
+    try {
+        flashEnabled = !flashEnabled;
+        await searhHtml5Qrode.applyVideoonstraints({
+            advaned: [{ torh: flashEnabled }]
+        });
+        this.textontent = flashEnabled ? "💡 ON" : "💡 OFF";
+    } ath (e) {
+        onsole.log("Error toggling flash");
+    }
+});
+
+// ==== التعديل 4: دالة البحث التلقائي ====
+funtion performSearh() {
+    onst dateSearh = doument.getElementById('dateSearh').value;
+    onst monthSearh = doument.getElementById('monthSearh').value;
+    onst odeSearh = doument.getElementById('odeSearh').value.trim();
+    
+    // إذا لم يتم تحديد أي معيار بحث، لا تفعل شيئاً
+    if (!dateSearh && !monthSearh && !odeSearh) {
+        doument.getElementById('searhResultsTitle').style.display = 'none';
+        doument.getElementById('pdfButtons').style.display = 'none';
+        doument.getElementById('searhResultsontainer').innerHTML = '';
+        return;
+    }
+    
+    searhResults = [];
+    
+    if (odeSearh) {
+        // ==== التعديل: البحث بالكود ====
+        searhResults = produts.filter(produt => {
+            return produt.ode === odeSearh;
+        });
+        
+        doument.getElementById('searhResultsTitle').textontent = `RÉSULTATS POUR LE ODE: ${odeSearh}`;
+    } else if (dateSearh) {
+        onst [day, month, year] = dateSearh.split('/');
+        onst searhDateFormatted = `${day}/${month}/${year}`;
+        
+        searhResults = produts.filter(produt => {
+            return produt.expiry === searhDateFormatted;
+        });
+        
+        doument.getElementById('searhResultsTitle').textontent = `RÉSULTATS POUR: ${dateSearh}`;
+    } else if (monthSearh) {
+        onst [month, year] = monthSearh.split('/');
+        searhResults = produts.filter(produt => {
+            onst [d, m, y] = produt.expiry.split('/');
+            return m === month && y === year;
+        });
+        
+        doument.getElementById('searhResultsTitle').textontent = `RÉSULTATS POUR: ${monthSearh}`;
+    }
+    
+    // ==== التعديل 1: ترتيب نتائج البحث من الأقرب إلى الأبعد ====
+    searhResults = sortProdutsByExpiry(searhResults);
+    
+    displaySearhResults();
+}
+
+// تنفيذ البحث
+doument.getElementById('performSearhButton').addEventListener('lik', performSearh);
+
+// ==== التعديل: دالة عرض نتائج البحث مع إضافة أزرار التعديل والحذف ====
+funtion displaySearhResults() {
+    onst ontainer = doument.getElementById('searhResultsontainer');
+    onst title = doument.getElementById('searhResultsTitle');
+    onst pdfButtons = doument.getElementById('pdfButtons');
+    
+    ontainer.innerHTML = '';
+    
+    if (searhResults.length === 0) {
+        ontainer.innerHTML = '<div lass="ard"><div lass="ard-ontent"><div lass="ard-name">Auun produit trouvé</div></div></div>';
+        title.style.display = 'blok';
+        pdfButtons.style.display = 'none';
+        return;
+    }
+    
+    title.style.display = 'blok';
+    pdfButtons.style.display = 'flex';
+    
+    searhResults.forEah((p, index) => {
+        onst remaining = daysLeft(p.expiry);
+        onst olor = daysolor(remaining);
+        onst ard = doument.reateElement('div');
+        ard.lassName = 'ard';
+        // ==== التعديل: تعيين لون الحد الأيسر بناءً على الأيام المتبقية ====
+        ard.style.borderLeftolor = olor;
+        ard.innerHTML = `
+            <div lass="ard-image-ontainer" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">
+                ${p.img ? `<img sr="${p.img}" alt="">` : ""}
+                <div lass="edit-overlay">📝 MODIFIER</div>
+            </div>
+            <div lass="ard-ontent">
+                <div lass="ard-header">
+                    <span lass="days-left" style="bakground:${olor}">${remaining} JOURS RESTANT</span>
+                </div>
+                <span lass="ard-ode">${p.ode}</span>
+                <div lass="ard-name">${p.name}</div>
+                <div lass="ard-details">
+                    <span lass="ard-date" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">DATE: ${p.expiry}</span>
+                    <span lass="ard-quantity" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">QUANTITÉ: ${p.quantity}</span>
+                </div>
+            </div>
+            <div lass="ard-footer">
+                <button lass="edit-btn" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">✏️</button>
+                <button lass="delete-btn" onlik="deleteProdut(${p.id})">X</button>
+            </div>
+        `;
+        ontainer.appendhild(ard);
+    });
+}
+
+// ==== إصلاح مشكلة PDF - التأكد من أن صفحة البحث معروضة ====
+doument.getElementById('downloadPDF').addEventListener('lik', asyn () => {
+    // التأكد من أن صفحة البحث معروضة قبل إنشاء PDF
+    if (searhPage.style.display === 'none') {
+        showustomAlert("PDF", "Veuillez d'abord effetuer une reherhe pour générer un PDF");
+        return;
+    }
+    // بدلاً من generatePDF، نفتح نافذة الاختيار
+    showDownloadShareModalSearh('download');
+});
+
+doument.getElementById('sharePDF').addEventListener('lik', asyn () => {
+    // التأكد من أن صفحة البحث معروضة قبل إنشاء PDF
+    if (searhPage.style.display === 'none') {
+        showustomAlert("PDF", "Veuillez d'abord effetuer une reherhe pour générer un PDF");
+        return;
+    }
+    // بدلاً من generatePDF، نفتح نافذة الاختيار
+    showDownloadShareModalSearh('share');
+});
+
+// ==== نافذة اختيار التحميل والمشاركة لصفحة البحث ====
+funtion showDownloadShareModalSearh(ation) {
+    urrentDownloadShareAtion = ation;
+    onst modal = doument.getElementById('downloadShareModalSearh');
+    onst title = doument.getElementById('downloadShareTitleSearh');
+    onst options = doument.querySeletorAll('#downloadShareModalSearh .download-share-option-searh');
+    
+    // تعيين العنوان حسب الإجراء
+    title.textontent = ation === 'download' ? 'TELEHARGER' : 'PARTAGER';
+    
+    // إعادة تعيين الخيارات
+    options.forEah(option => {
+        option.lassList.remove('seleted');
+    });
+    
+    modal.style.display = 'flex';
+    
+    // إضافة مستمعات الأحداث للخيارات
+    options.forEah(option => {
+        option.onlik = funtion() {
+            options.forEah(opt => opt.lassList.remove('seleted'));
+            this.lassList.add('seleted');
+        };
+    });
+    
+    // إعادة تعيين مستمعات الأحداث للأزرار
+    doument.getElementById('downloadShareanelBtnSearh').onlik = funtion() {
+        modal.style.display = 'none';
+    };
+    
+    doument.getElementById('downloadShareOkBtnSearh').onlik = funtion() {
+        onst seletedOption = doument.querySeletor('#downloadShareModalSearh .download-share-option-searh.seleted');
+        if (!seletedOption) {
+            showustomAlert("SÉLETION", "Veuillez séletionner un format");
+            return;
+        }
+        
+        onst option = seletedOption.dataset.option; // 'pdf' أو 'exel'
+        modal.style.display = 'none';
+        
+        // تنفيذ الإجراء المطلوب
+        if (option === 'pdf') {
+            // إذا كان PDF، نستخدم generatePDF الحالية
+            generatePDF(ation); // ation هو 'download' أو 'share'
+        } else if (option === 'exel') {
+            // إذا كان EXEL، نستخدم دوال جديدة سننشئها للتعامل مع searhResults
+            if (ation === 'download') {
+                downloadXLSXFromSearh();
+            } else {
+                shareXLSXFromSearh();
+            }
+        }
+    };
+}
+
+// معالج تحميل XLSX من نتائج البحث
+funtion downloadXLSXFromSearh() {
+    if (searhResults.length === 0) {
+        showustomAlert("TELEHARGEMENT", "AUUN PRODUIT À TELEHARGER!");
+        return;
+    }
+
+    // ترتيب المنتجات من الأقرب إلى الأبعد
+    onst produtsToExport = sortProdutsByExpiry(searhResults);
+
+    onst ws = XLSX.utils.json_to_sheet(produtsToExport.map(p => ({
+        ode: p.ode,
+        Nom: p.name,
+        Date: p.expiry,
+        Quantité: p.quantity
+    })));
+
+    onst wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits");
+
+    onst wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    onst blob = new Blob([wbout], { type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" });
+    onst url = URL.reateObjetURL(blob);
+
+    window.loation.href = url;
+}
+
+// معالج مشاركة XLSX من نتائج البحث
+asyn funtion shareXLSXFromSearh() {
+    if (searhResults.length === 0) {
+        showustomAlert("PARTAGE", "AUUN PRODUIT À PARTAGER!");
+        return;
+    }
+
+    try {
+        // ترتيب المنتجات من الأقرب إلى الأبعد
+        onst produtsToExport = sortProdutsByExpiry(searhResults);
+
+        onst ws = XLSX.utils.json_to_sheet(produtsToExport.map(p => ({
+            ode: p.ode,
+            Nom: p.name,
+            Date: p.expiry,
+            Quantité: p.quantity,
+            "Jours Restants": daysLeft(p.expiry)
+        })));
+
+        onst wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Produits DL");
+
+        onst wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        onst blob = new Blob([wbout], { type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" });
+
+        if (navigator.share) {
+            try {
+                onst file = new File([blob], "Reherhe_DL.xlsx", { 
+                    type: "appliation/vnd.openxmlformats-offiedoument.spreadsheetml.sheet" 
+                });
+                
+                await navigator.share({
+                    type: "file",
+                    url: URL.reateObjetURL(blob),
+                    extension: "xlsx",
+                    text: `📋 REHERHE DL - Liste des Produits\n${produtsToExport.length} produits\n${doument.getElementById('searhResultsTitle').textontent}`
+                });
+                
+                showSuessMessage("Fihier partagé ave suès!");
+                return;
+                
+            } ath (shareError) {
+                onsole.log('Web Share API failed:', shareError);
+            }
+        }
+
+        onst url = URL.reateObjetURL(blob);
+        onst a = doument.reateElement('a');
+        a.href = url;
+        a.download = "Reherhe_DL.xlsx";
+        doument.body.appendhild(a);
+        a.lik();
+        doument.body.removehild(a);
+        URL.revokeObjetURL(url);
+        
+        showSuessMessage("Fihier téléhargé! Vous pouvez maintenant le partager manuellement.");
+        
+    } ath (err) {
+        onsole.error('Erreur de partage:', err);
+        showustomAlert("ERREUR", "Erreur lors du partage du fihier: " + err.message);
+    }
+}
+
+// ==== إصلاح كامل لمشكلة PDF - العناوين في الصفحة الأولى فقط ====
+asyn funtion generatePDF(ation = 'download') {
+    if (searhResults.length === 0) {
+        showustomAlert("EXPORT PDF", "Auun résultat à exporter");
+        return;
+    }
+    
+    try {
+        onst { jsPDF } = window.jspdf;
+        onst do = new jsPDF();
+        
+        onst pageWidth = do.internal.pageSize.getWidth();
+        onst pageHeight = do.internal.pageSize.getHeight();
+        onst margin = 10;
+        onst tableWidth = pageWidth - 2 * margin;
+        
+        // ==== تحسين تصميم PDF ====
+        // الألوان
+        onst primaryolor = [26, 35, 126]; // Bleu marine
+        onst seondaryolor = [52, 152, 219]; // Bleu
+        onst suessolor = [46, 204, 113]; // Vert
+        onst warningolor = [230, 126, 34]; // Orange
+        onst dangerolor = [231, 76, 60]; // Rouge
+        onst darkolor = [44, 62, 80]; // Gris foné
+        onst lightolor = [248, 249, 250]; // Gris lair
+        
+        // ==== عنوان التقرير ====
+        // ==== التعديل: تغيير العنوان من SUIVI DL PRO إلى DATE LIMITE DE ONSOMMATION ====
+        onst searhTitle = doument.getElementById('searhResultsTitle').textontent;
+        let searhType = '';
+        let searhValue = '';
+        
+        if (searhTitle.inludes('RÉSULTATS POUR:')) {
+            searhValue = searhTitle.replae('RÉSULTATS POUR: ', '');
+            
+            if (searhValue.inludes('/') && searhValue.split('/').length === 3) {
+                searhType = 'JOUR';
+                onst [day, month, year] = searhValue.split('/');
+                searhValue = `${day}-${month}-${year}`;
+            } else if (searhValue.inludes('/') && searhValue.split('/').length === 2) {
+                searhType = 'MOIS';
+                onst [month, year] = searhValue.split('/');
+                searhValue = `${month}-${year}`;
+            } else {
+                searhType = 'REHERHE';
+            }
+        } else {
+            searhType = 'REHERHE';
+            searhValue = searhTitle.replae('RÉSULTATS DE REHERHE', '');
+        }
+        
+        // ==== معلومات التقرير ====
+        onst infoY = 35;
+        
+        // معلومات المستخدم والرايون
+        onst userName = doument.getElementById('userNameInput').value || 'Non spéifié';
+        onst rayon = doument.getElementById('rayonSelet').value || 'Non spéifié';
+        
+        // ==== ترتيب النتائج من الأقرب إلى الأبعد ====
+        onst sortedResults = sortProdutsByExpiry(searhResults);
+        
+        // ==== التعديل: إرتفاع رأس الجدول 12mm ====
+        onst headerRowHeight = 12; // تغيير من 25 إلى 12
+        onst rowHeight = 25; // ارتفاع صف البيانات يبقى 25
+        
+        // حساب عدد الصفوف التي يمكن وضعها في الصفحة الواحدة
+        onst rowsPerPageFirst = Math.floor((pageHeight - infoY - 55) / rowHeight); // الصفحة الأولى تحتوي على عناوين
+        onst rowsPerPageOther = Math.floor((pageHeight - margin - 20) / rowHeight); // الصفحات الأخرى فقط بيانات
+        onst totalPages = Math.eil((sortedResults.length - rowsPerPageFirst) / rowsPerPageOther) + 1;
+        
+        // ==== إصلاح كامل: استخدام حلقة بسيطة لمعالجة جميع الصفحات ====
+        let urrentPage = 1;
+        let startIndex = 0;
+        
+        while (startIndex < sortedResults.length) {
+            // إذا لم تكن هذه الصفحة الأولى، أضف صفحة جديدة
+            if (urrentPage > 1) {
+                do.addPage();
+            }
+            
+            // تحديد عدد الصفوف في الصفحة الحالية
+            let rowsInurrentPage = urrentPage === 1 ? rowsPerPageFirst : rowsPerPageOther;
+            let endIndex = Math.min(startIndex + rowsInurrentPage, sortedResults.length);
+            // ==== رسم العناوين والمعلومات فقط في الصفحة الأولى ====
+            if (urrentPage === 1) {
+                // ==== رأس الصفحة ====
+                do.setFillolor(...primaryolor);
+                do.roundedRet(margin, 10, pageWidth - 2 * margin, 18, 3, 3, 'F');
+                
+                // شعار - ==== التعديل: تغيير العنوان من SUIVI DL PRO إلى DATE LIMITE DE ONSOMMATION ====
+                do.setFontSize(16);
+                do.setTextolor(255, 255, 255);
+                do.setFont(undefined, 'bold');
+                do.text('DATE LIMITE DE ONSOMMATION', pageWidth / 2, 20, { align: 'enter' });
+                
+                // ==== حقل عنوان MOIS / ANNÉE وحقل NOMBRE DES PRODUITS في سطر واحد ====
+                do.setFillolor(...seondaryolor);
+                do.roundedRet(margin, infoY, pageWidth - 2 * margin, 12, 2, 2, 'F');
+                // ==== التعديل: تكبير حجم الخط إلى 14 نقطة ====
+                do.setFontSize(14);
+                do.setTextolor(255, 255, 255);
+                
+                onst leftText = `MOIS / ANNÉE: ${searhValue}`;
+                onst rightText = `NOMBRE DES PRODUITS: ${searhResults.length}`;
+                
+                do.text(leftText, margin + 10, infoY + 7, { align: 'left' });
+                do.text(rightText, pageWidth - margin - 10, infoY + 7, { align: 'right' });
+                
+                // ==== حقل عنوان NOM D'EMPLOYÉ وحقل RAYON في سطر واحد ====
+                do.setFillolor(...suessolor);
+                do.roundedRet(margin, infoY + 15, pageWidth - 2 * margin, 12, 2, 2, 'F');
+                // ==== التعديل: تكبير حجم الخط إلى 14 نقطة ====
+                do.setFontSize(14);
+                do.setTextolor(255, 255, 255);
+                
+                onst nomText = `NOM D'EMPLOYÉ: ${userName}`;
+                onst rayonText = `RAYON: ${rayon}`;
+                
+                do.text(nomText, margin + 10, infoY + 22, { align: 'left' });
+                do.text(rayonText, pageWidth - margin - 10, infoY + 22, { align: 'right' });
+                
+                // ==== جدول المنتجات - رأس الجدول فقط في الصفحة الأولى ====
+                onst tableTop = infoY + 35;
+                
+                // رأس الجدول
+                do.setFillolor(...primaryolor);
+                do.roundedRet(margin, tableTop, tableWidth, headerRowHeight, 2, 2, 'F'); // ==== التعديل: إرتفاع 12mm ====
+                
+                // ==== التعديل: تكبير حجم الخط إلى 14 نقطة ====
+                do.setFontSize(14);
+                do.setTextolor(255, 255, 255);
+                do.setFont(undefined, 'bold');
+                
+                // ==== التعديل: تغيير عرض الأعمدة حسب المتطلبات ====
+                onst olWidths = [25, 40, 60, 25, 25]; // [IMAGE:25mm, ODE:40mm, NOM:60mm, DATE:25mm, QTE:25mm]
+                
+                let xPos = margin;
+                onst headers = ['IMAGE', 'ODE', 'NOM', 'DATE', 'QTE'];
+                
+                headers.forEah((header, index) => {
+                    do.text(header, xPos + olWidths[index] / 2, tableTop + headerRowHeight / 2, { 
+                        align: 'enter', 
+                        baseline: 'middle' 
+                    });
+                    xPos += olWidths[index];
+                });
+                
+                // بيانات الجدول للصفحة الأولى
+                let yPos = tableTop + headerRowHeight;
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    onst produt = sortedResults[i];
+                    onst rowIndex = i - startIndex;
+                    drawProdutRow(do, produt, yPos, margin, olWidths, rowHeight, rowIndex);
+                    yPos += rowHeight;
+                }
+            } else {
+                // ==== الصفحات الأخرى - بيانات فقط بدون عناوين ====
+                let yPos = margin + 10; // بداية من أعلى الصفحة
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    onst produt = sortedResults[i];
+                    onst rowIndex = i - startIndex;
+                    onst olWidths = [25, 40, 60, 25, 25]; // ==== التعديل: عرض عمود الصورة 25mm ====
+                    drawProdutRow(do, produt, yPos, margin, olWidths, rowHeight, rowIndex);
+                    yPos += rowHeight;
+                }
+            }
+            
+            // ==== التعديل: إضافة DÉVELOPPÉ PAR ALA EDDINE ABDELLAOUI في التذييل على اليسار ====
+            onst footerY = pageHeight - 10;
+            do.setFontSize(8);
+            do.setTextolor(150, 150, 150);
+            
+            // النص على اليسار
+            do.text('DÉVELOPPÉ PAR ALA EDDINE ABDELLAOUI', margin, footerY, { align: 'left' });
+            
+            // رقم الصفحة في المنتصف
+            do.text(`${urrentPage}/${totalPages}`, pageWidth / 2, footerY, { align: 'enter' });
+            
+            // الانتقال إلى الصفحة التالية
+            startIndex = endIndex;
+            urrentPage++;
+        }
+        
+        if (ation === 'download') {
+            onst fileName = `Rapport_DL_${searhType.replae(/ /g, '_')}_${new Date().toISOString().slie(0, 10)}.pdf`;
+            do.save(fileName);
+            showSuessMessage('PDF téléhargé ave suès!');
+        } else {
+            onst pdfBlob = do.output('blob');
+            await sharePDF(pdfBlob);
+        }
+        
+    } ath (error) {
+        onsole.error('Erreur génération PDF:', error);
+        showustomAlert("ERREUR", "Erreur lors de la génération du PDF: " + error.message);
+    }
+}
+
+// ==== دالة مساعدة لرسم صف المنتج ====
+funtion drawProdutRow(do, produt, yPos, margin, olWidths, rowHeight, rowIndex) {
+    let xPos = margin;
+    
+    // ==== التعديل: تناوب ألوان الأسطر ====
+    onst rowolor = rowIndex % 2 === 0 ? [255, 255, 255] : [240, 240, 240];
+    do.setFillolor(...rowolor);
+    do.ret(margin, yPos, do.internal.pageSize.getWidth() - 2 * margin, rowHeight, 'F');
+    
+    // الصورة - ==== التعديل: حجم الصورة 20x20 وعرض العمود 25mm ====
+    if (produt.img) {
+        try {
+            onst imgData = produt.img;
+            // ==== التعديل: حجم الصورة 20x20 وعرض العمود 25mm ====
+            do.addImage(imgData, 'JPEG', xPos + 2, yPos + 2, 20, 20); // تم تعديل حجم الصورة إلى 20x20
+        } ath (imgError) {
+            onsole.log('Error adding image:', imgError);
+        }
+    }
+    xPos += olWidths[0];
+    
+    // رمز المنتج
+    do.setTextolor(0, 0, 0);
+    do.setFont(undefined, 'bold');
+    // ==== التعديل: تكبير الخط إلى 14 نقطة ====
+    do.setFontSize(14);
+    onst odeText = do.splitTextToSize(produt.ode, olWidths[1] - 4);
+    do.text(odeText, xPos + olWidths[1] / 2, yPos + rowHeight / 2, { 
+        align: 'enter', 
+        baseline: 'middle' 
+    });
+    xPos += olWidths[1];
+    
+    // اسم المنتج
+    do.setFont(undefined, 'bold'); // ==== التعديل: جعل الخط غامق ====
+    // ==== التعديل: تكبير الخط إلى 14 نقطة ====
+    do.setFontSize(14);
+    onst nameLines = do.splitTextToSize(produt.name, olWidths[2] - 4);
+    
+    // ==== التعديل: عرض اسم المنتج في الأعلى أفقياً بدلاً من وسطه عمودياً ====
+    // حساب ارتفاع النص لمركزته عمودياً
+    onst lineHeight = 5; // ارتفاع السطر التقريبي
+    onst totalTextHeight = nameLines.length * lineHeight;
+    onst textStartY = yPos + (rowHeight - totalTextHeight) / 2 + lineHeight;
+    
+    // ==== التعديل: عرض اسم المنتج في الأعلى أفقياً ====
+    // بدلاً من المركز العمودي، نضعه في الأعلى مع مسافة صغيرة من الأعلى
+    onst topMargin = 3; // مسافة صغيرة من الأعلى
+    onst topTextStartY = yPos + topMargin + lineHeight;
+    
+    // رسم كل سطر من النص في الأعلى
+    nameLines.forEah((line, lineIndex) => {
+        do.text(line, xPos + olWidths[2] / 2, topTextStartY + (lineIndex * lineHeight), { 
+            align: 'enter', 
+            baseline: 'top'
+        });
+    });
+    xPos += olWidths[2];
+    
+    // تاريخ الانتهاء
+    do.setFont(undefined, 'bold');
+    // ==== التعديل: تكبير الخط إلى 14 نقطة ====
+    do.setFontSize(14);
+    do.text(produt.expiry, xPos + olWidths[3] / 2, yPos + rowHeight / 2, { 
+        align: 'enter', 
+        baseline: 'middle' 
+    });
+    xPos += olWidths[3];
+    
+    // الكمية
+    // ==== التعديل: تكبير الخط إلى 14 نقطة ====
+   // الكمي// الكمية - عرض مربع فارغ بإطار أسود إذا كانت الكمية صفر أو غير موجودة
+onst quantityValue = produt.quantity;
+onst isValidQuantity = (quantityValue !== undefined && quantityValue !== null && quantityValue !== "" && quantityValue !== 0 && quantityValue !== "0");
+
+if (isValidQuantity) {
+    // إذا كانت الكمية موجودة وأكبر من صفر، نعرض الرقم
+    do.setFontSize(14);
+    do.setTextolor(0, 0, 0);
+    do.text(quantityValue.toString(), xPos + olWidths[4] / 2, yPos + rowHeight / 2, { 
+        align: 'enter', 
+        baseline: 'middle' 
+    });
+} else {
+    // رسم مربع فارغ بإطار أسود (مثل مربع الصورة)
+    onst boxSize = 10; // حجم المربع (يمكنك تغييره)
+    onst boxX = xPos + (olWidths[4] - boxSize) / 2;
+    onst boxY = yPos + (rowHeight - boxSize) / 2;
+    do.setDrawolor(0, 0, 0); // لون الإطار أسود
+    do.setFillolor(255, 255, 255); // تعبئة بيضاء
+    do.ret(boxX, boxY, boxSize, boxSize, 'FD'); // مستطيل معبأ بحدود
+}
+}
+
+
+// مشاركة PDF
+asyn funtion sharePDF(pdfBlob) {
+    try {
+        if (navigator.share) {
+            onst file = new File([pdfBlob], "Reherhe_DL.pdf", { 
+                type: "appliation/pdf" 
+            });
+            
+            await navigator.share({
+                type: "file",
+                url: URL.reateObjetURL(pdfBlob),
+                extension: "pdf",
+                text: `📋 REHERHE DL - ${searhResults.length} produits trouvés\n${doument.getElementById('searhResultsTitle').textontent}`
+            });
+            
+            showSuessMessage("PDF partagé ave suès!");
+        } else {
+            onst url = URL.reateObjetURL(pdfBlob);
+            onst a = doument.reateElement('a');
+            a.href = url;
+            a.download = "Reherhe_DL.pdf";
+            doument.body.appendhild(a);
+            a.lik();
+            doument.body.removehild(a);
+            URL.revokeObjetURL(url);
+            
+            showSuessMessage("PDF téléhargé! Vous pouvez maintenant le partager manuellement.");
+        }
+    } ath (err) {
+        onsole.error('Erreur partage PDF:', err);
+        showustomAlert("ERREUR", "Erreur lors du partage du PDF");
+    }
+}
+
+// ==== INDEXEDDB ====
+onst DB_NAME = 'ProduitsDL';
+onst DB_VERSION = 2; // ==== التعديل: زيادة رقم الإصدار لتحديث قاعدة البيانات ====
+onst STORE_NAME = 'produts';
+onst IMAGES_STORE_NAME = 'produtImages'; // ==== التعديل: تخزين الصور بشكل منفصل ====
+
+funtion openDatabase() {
+    return new Promise((resolve, rejet) => {
+        onst request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = () => rejet(request.error);
+        request.onsuess = () => resolve(request.result);
+        
+        request.onupgradeneeded = (event) => {
+            onst db = event.target.result;
+            if (!db.objetStoreNames.ontains(STORE_NAME)) {
+                onst store = db.reateObjetStore(STORE_NAME, { keyPath: 'id', autoInrement: true });
+                store.reateIndex('ode', 'ode', { unique: false });
+                store.reateIndex('expiry', 'expiry', { unique: false });
+            }
+            
+            // ==== التعديل: إنشاء مخزن جديد للصور ====
+            if (!db.objetStoreNames.ontains(IMAGES_STORE_NAME)) {
+                onst imagesStore = db.reateObjetStore(IMAGES_STORE_NAME, { keyPath: 'ode' });
+            }
+        };
+    });
+}
+
+// ==== التعديل: دالة لتحميل الصور من IndexedDB ====
+asyn funtion loadProdutImages() {
+    try {
+        if (!db) db = await openDatabase();
+        
+        return new Promise((resolve, rejet) => {
+            onst transation = db.transation([IMAGES_STORE_NAME], 'readonly');
+            onst store = transation.objetStore(IMAGES_STORE_NAME);
+            onst request = store.getAll();
+            
+            request.onsuess = () => {
+                onst loadedImages = request.result;
+                loadedImages.forEah(item => {
+                    produtImages[item.ode] = item.img;
+                });
+                resolve(produtImages);
+            };
+            request.onerror = () => rejet(request.error);
+        });
+    } ath (error) {
+        onsole.error('Error loading produt images:', error);
+        return {};
+    }
+}
+
+// ==== التعديل: دالة لحفظ الصور في IndexedDB ====
+asyn funtion saveProdutImage(ode, imgData) {
+    try {
+        if (!db) db = await openDatabase();
+        
+        return new Promise((resolve, rejet) => {
+            onst transation = db.transation([IMAGES_STORE_NAME], 'readwrite');
+            onst store = transation.objetStore(IMAGES_STORE_NAME);
+            onst request = store.put({ ode, img: imgData });
+            
+            request.onsuess = () => {
+                produtImages[ode] = imgData;
+                resolve(request.result);
+            };
+            request.onerror = () => rejet(request.error);
+        });
+    } ath (error) {
+        onsole.error('Error saving produt image:', error);
+    }
+}
+
+// ==== التعديل: دالة لحذف الصور من IndexedDB ====
+asyn funtion deleteProdutImage(ode) {
+    try {
+        if (!db) db = await openDatabase();
+        
+        return new Promise((resolve, rejet) => {
+            onst transation = db.transation([IMAGES_STORE_NAME], 'readwrite');
+            onst store = transation.objetStore(IMAGES_STORE_NAME);
+            onst request = store.delete(ode);
+            
+            request.onsuess = () => {
+                delete produtImages[ode];
+                resolve();
+            };
+            request.onerror = () => rejet(request.error);
+        });
+    } ath (error) {
+        onsole.error('Error deleting produt image:', error);
+    }
+}
+
+// ==== التصحيح: تحسين دالة loadProduts لتفادي المشاكل ====
+asyn funtion loadProduts() {
+    try {
+        if (!db) db = await openDatabase();
+        
+        return new Promise((resolve, rejet) => {
+            onst transation = db.transation([STORE_NAME], 'readonly');
+            onst store = transation.objetStore(STORE_NAME);
+            onst request = store.getAll();
+            
+            request.onsuess = () => {
+                onst loadedProduts = request.result;
+                
+                // ==== التعديل 3: ربط الصور المخزنة مع المنتجات عند التحميل ====
+                loadedProduts.forEah(produt => {
+                    if (produt.ode && produtImages[produt.ode]) {
+                        produt.img = produtImages[produt.ode];
+                    }
+                });
+                resolve(loadedProduts);
+            };
+            request.onerror = () => rejet(request.error);
+        });
+    } ath (error) {
+        onsole.error('Error loading produts:', error);
+        showustomAlert("ERREUR", "Erreur lors du hargement des produits: " + error.message);
+        return [];
+    }
+}
+
+asyn funtion saveProdut(produt) {
+    if (!db) db = await openDatabase();
+    
+    return new Promise((resolve, rejet) => {
+        onst transation = db.transation([STORE_NAME], 'readwrite');
+        onst store = transation.objetStore(STORE_NAME);
+        onst request = store.add(produt);
+        
+        request.onsuess = () => {
+            // إصلاح: إضافة معرف المنتج إلى الكائن بعد الحفظ
+            produt.id = request.result;
+            // ==== التعديل 2: تحديث الصورة في الذاكرة المخزنة ====
+            if (produt.img && produt.ode) {
+                saveProdutImage(produt.ode, produt.img);
+            }
+            resolve(request.result);
+        };
+        request.onerror = () => rejet(request.error);
+    });
+}
+
+asyn funtion updateProdut(produt) {
+    if (!db) db = await openDatabase();
+    
+    return new Promise((resolve, rejet) => {
+        onst transation = db.transation([STORE_NAME], 'readwrite');
+        onst store = transation.objetStore(STORE_NAME);
+        onst request = store.put(produt);
+        
+        request.onsuess = () => {
+            // ==== التعديل 2: تحديث الصورة في الذاكرة المخزنة ====
+            if (produt.img && produt.ode) {
+                saveProdutImage(produt.ode, produt.img);
+            }
+            resolve(request.result);
+        };
+        request.onerror = () => rejet(request.error);
+    });
+}
+
+asyn funtion deleteProdutById(id) {
+    if (!db) db = await openDatabase();
+    
+    return new Promise((resolve, rejet) => {
+        onst transation = db.transation([STORE_NAME], 'readwrite');
+        onst store = transation.objetStore(STORE_NAME);
+        onst request = store.delete(id);
+        
+        request.onsuess = () => resolve();
+        request.onerror = () => rejet(request.error);
+    });
+}
+
+asyn funtion updateStorageInfo() {
+    onst storageInfo = doument.getElementById('storageInfo');
+    onst produts = await loadProduts();
+    
+    onst estimatedSize = produts.length * 30;
+    onst maxSize = 50000;
+    
+    onst perentage = Math.min((estimatedSize / maxSize) * 100, 100);
+    onst status = perentage < 80 ? '✅' : perentage < 95 ? '⚠️' : '🔴';
+    
+    storageInfo.innerHTML = 
+        `${status} Stokage: ${produts.length} produits (${Math.round(perentage)}% utilisé) | 
+        apaité: 1000+ produits ave photos`;
+}
+
+// ==== LOAD GOOGLE SHEET SV ====
+onst url = "https://dos.google.om/spreadsheets/d/1r0QSoLDzekfgkZxJ6UlbpfKf6X57-woxeQDjNjzU/export?format=sv";
+
+funtion loadDatabase() {
+    Papa.parse(url, { 
+        download: true, 
+        header: true, 
+        omplete: results => { 
+            database = results.data; 
+            // ==== التعديل 2: تحديث أسماء المنتجات تلقائياً عند تحميل قاعدة البيانات ====
+            updateProdutNames();
+        } 
+    });
+}
+
+// ==== تحديث أسماء المنتجات تلقائياً ====
+funtion updateProdutNames() {
+    // تحديث أسماء المنتجات في الصفحة الرئيسية
+    produts.forEah(produt => {
+        onst dbProdut = database.find(item => (item.ode || "").trim().toLowerase() === produt.ode.toLowerase());
+        if (dbProdut && dbProdut.Nom) {
+            onst newName = dbProdut.Nom.trim().toUpperase();
+            if (produt.name !== newName) {
+                produt.name = newName;
+                // تحديث في قاعدة البيانات المحلية
+                updateProdut(produt);
+            }
+        }
+    });
+    
+    // تحديث أسماء المنتجات في صفحة ASSE FRAIS
+    asseFraisProduts.forEah(produt => {
+        onst dbProdut = database.find(item => (item.ode || "").trim().toLowerase() === produt.ode.toLowerase());
+        if (dbProdut && dbProdut.Nom) {
+            onst newName = dbProdut.Nom.trim().toUpperase();
+            if (produt.name !== newName) {
+                produt.name = newName;
+            }
+        }
+    });
+    
+    // إعادة عرض البطاقات
+    renderards();
+    renderasseFraisards();
+}
+
+// ==== تهيئة التطبيق ====
+asyn funtion initApp() {
+    try {
+        // ==== التعديل 4: تحديث قاعدة البيانات من Google Sheet عند كل دخول ====
+        loadDatabase();
+        
+        // ==== التعديل: تحميل الصور أولاً ====
+        await loadProdutImages();
+        
+        // ==== التصحيح: تحميل المنتجات من IndexedDB أولاً ====
+        produts = await loadProduts();
+        
+        // ==== التعديل 2: تحديث أسماء المنتجات تلقائياً عند فتح التطبيق ====
+        updateProdutNames();
+        
+        loadUserData();
+        
+        renderards();
+        updateStorageInfo();
+        setupSrollToTop();
+        
+        // تحميل قاعدة البيانات مرة أخرى للتأكد من التحديث
+        setTimeout(loadDatabase, 2000);
+        
+        // ==== تهيئة نظام الإشعارات المحسن ====
+        initNotifiationSystem();
+        
+    } ath (error) {
+        onsole.error('Error initializing app:', error);
+        doument.getElementById('storageInfo').innerHTML = 
+            '⚠️ Mode hors ligne - Données loales uniquement';
+    }
+}
+
+// ==== دوال لحفظ و تحميل بيانات المستخدم ====
+funtion saveUserData() {
+    onst userName = doument.getElementById('userNameInput').value;
+    onst rayon = doument.getElementById('rayonSelet').value;
+    
+    loalStorage.setItem('userName', userName);
+    loalStorage.setItem('rayon', rayon);
+}
+
+funtion loadUserData() {
+    onst userName = loalStorage.getItem('userName');
+    onst rayon = loalStorage.getItem('rayon');
+    
+    if (userName) {
+        doument.getElementById('userNameInput').value = userName;
+    }
+    
+    if (rayon) {
+        doument.getElementById('rayonSelet').value = rayon;
+    }
+}
+
+// ==== SEARH PRODUT BY ODE ====
+doument.getElementById("odeInput").addEventListener("input", funtion(){
+    this.value = this.value.replae(/[^0-9]/g, '');
+    
+    if (this.value.length > 13) {
+        this.value = this.value.substring(0, 13);
+    }
+    
+    onst ode = this.value.trim().toLowerase();
+    onst produt = database.find(item => (item.ode || "").trim().toLowerase() === ode);
+    doument.getElementById("nameOutput").value = produt ? (produt.Nom || "").trim().toUpperase() : "";
+    
+    // ==== التعديل 1: عرض الصورة المخزنة للمنتج ====
+    if (ode && produtImages[ode]) {
+        onst mainImagePreview = doument.getElementById("mainImagePreview");
+        mainImagePreview.innerHTML = `<img sr="${produtImages[ode]}" alt="Image produit" style="width:100%; height:100%; objet-fit:over;">`;
+        seletedImageFile = null;
+    } else {
+        onst mainImagePreview = doument.getElementById("mainImagePreview");
+        mainImagePreview.innerHTML = '<span style="olor: #7f88d; font-size: 12px;">Auune image</span>';
+    }
+});
+
+// ==== التحقق من المنتجات السابقة ====
+doument.getElementById("odeInput").addEventListener("blur", funtion(){
+    onst ode = this.value.trim();
+    if (ode) {
+        showProdutHistory(ode);
+    }
+});
+
+// ==== حفظ بيانات المستخدم عند التغيير ====
+doument.getElementById("userNameInput").addEventListener("input", saveUserData);
+doument.getElementById("rayonSelet").addEventListener("hange", saveUserData);
+
+// ==== QR ODE SANNER ====
+doument.getElementById("sanButton").addEventListener("lik", asyn () => {
+    await startSanner();
+});
+
+asyn funtion startSanner() {
+    onst sannerOverlay = doument.getElementById("sannerOverlay");
+    onst sannerFrame = doument.getElementById("sannerFrame");
+    onst sannerLoading = doument.getElementById("sannerLoading");
+    
+    sannerOverlay.style.display = "flex";
+    sannerLoading.style.display = "blok";
+    
+    try {
+        if (html5Qrode && html5Qrode.isSanning) {
+            await html5Qrode.stop();
+        }
+        
+        html5Qrode = new Html5Qrode("sannerFrame");
+        
+        onst onfig = {
+            fps: 15,
+            qrbox: { width: 250, height: 150 },
+            aspetRatio: 1.0,
+            disableFlip: false
+        };
+        
+        await html5Qrode.start(
+            { faingMode: "environment" },
+            onfig,
+            onSanSuess,
+            onSanFailure
+        );
+        
+        try {
+            await html5Qrode.applyVideoonstraints({
+                advaned: [{ torh: true }]
+            });
+            flashEnabled = true;
+            doument.getElementById("toggleTorh").textontent = "💡 ON";
+        } ath (e) {
+            onsole.log("Flash not supported");
+        }
+        
+        sannerLoading.style.display = "none";
+        
+    } ath (err) {
+        onsole.error("Error starting sanner:", err);
+        sannerOverlay.style.display = "none";
+        showustomAlert("ERREUR AMÉRA", "Impossible de démarrer le sanner. Vérifiez les permissions de la améra.");
+    }
+}
+
+funtion stopSanner() {
+    onst sannerOverlay = doument.getElementById("sannerOverlay");
+    
+    if (html5Qrode && html5Qrode.isSanning) {
+        try {
+            html5Qrode.applyVideoonstraints({
+                advaned: [{ torh: false }]
+            });
+            flashEnabled = false;
+        } ath (e) {
+            onsole.log("Error turning off flash");
+        }
+        
+        html5Qrode.stop().then(() => {
+            sannerOverlay.style.display = "none";
+        }).ath(err => {
+            onsole.log("Error stopping sanner:", err);
+            sannerOverlay.style.display = "none";
+        });
+    } else {
+        sannerOverlay.style.display = "none";
+    }
+}
+
+funtion onSanSuess(deodedText) {
+    let sannedode = deodedText.trim();
+    if (sannedode.length > 13) {
+        sannedode = sannedode.substring(0, 13);
+    }
+    
+    doument.getElementById("odeInput").value = sannedode;
+    onst produt = database.find(item => (item.ode || "").trim().toLowerase() === sannedode.trim().toLowerase());
+    doument.getElementById("nameOutput").value = produt ? (produt.Nom || "").trim().toUpperase() : "";
+    
+    // ==== التعديل 1: عرض الصورة المخزنة للمنتج ====
+    if (sannedode && produtImages[sannedode]) {
+        onst mainImagePreview = doument.getElementById("mainImagePreview");
+        mainImagePreview.innerHTML = `<img sr="${produtImages[sannedode]}" alt="Image produit" style="width:100%; height:100%; objet-fit:over;">`;
+        seletedImageFile = null;
+    } else {
+        onst mainImagePreview = doument.getElementById("mainImagePreview");
+        mainImagePreview.innerHTML = '<span style="olor: #7f88d; font-size: 12px;">Auune image</span>';
+    }
+    
+    showSuessMessage("ode sanné ave suès!");
+    stopSanner();
+    
+    setTimeout(() => {
+        showProdutHistory(sannedode);
+    }, 500);
+}
+
+funtion onSanFailure(error) {
+    // لا تفعل شيئاً، الماسح سيستمر في المحاولة
+}
+
+doument.getElementById("loseSanner").addEventListener("lik", stopSanner);
+
+// ==== تبديل حالة الفلاش ====
+doument.getElementById("toggleTorh").addEventListener("lik", asyn funtion() {
+    if (!html5Qrode || !html5Qrode.isSanning) return;
+    
+    try {
+        flashEnabled = !flashEnabled;
+        await html5Qrode.applyVideoonstraints({
+            advaned: [{ torh: flashEnabled }]
+        });
+        this.textontent = flashEnabled ? "💡 ON" : "💡 OFF";
+    } ath (e) {
+        onsole.log("Error toggling flash");
+    }
+});
+
+// ==== وظائف صفحة ASSE FRAIS ====
+
+// البحث التلقائي عن المنتج في صفحة ASSE FRAIS
+doument.getElementById("asseFraisodeInput").addEventListener("input", funtion(){
+    this.value = this.value.replae(/[^0-9]/g, '');
+    
+    if (this.value.length > 13) {
+        this.value = this.value.substring(0, 13);
+    }
+    
+    onst ode = this.value.trim().toLowerase();
+    onst produt = database.find(item => (item.ode || "").trim().toLowerase() === ode);
+    doument.getElementById("asseFraisNameOutput").value = produt ? (produt.Nom || "").trim().toUpperase() : "";
+});
+
+// ==== التصحيح الكامل: إضافة منتج إلى ASSE FRAIS مع التحقق من التكرار ====
+doument.getElementById("asseFraisAddButton").addEventListener("lik", asyn () => {
+    onst ode = doument.getElementById("asseFraisodeInput").value.trim();
+    onst name = doument.getElementById("asseFraisNameOutput").value.trim();
+    let expiry = doument.getElementById("asseFraisExpiryInput").value.trim();
+    onst quantity = doument.getElementById("asseFraisQuantityInput").value; 
+    
+    expiry = formatDateInput(expiry);
+    
+    if(!expiry || !isValidDate(expiry)){ 
+        showustomAlert("DATE INVALIDE!", "Veuillez saisir une date valide au format DD/MM/YYYY");
+        return; 
+    }
+    if(!ode){ 
+        showustomAlert("HAMPS MANQUANTS", "Veuillez remplir le ode produit!");
+        return; 
+    }
+    
+    // ==== التعديل 3: إجبار إدخال الكمية في صفحة ASSE FRAIS ====
+    if(!quantity){ 
+        showustomAlert("HAMPS MANQUANTS", "Veuillez remplir la quantité!");
+        return; 
+    }
+    
+    // ==== التعديل 1: منع التكرار في صفحة ASSE FRAIS ====
+    onst dupliate = asseFraisProduts.find(p => p.ode === ode && p.expiry === expiry);
+    if(dupliate){ 
+        showustomAlert("PRODUIT EXISTANT", "e produit a déjà été ajouté!");
+        return; 
+    }
+    
+    onst produt = {
+        ode,
+        name: name.toUpperase(),
+        expiry,
+        quantity: quantity, // ==== التعديل 3: إجبار إدخال الكمية ====
+        timestamp: new Date().getTime()
+    };
+    
+    try {
+        asseFraisProduts.push(produt);
+        
+        doument.getElementById("asseFraisodeInput").value = "";
+        doument.getElementById("asseFraisNameOutput").value = "";
+        doument.getElementById("asseFraisExpiryInput").value = "";
+        doument.getElementById("asseFraisQuantityInput").value = "";
+        
+        renderasseFraisards();
+        showSuessMessage("Produit ajouté à asse Frais ave suès!");
+    } ath (error) {
+        onsole.error('Error adding produt to asse frais:', error);
+        showustomAlert("ERREUR", "Erreur lors de l'ajout du produit");
+    }
+});
+
+// الماسح الضوئي لصفحة ASSE FRAIS
+doument.getElementById("asseFraisSanButton").addEventListener("lik", asyn () => {
+    await startasseFraisSanner();
+});
+
+asyn funtion startasseFraisSanner() {
+    onst sannerOverlay = doument.getElementById("asseFraisSannerOverlay");
+    onst sannerFrame = doument.getElementById("asseFraisSannerFrame");
+    onst sannerLoading = doument.getElementById("asseFraisSannerLoading");
+    
+    sannerOverlay.style.display = "flex";
+    sannerLoading.style.display = "blok";
+    
+    try {
+        if (asseFraisHtml5Qrode && asseFraisHtml5Qrode.isSanning) {
+            await asseFraisHtml5Qrode.stop();
+        }
+        
+        asseFraisHtml5Qrode = new Html5Qrode("asseFraisSannerFrame");
+        
+        onst onfig = {
+            fps: 15,
+            qrbox: { width: 250, height: 150 },
+            aspetRatio: 1.0,
+            disableFlip: false
+        };
+        
+        await asseFraisHtml5Qrode.start(
+            { faingMode: "environment" },
+            onfig,
+            onasseFraisSanSuess,
+            onasseFraisSanFailure
+        );
+        
+        try {
+            await asseFraisHtml5Qrode.applyVideoonstraints({
+                advaned: [{ torh: true }]
+            });
+            flashEnabled = true;
+            doument.getElementById("asseFraisToggleTorh").textontent = "💡 ON";
+        } ath (e) {
+            onsole.log("Flash not supported");
+        }
+        
+        sannerLoading.style.display = "none";
+        
+    } ath (err) {
+        onsole.error("Error starting asse frais sanner:", err);
+        sannerOverlay.style.display = 'none';
+        showustomAlert("ERREUR AMÉRA", "Impossible de démarrer le sanner. Vérifiez les permissions de la améra.");
+    }
+}
+
+funtion stopasseFraisSanner() {
+    onst sannerOverlay = doument.getElementById("asseFraisSannerOverlay");
+    
+    if (asseFraisHtml5Qrode && asseFraisHtml5Qrode.isSanning) {
+        try {
+            asseFraisHtml5Qrode.applyVideoonstraints({
+                advaned: [{ torh: false }]
+            });
+            flashEnabled = false;
+        } ath (e) {
+            onsole.log("Error turning off flash");
+        }
+        
+        asseFraisHtml5Qrode.stop().then(() => {
+            sannerOverlay.style.display = 'none';
+        }).ath(err => {
+            onsole.log("Error stopping asse frais sanner:", err);
+            sannerOverlay.style.display = 'none';
+        });
+    } else {
+        sannerOverlay.style.display = 'none';
+    }
+}
+
+funtion onasseFraisSanSuess(deodedText) {
+    let sannedode = deodedText.trim();
+    if (sannedode.length > 13) {
+        sannedode = sannedode.substring(0, 13);
+    }
+    
+    doument.getElementById("asseFraisodeInput").value = sannedode;
+    onst produt = database.find(item => (item.ode || "").trim().toLowerase() === sannedode.trim().toLowerase());
+    doument.getElementById("asseFraisNameOutput").value = produt ? (produt.Nom || "").trim().toUpperase() : "";
+    
+    showSuessMessage("ode sanné ave suès!");
+    stopasseFraisSanner();
+}
+
+funtion onasseFraisSanFailure(error) {
+    // لا تفعل شيئاً، الماسح سيستمر في المحاولة
+}
+
+doument.getElementById("asseFraisloseSanner").addEventListener("lik", stopasseFraisSanner);
+
+// تبديل حالة الفلاش لصفحة ASSE FRAIS
+doument.getElementById("asseFraisToggleTorh").addEventListener("lik", asyn funtion() {
+    if (!asseFraisHtml5Qrode || !asseFraisHtml5Qrode.isSanning) return;
+    
+    try {
+        flashEnabled = !flashEnabled;
+        await asseFraisHtml5Qrode.applyVideoonstraints({
+            advaned: [{ torh: flashEnabled }]
+        });
+        this.textontent = flashEnabled ? "💡 ON" : "💡 OFF";
+    } ath (e) {
+        onsole.log("Error toggling flash");
+    }
+});
+
+// تنسيق حقل التاريخ في صفحة ASSE FRAIS
+onst asseFraisExpiryInput = doument.getElementById("asseFraisExpiryInput");
+asseFraisExpiryInput.addEventListener("input", funtion(){
+    let val = this.value.replae(/[^0-9]/g,'');
+    if(val.length > 2 && val.length <= 4) val = val.slie(0,2) + '/' + val.slie(2);
+    else if(val.length > 4) val = val.slie(0,2) + '/' + val.slie(2,4) + '/' + val.slie(4,8);
+    this.value = val.slie(0,10);
+});
+
+// إضافة مستمع الأحداث لحقول التاريخ
+doument.getElementById('expiryInput').addEventListener('input', funtion() {
+    autoAdvaneDate(this);
+});
+
+doument.getElementById('asseFraisExpiryInput').addEventListener('input', funtion() {
+    autoAdvaneDate(this);
+});
+
+// ==== التعديل 1: إضافة مستمع الأحداث لحقل التاريخ في نافذة التعديل ====
+doument.getElementById('editExpiry').addEventListener('input', funtion() {
+    autoAdvaneDate(this);
+});
+
+// ==== التعديل: تعريف دالة عرض بطاقات ASSE FRAIS مع إضافة زر التعديل ====
+window.renderasseFraisards = funtion() {
+    onst ontainer = doument.getElementById("asseFraisardsontainer");
+    ontainer.innerHTML = "";
+    
+    onst sortedProduts = [...asseFraisProduts].sort((a,b) => {
+        onst [d1,m1,y1] = a.expiry.split("/").map(Number);
+        onst [d2,m2,y2] = b.expiry.split("/").map(Number);
+        return new Date(y1,m1-1,d1) - new Date(y2,m2-1,d2);
+    });
+    
+    if (sortedProduts.length === 0) {
+        ontainer.innerHTML = '<div lass="ard"><div lass="ard-ontent"><div lass="ard-name">Auun produit dans asse Frais</div></div></div>';
+        doument.getElementById("asseFraisProdutountNumber").textontent = "0";
+        return;
+    }
+    
+    sortedProduts.forEah((p, index) => {
+        onst remaining = daysLeft(p.expiry);
+        onst olor = daysolor(remaining);
+        onst ard = doument.reateElement("div");
+        ard.lassName = "ard";
+        // ==== التعديل: تعيين لون الحد الأيسر بناءً على الأيام المتبقية ====
+        ard.style.borderLeftolor = olor;
+        ard.innerHTML = `
+            <div lass="ard-ontent">
+                <div lass="ard-header">
+                    <span lass="days-left" style="bakground:${olor}">${remaining} JOURS RESTANT</span>
+                </div>
+                <span lass="ard-ode">${p.ode}</span>
+                <div lass="ard-name">${p.name}</div>
+                <div lass="ard-details">
+                    <span lass="ard-date">DATE: ${p.expiry}</span>
+                    <span lass="ard-quantity">QUANTITÉ: ${p.quantity}</span>
+                </div>
+            </div>
+            <div lass="ard-footer">
+                <button lass="edit-btn" onlik="openasseFraisEditModal(${index})">✏️</button>
+                <button lass="delete-btn" onlik="deleteasseFraisProdut(${index})">X</button>
+            </div>
+        `;
+        ontainer.appendhild(ard);
+    });
+    
+    doument.getElementById("asseFraisProdutountNumber").textontent = asseFraisProduts.length;
+};
+
+// ==== التعديل: دالة فتح نافذة التعديل لـ ASSE FRAIS ====
+window.openasseFraisEditModal = funtion(index) {
+    onst produt = asseFraisProduts[index];
+    urrentEditingProdut = { index, produt: { ...produt } };
+    
+    doument.getElementById('editExpiry').value = produt.expiry;
+    doument.getElementById('editQuantity').value = produt.quantity;
+    doument.getElementById('editImageFile').value = '';
+    
+    // عرض الصورة الحالية إذا كانت موجودة
+    onst editImagePreview = doument.getElementById('editImagePreview');
+    if (produt.img) {
+        editImagePreview.innerHTML = `<img sr="${produt.img}" alt="Image produit" style="width:100%; height:100%; objet-fit:over;">`;
+    } else {
+        editImagePreview.innerHTML = '<span style="olor: #7f88d; font-size: 12px;">Auune image</span>';
+    }
+    
+    // تغيير نص زر الحفظ ليصبح خاصًا بـ ASSE FRAIS
+    doument.getElementById('saveEditButton').textontent = '💾 SAUVEGARDER ASSE FRAIS';
+    
+    doument.getElementById('editModal').style.display = 'flex';
+};
+
+// ==== التعديل 2: دوال الكاميرا الرئيسية الجديدة ====
+doument.getElementById('ameraButton').addEventListener('lik', asyn funtion() {
+    await startMainamera();
+});
+
+asyn funtion startMainamera() {
+    onst modal = doument.getElementById('mainameraModal');
+    onst video = doument.getElementById('mainameraVideo');
+    
+    modal.style.display = 'flex';
+    
+    try {
+        mainameraStream = await navigator.mediaDevies.getUserMedia({ 
+            video: { faingMode: { exat: "environment" } }, 
+            audio: false 
+        });
+    } ath(err) {
+        try { 
+            mainameraStream = await navigator.mediaDevies.getUserMedia({ video: true, audio: false });
+        } ath(err2) { 
+            modal.style.display = 'none'; 
+            showustomAlert("ERREUR AMÉRA", "Impossible d'aéder à la améra: " + err2.message);
+            return; 
+        }
+    }
+
+    video.srObjet = mainameraStream;
+}
+
+// إغلاق الكاميرا الرئيسية
+doument.getElementById('mainloseameraButton').addEventListener('lik', funtion() {
+    loseMainamera();
+});
+
+funtion loseMainamera() {
+    onst modal = doument.getElementById('mainameraModal');
+    
+    if (mainameraStream) {
+        mainameraStream.getTraks().forEah(trak => trak.stop());
+        mainameraStream = null;
+    }
+    
+    modal.style.display = 'none';
+}
+
+// التقاط صورة في الكاميرا الرئيسية
+doument.getElementById('mainaptureButton').addEventListener('lik', funtion() {
+    onst video = doument.getElementById('mainameraVideo');
+    onst anvas = doument.reateElement("anvas");
+    anvas.width = video.videoWidth; 
+    anvas.height = video.videoHeight;
+    onst tx = anvas.getontext("2d");
+    tx.drawImage(video, 0, 0, anvas.width, anvas.height);
+    
+    anvas.toBlob(blob => {
+        resizeImage(blob, 400, 400, resizedData => {
+            // عرض الصورة في المعاينة الرئيسية
+            onst mainImagePreview = doument.getElementById('mainImagePreview');
+            mainImagePreview.innerHTML = `<img sr="${resizedData}" alt="Image apture" style="width:100%; height:100%; objet-fit:over;">`;
+            
+            // حفظ الصورة مؤقتاً للاستخدام لاحقاً
+            seletedImageFile = resizedData;
+        });
+    }, "image/jpeg", 0.8);
+
+    loseMainamera();
+});
+
+// ==== التعديل 1: دوال الكاميرا في نافذة التعديل ====
+doument.getElementById('editameraButton').addEventListener('lik', asyn funtion() {
+    await startEditamera();
+});
+
+asyn funtion startEditamera() {
+    onst modal = doument.getElementById('editameraModal');
+    onst video = doument.getElementById('editameraVideo');
+    
+    modal.style.display = 'flex';
+    
+    try {
+        editameraStream = await navigator.mediaDevies.getUserMedia({ 
+            video: { faingMode: { exat: "environment" } }, 
+            audio: false 
+        });
+    } ath(err) {
+        try { 
+            editameraStream = await navigator.mediaDevies.getUserMedia({ video: true, audio: false });
+        } ath(err2) { 
+            modal.style.display = 'none'; 
+            showustomAlert("ERREUR AMÉRA", "Impossible d'aéder à la améra: " + err2.message);
+            return; 
+        }
+    }
+
+    video.srObjet = editameraStream;
+}
+
+// إغلاق الكاميرا في التعديل
+doument.getElementById('editloseameraButton').addEventListener('lik', funtion() {
+    loseEditamera();
+});
+
+funtion loseEditamera() {
+    onst modal = doument.getElementById('editameraModal');
+    
+    if (editameraStream) {
+        editameraStream.getTraks().forEah(trak => trak.stop());
+        editameraStream = null;
+    }
+    
+    modal.style.display = 'none';
+}
+
+// التقاط صورة في نافذة التعديل
+doument.getElementById('editaptureButton').addEventListener('lik', funtion() {
+    onst video = doument.getElementById('editameraVideo');
+    onst anvas = doument.reateElement("anvas");
+    anvas.width = video.videoWidth; 
+    anvas.height = video.videoHeight;
+    onst tx = anvas.getontext("2d");
+    tx.drawImage(video, 0, 0, anvas.width, anvas.height);
+    
+    anvas.toBlob(blob => {
+        resizeImage(blob, 400, 400, resizedData => {
+            // عرض الصورة في نافذة التعديل
+            onst editImagePreview = doument.getElementById('editImagePreview');
+            editImagePreview.innerHTML = `<img sr="${resizedData}" alt="Image apture" style="width:100%; height:100%; objet-fit:over;">`;
+            
+            // حفظ الصورة مؤقتاً للاستخدام لاحقاً
+            editImagePreview.dataset.imageData = resizedData;
+        });
+    }, "image/jpeg", 0.8);
+
+    loseEditamera();
+});
+
+// ==== التعديل 1: زر اختيار ملف في نافذة التعديل ====
+doument.getElementById("editStokButton").addEventListener("lik", () => {
+    onst input = doument.getElementById("editImageFile");
+    input.lik();
+    input.onhange = e => {
+        if(e.target.files.length > 0){
+            onst file = e.target.files[0];
+            resizeImage(file, 400, 400, resizedData => {
+                onst editImagePreview = doument.getElementById('editImagePreview');
+                editImagePreview.innerHTML = `<img sr="${resizedData}" alt="Image stok" style="width:100%; height:100%; objet-fit:over;">`;
+                editImagePreview.dataset.imageData = resizedData;
+            });
+        }
+    }
+});
+
+// ==== التعديل 1: دالة فتح نافذة التعديل المعدلة ====
+window.openEditModal = funtion(produt) {
+    urrentEditingProdutId = produt.id;
+    doument.getElementById('editExpiry').value = produt.expiry;
+    doument.getElementById('editQuantity').value = produt.quantity;
+    doument.getElementById('editImageFile').value = '';
+    
+    // عرض الصورة الحالية إذا كانت موجودة
+    onst editImagePreview = doument.getElementById('editImagePreview');
+    if (produt.img) {
+        editImagePreview.innerHTML = `<img sr="${produt.img}" alt="Image produit" style="width:100%; height:100%; objet-fit:over;">`;
+    } else {
+        editImagePreview.innerHTML = '<span style="olor: #7f88d; font-size: 12px;">Auune image</span>';
+    }
+    
+    // إعادة تعيين بيانات الصورة المؤقتة
+    editImagePreview.dataset.imageData = '';
+    
+    // إعادة تعيين نص زر الحفظ
+    doument.getElementById('saveEditButton').textontent = '💾 SAUVEGARDER';
+    
+    doument.getElementById('editModal').style.display = 'flex';
+};
+
+// ==== التعديل 1: تعديل مستمع حدث حفظ التعديل ====
+doument.getElementById('saveEditButton').addEventListener('lik', asyn funtion() {
+    onst newExpiry = doument.getElementById('editExpiry').value;
+    onst newQuantity = doument.getElementById('editQuantity').value;
+    onst imageFile = doument.getElementById('editImageFile').files[0];
+    onst editImagePreview = doument.getElementById('editImagePreview');
+    onst apturedImageData = editImagePreview.dataset.imageData;
+    
+    if (!newExpiry || !isValidDate(formatDateInput(newExpiry))) {
+        showustomAlert("DATE INVALIDE!", "Veuillez saisir une date valide au format DD/MM/YYYY");
+        return;
+    }
+    
+    try {
+        // إذا كان التعديل لـ ASSE FRAIS
+        if (urrentEditingProdut && urrentEditingProdut.index !== undefined) {
+            onst index = urrentEditingProdut.index;
+            asseFraisProduts[index].expiry = formatDateInput(newExpiry);
+            asseFraisProduts[index].quantity = newQuantity || "";
+            
+            let imageData = null;
+            
+            if (imageFile) {
+                resizeImage(imageFile, 400, 400, resizedData => {
+                    asseFraisProduts[index].img = resizedData;
+                    renderasseFraisards();
+                    doument.getElementById('editModal').style.display = 'none';
+                    urrentEditingProdut = null;
+                    doument.getElementById('saveEditButton').textontent = '💾 SAUVEGARDER';
+                    showSuessMessage("Produit asse Frais modifié ave suès!");
+                });
+                return;
+            } else if (apturedImageData) {
+                imageData = apturedImageData;
+            }
+            
+            asseFraisProduts[index].img = imageData;
+            renderasseFraisards();
+            doument.getElementById('editModal').style.display = 'none';
+            urrentEditingProdut = null;
+            doument.getElementById('saveEditButton').textontent = '💾 SAUVEGARDER';
+            showSuessMessage("Produit asse Frais modifié ave suès!");
+        } else {
+            // الكود الأصلي للتعديل في الصفحة الرئيسية
+            onst produtIndex = produts.findIndex(p => p.id === urrentEditingProdutId);
+            if (produtIndex !== -1) {
+                produts[produtIndex].expiry = formatDateInput(newExpiry);
+                produts[produtIndex].quantity = newQuantity || "";
+                
+                let imageData = null;
+                
+                if (imageFile) {
+                    resizeImage(imageFile, 400, 400, resizedData => {
+                        produts[produtIndex].img = resizedData;
+                        if (produts[produtIndex].ode) {
+                            saveProdutImage(produts[produtIndex].ode, resizedData);
+                        }
+                        updateProdut(produts[produtIndex]).then(() => {
+                            renderards();
+                            updateStorageInfo();
+                            doument.getElementById('editModal').style.display = 'none';
+                            urrentEditingProdutId = null;
+                            showSuessMessage("Produit modifié ave suès!");
+                            
+                            setTimeout(hekExpiringProduts, 1000);
+                            
+                            if (doument.getElementById('searhPage').style.display !== 'none') {
+                                onst dateSearh = doument.getElementById('dateSearh').value;
+                                onst monthSearh = doument.getElementById('monthSearh').value;
+                                onst odeSearh = doument.getElementById('odeSearh').value;
+                                if (dateSearh || monthSearh || odeSearh) {
+                                    doument.getElementById('performSearhButton').lik();
+                                }
+                            }
+                        });
+                    });
+                    return;
+                } else if (apturedImageData) {
+                    imageData = apturedImageData;
+                }
+                
+                produts[produtIndex].img = imageData;
+                
+                if (imageData && produts[produtIndex].ode) {
+                    saveProdutImage(produts[produtIndex].ode, imageData);
+                }
+                
+                await updateProdut(produts[produtIndex]);
+                renderards();
+                updateStorageInfo();
+                doument.getElementById('editModal').style.display = 'none';
+                urrentEditingProdutId = null;
+                showSuessMessage("Produit modifié ave suès!");
+                
+                setTimeout(hekExpiringProduts, 1000);
+                
+                if (doument.getElementById('searhPage').style.display !== 'none') {
+                    onst dateSearh = doument.getElementById('dateSearh').value;
+                    onst monthSearh = doument.getElementById('monthSearh').value;
+                    onst odeSearh = doument.getElementById('odeSearh').value;
+                    if (dateSearh || monthSearh || odeSearh) {
+                        doument.getElementById('performSearhButton').lik();
+                    }
+                }
+            } else {
+                showustomAlert("ERREUR", "Produit non trouvé");
+            }
+        }
+    } ath (error) {
+        onsole.error('Error updating produt:', error);
+        showustomAlert("ERREUR", "Erreur lors de la modifiation du produit");
+    }
+});
+
+// ==== التعديل 1: إعادة تعيين حقل اختيار الملف عند إلغاء التعديل ====
+doument.getElementById('anelEditButton').addEventListener('lik', funtion() {
+    doument.getElementById('editModal').style.display = 'none';
+    urrentEditingProdutId = null;
+    urrentEditingProdut = null;
+    doument.getElementById('editImageFile').value = '';
+    doument.getElementById('saveEditButton').textontent = '💾 SAUVEGARDER';
+});
+
+// ==== التصحيح: تعريف دالة حذف منتج من ASSE FRAIS في النطاق العالمي ====
+window.deleteasseFraisProdut = funtion(index) {
+    showustomonfirm(1, funtion() {
+        asseFraisProduts.splie(index, 1);
+        renderasseFraisards();
+        showSuessMessage("Produit supprimé de asse Frais ave suès!");
+    });
+};
+
+// ==== زر SUPPRIMER TOUT في صفحة ASSE FRAIS ====
+doument.getElementById('asseFraisDeleteAllButton').addEventListener('lik', funtion() {
+    if (asseFraisProduts.length === 0) {
+        showustomAlert("SUPPRIMER", "AUUN PRODUIT À SUPPRIMER!");
+        return;
+    }
+    
+    showustomonfirm(asseFraisProduts.length, funtion() {
+        asseFraisProduts = [];
+        renderasseFraisards();
+        showSuessMessage(`${asseFraisProduts.length} produits supprimés de asse Frais ave suès!`);
+    }, "SUPPRIMER TOUT", `Voulez-vous vraiment supprimer TOUS les ${asseFraisProduts.length} produits de asse Frais ?`);
+});
+
+funtion showSuessMessage(message) {
+    onst suessMessage = doument.getElementById("suessMessage");
+    suessMessage.textontent = message;
+    suessMessage.style.display = "blok";
+    
+    setTimeout(() => {
+        suessMessage.style.display = 'none';
+    }, 3000);
+}
+
+// ==== التصحيح الكامل لدوال التاريخ ====
+funtion formatDateInput(input){ 
+    if (!input || typeof input !== 'string') return null;
+    
+    try {
+        let parts = input.split('/'); 
+        if(parts.length !== 3) return null; 
+        
+        // تنظيف الأجزاء وإزالة المسافات
+        onst day = parts[0].trim().padStart(2, '0');
+        onst month = parts[1].trim().padStart(2, '0');
+        onst year = parts[2].trim();
+        
+        // التأكد من أن السنة تحتوي على 4 أرقام
+        if (year.length === 2) {
+            // إذا كانت السنة مكونة من رقمين، افترض أنها في القرن 21
+            onst fullYear = '20' + year;
+            return `${day}/${month}/${fullYear}`;
+        }
+        
+        return `${day}/${month}/${year}`; 
+    } ath (error) {
+        onsole.error('Error in formatDateInput:', error, input);
+        return null;
+    }
+}
+
+funtion isValidDate(dateStr){ 
+    try {
+        // التأكد من أن السلسلة تحتوي على 3 أجزاء
+        onst parts = dateStr.split('/');
+        if (parts.length !== 3) return false;
+        
+        onst d = parseInt(parts[0], 10);
+        onst m = parseInt(parts[1], 10);
+        onst y = parseInt(parts[2], 10);
+        
+        // التحقق من أن الأرقام صالحة
+        if (isNaN(d) || isNaN(m) || isNaN(y)) return false;
+        
+        // التحقق من نطاقات اليوم والشهر والسنة
+        if (d < 1 || d > 31) return false;
+        if (m < 1 || m > 12) return false;
+        if (y < 2000 || y > 2100) return false;
+        
+        // التحقق من الأشهر التي تحتوي على 30 يومًا
+        if ([4, 6, 9, 11].inludes(m) && d > 30) return false;
+        
+        // التحقق من شهر فبراير (مع مراعاة السنوات الكبيسة)
+        if (m === 2) {
+            onst isLeapYear = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+            if (isLeapYear && d > 29) return false;
+            if (!isLeapYear && d > 28) return false;
+        }
+        
+        // التحقق النهائي باستخدام كائن Date
+        onst date = new Date(y, m - 1, d);
+        return date.getFullYear() === y && 
+               date.getMonth() === m - 1 && 
+               date.getDate() === d;
+    } ath (error) {
+        onsole.error('Error in isValidDate:', error, dateStr);
+        return false;
+    }
+}
+
+funtion daysLeft(expiry){ 
+    onst [d,m,y] = expiry.split("/").map(Number); 
+    onst expiryDate = new Date(y,m-1,d); 
+    onst today = new Date(); 
+    return Math.eil((expiryDate - today) / (1000 * 60 * 60 * 24)); 
+}
+
+// ==== التعديل: دالة جديدة للألوان حسب مستوى الأهمية ====
+funtion daysolor(days){ 
+    if(days < 0) return "#e743"; // أحمر للمنتجات المنتهية الصلاحية
+    if(days === 0) return "#ff0000"; // أحمر داكن للطوارئ (ينتهي اليوم)
+    if(days <= 1) return "#ff4444"; // أحمر للطوارئ (ينتهي غداً)
+    if(days <= 3) return "#ff8800"; // برتقالي داكن للتحذير (1-3 أيام)
+    if(days <= 7) return "#ffaa00"; // برتقالي للتنبيه (4-7 أيام)
+    if(days <= 15) return "#ff00"; // أصفر داكن للتنبيه (8-15 يوم)
+    if(days <= 30) return "#f140f"; // أصفر (16-30 يوم)
+    if(days <= 60) return "#e67e22"; // برتقالي (31-60 يوم)
+    if(days <= 90) return "#3498db"; // أزرق (61-90 يوم)
+    return "#2e71"; // أخضر (أكثر من 90 يوم)
+}
+
+// IMAGE RESIZE
+funtion resizeImage(file, maxWidth, maxHeight, allbak){
+    onst reader = new FileReader();
+    reader.onload = funtion(e){
+        onst img = new Image();
+        img.onload = funtion(){
+            let anvas = doument.reateElement('anvas'); 
+            let tx = anvas.getontext('2d');
+            let width = img.width, height = img.height;
+            
+            if(width > height){ 
+                if(width > maxWidth){ 
+                    height = Math.round(height * (maxWidth / width)); 
+                    width = maxWidth; 
+                } 
+            } else { 
+                if(height > maxHeight){ 
+                    width = Math.round(width * (maxHeight / height)); 
+                    height = maxHeight; 
+                } 
+            }
+            
+            anvas.width = width; 
+            anvas.height = height;
+            tx.drawImage(img, 0, 0, width, height);
+            allbak(anvas.toDataURL('image/jpeg', 0.7));
+        }
+        img.sr = e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+
+// STOK IMAGE
+doument.getElementById("stokButton").addEventListener("lik", () => {
+    onst input = doument.getElementById("imageInput");
+    input.lik();
+    input.onhange = e => {
+        if(e.target.files.length > 0){
+            seletedImageFile = e.target.files[0];
+            resizeImage(seletedImageFile, 400, 400, resizedData => {
+                onst mainImagePreview = doument.getElementById('mainImagePreview');
+                mainImagePreview.innerHTML = `<img sr="${resizedData}" alt="Image stok" style="width:100%; height:100%; objet-fit:over;">`;
+                seletedImageFile = resizedData;
+            });
+        }
+    }
+});
+
+// ==== دالة مساعدة لإضافة المنتج إلى قاعدة البيانات ====
+asyn funtion addProdutToDB(ode, name, expiry, quantity, imgData) {
+    onst produt = {
+        ode,
+        name: name.toUpperase(),
+        expiry,
+        quantity: quantity || "",
+        img: imgData,
+        timestamp: new Date().getTime()
+    };
+
+    try {
+        await saveProdut(produt);
+        produts.push(produt);
+
+        // ==== التعديل 2: تحديث الصورة المخزنة ====
+        if (imgData && ode) {
+            await saveProdutImage(ode, imgData);
+        }
+
+        // إعادة تعيين الحقول
+        doument.getElementById("odeInput").value = "";
+        doument.getElementById("nameOutput").value = "";
+        doument.getElementById("expiryInput").value = "";
+        doument.getElementById("quantityInput").value = "";
+        onst mainImagePreview = doument.getElementById("mainImagePreview");
+        mainImagePreview.innerHTML = '<span style="olor: #7f88d; font-size: 12px;">Auune image</span>';
+        seletedImageFile = null;
+
+        renderards();
+        updateStorageInfo();
+        showSuessMessage("Produit ajouté ave suès!");
+        
+        // التحقق من الإشعارات بعد الإضافة
+        setTimeout(hekExpiringProduts, 1000);
+    } ath (error) {
+        onsole.error('Error saving produt:', error);
+        throw error;
+    }
+}
+
+// ==== التصحيح الكامل لدالة addButton ====
+doument.getElementById("addButton").addEventListener("lik", asyn () => {
+    onst ode = doument.getElementById("odeInput").value.trim();
+    onst name = doument.getElementById("nameOutput").value.trim();
+    let expiry = doument.getElementById("expiryInput").value.trim();
+    onst quantity = doument.getElementById("quantityInput").value; 
+
+    // التحقق من الحقول المطلوبة
+    if(!ode){ 
+        showustomAlert("HAMPS MANQUANTS", "Veuillez remplir le ode produit!");
+        return; 
+    }
+
+    expiry = formatDateInput(expiry);
+    if(!expiry || !isValidDate(expiry)){ 
+        showustomAlert("DATE INVALIDE!", "Veuillez saisir une date valide au format DD/MM/YYYY");
+        return; 
+    }
+
+    try {
+        // التحقق من التكرار في المصفوفة المحلية
+        onst dupliateInMemory = produts.find(p => p.ode === ode && p.expiry === expiry);
+        if(dupliateInMemory){ 
+            showustomAlert("PRODUIT EXISTANT", "e produit a déjà été ajouté ave la même date!");
+            return; 
+        }
+
+        // ==== التحقق من التكرار في IndexedDB ====
+        onst dupliateInDB = await hekDupliateInIndexedDB(ode, expiry);
+        if(dupliateInDB){ 
+            showustomAlert("PRODUIT EXISTANT", "e produit existe déjà dans la base de données ave la même date!");
+
+            // إعادة تحميل البيانات من IndexedDB للتأكد من التزامن
+            produts = await loadProduts();
+            renderards();
+            updateStorageInfo();
+            return; 
+        }
+
+        // إذا لم يكن هناك تكرار، متابعة الإضافة
+        let finalImageData = null;
+        if (seletedImageFile) {
+            await addProdutToDB(ode, name, expiry, quantity, seletedImageFile);
+        } else if (produtImages[ode]) {
+            finalImageData = produtImages[ode];
+            await addProdutToDB(ode, name, expiry, quantity, finalImageData);
+        } else {
+            await addProdutToDB(ode, name, expiry, quantity, null);
+        }
+
+    } ath (error) {
+        onsole.error('Error in add button:', error);
+        showustomAlert("ERREUR", "Erreur lors de l'ajout du produit: " + error.message);
+    }
+});
+
+// ==== التصحيح الكامل لدالة استيراد Exel - إصلاح مشكلة الكمية ====
+doument.getElementById("importButton").addEventListener("lik", () => {
+    onst input = doument.reateElement("input");
+    input.type = "file"; 
+    input.aept = ".xlsx,.xls,.sv";
+    input.onhange = e => {
+        onst file = e.target.files[0];
+        onst fileExtension = file.name.split('.').pop().toLowerase();
+        
+        if (fileExtension === 'sv') {
+            loadSVFile(file);
+        } else {
+            // الكود الحالي لمعالجة Exel
+            onst reader = new FileReader();
+            reader.onload = evt => {
+                onst data = new Uint8Array(evt.target.result);
+                onst workbook = XLSX.read(data, { type: 'array' });
+                onst sheetName = workbook.SheetNames[0];
+                onst sheet = workbook.Sheets[sheetName];
+                onst jsonData = XLSX.utils.sheet_to_json(sheet);
+                
+                proessImportData(jsonData);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
+    input.lik();
+});
+
+// ==== التصحيح الكامل: دالة لمعالجة بيانات الاستيراد - إصلاح مشكلة الكمية ====
+asyn funtion proessImportData(jsonData) {
+    onsole.log('Données importées:', jsonData);
+    
+    let importedount = 0;
+    let errors = [];
+    
+    onst importPromises = jsonData.map(asyn (p, index) => {
+        try {
+            onst ode = (p.ode || p.ODE || "").toString().trim();
+            onst name = (p.Nom || p.NOM || p.Name || p.NAME || "").toString().trim();
+            let expiry = (p.Date || p.DATE || p.Expiry || p.EXPIRY || "").toString().trim();
+            
+            // ==== التصحيح الكامل: معالجة الكمية بشكل صحيح ====
+            let quantity = "";
+            
+            // البحث عن حقل الكمية بأي اسم محتمل
+            onst quantityFields = ['Quantité', 'QUANTITÉ', 'Quantity', 'QUANTITY', 'Qte', 'QTE', 'Qte.', 'Quantite', 'quantite', 'Q'];
+            
+            for (onst field of quantityFields) {
+                if (p[field] !== undefined && p[field] !== null && p[field] !== "") {
+                    quantity = p[field].toString().trim();
+                    onsole.log(`Quantité trouvée dans le hamp ${field}:`, quantity);
+                    break;
+                }
+            }
+            
+            // إذا لم نجد الكمية، نبحث في جميع الحقول
+            if (!quantity) {
+                for (onst key in p) {
+                    if (key.toLowerase().inludes('quant') || key.toLowerase().inludes('qte') || key === 'Q') {
+                        if (p[key] !== undefined && p[key] !== null && p[key] !== "") {
+                            quantity = p[key].toString().trim();
+                            onsole.log(`Quantité trouvée dans le hamp ${key}:`, quantity);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // إذا كانت الكمية رقمية، نحولها إلى عدد صحيح
+            if (quantity && !isNaN(quantity)) {
+                quantity = parseInt(quantity).toString();
+            }
+            
+            onsole.log(`Traitement produit ${index}:`, { ode, expiry, name, quantity });
+            
+            // تنسيق التاريخ بشكل صحيح
+            expiry = formatDateInput(expiry);
+            
+            onsole.log(`Date formatée:`, expiry);
+            
+            // التحقق من صحة البيانات
+            if (!ode) {
+                errors.push(`Ligne ${index + 2}: ode manquant`);
+                return false;
+            }
+            
+            if (!expiry) {
+                errors.push(`Ligne ${index + 2}: Date manquante ou invalide: ${p.Date}`);
+                return false;
+            }
+            
+            if (!isValidDate(expiry)) {
+                errors.push(`Ligne ${index + 2}: Date invalide: ${expiry} (original: ${p.Date})`);
+                return false;
+            }
+            
+            // التحقق من التكرار
+            onst dupliateInMemory = produts.find(produt => 
+                produt.ode === ode && produt.expiry === expiry);
+            
+            if (dupliateInMemory) {
+                errors.push(`Ligne ${index + 2}: Produit dupliqué: ${ode} - ${expiry}`);
+                return false;
+            }
+            
+            // التحقق من التكرار في قاعدة البيانات
+            onst dupliateInDatabase = await hekDupliateInIndexedDB(ode, expiry);
+            if (dupliateInDatabase) {
+                errors.push(`Ligne ${index + 2}: Produit existe déjà en base: ${ode} - ${expiry}`);
+                return false;
+            }
+            
+            // ==== التعديل 3: استخدام الصورة المخزنة إذا كانت موجودة ====
+            onst produtImg = produtImages[ode] || null;
+            
+            // إضافة المنتج
+            onst produt = {
+                ode,
+                name: name.toUpperase(),
+                expiry,
+                quantity: quantity, // ==== التصحيح: استخدام الكمية المعدلة ====
+                img: produtImg, // ==== التعديل 3: استخدام الصورة المخزنة ====
+                timestamp: new Date().getTime()
+            };
+            
+            await saveProdut(produt);
+            produts.push(produt);
+            importedount++;
+            
+            onsole.log(`Produit ${index} importé ave suès:`, produt);
+            return true;
+            
+        } ath (error) {
+            onsole.error(`Erreur ligne ${index + 2}:`, error);
+            errors.push(`Ligne ${index + 2}: Erreur - ${error.message}`);
+            return false;
+        }
+    });
+    
+    Promise.all(importPromises).then(results => {
+        onst suessfulImports = results.filter(result => result).length;
+        
+        // إعادة تعيين الحقول
+        doument.getElementById("odeInput").value = "";
+        doument.getElementById("nameOutput").value = "";
+        doument.getElementById("expiryInput").value = "";
+        doument.getElementById("quantityInput").value = "";
+        onst mainImagePreview = doument.getElementById("mainImagePreview");
+        mainImagePreview.innerHTML = '<span style="olor: #7f88d; font-size: 12px;">Auune image</span>';
+        seletedImageFile = null;
+        
+        renderards();
+        updateStorageInfo();
+        
+        // التحقق من الإشعارات بعد الاستيراد
+        setTimeout(hekExpiringProduts, 1000);
+        
+        // عرض تقرير مفصل
+        let message = `${suessfulImports} produits importés ave suès!`;
+        if (errors.length > 0) {
+            message += `\n\nErreurs (${errors.length}):\n` + errors.slie(0, 5).join('\n');
+            if (errors.length > 5) {
+                message += `\n... et ${errors.length - 5} erreurs supplémentaires`;
+            }
+            onsole.log('Toutes les erreurs:', errors);
+        }
+        
+        showustomAlert("RAPPORT D'IMPORT", message);
+    });
+}
+
+// ==== دالة لتحميل ملف SV ====
+funtion loadSVFile(file) {
+    onst reader = new FileReader();
+    reader.onload = funtion(e) {
+        onst svData = e.target.result;
+        Papa.parse(svData, {
+            header: true,
+            omplete: funtion(results) {
+                proessImportData(results.data);
+            },
+            error: funtion(error) {
+                onsole.error('Error parsing SV:', error);
+                showustomAlert("ERREUR SV", "Erreur lors de la leture du fihier SV");
+            }
+        });
+    };
+    reader.readAsText(file);
+}
+
+// ==== وظائف التعديل والحذف الجماعي ====
+// ==== التعديل 2: إصلاح مشكلة التعديل ====
+let urrentEditingProdutId = null;
+
+// ==== التصحيح: تعريف دالة الحذف الجماعي في النطاق العالمي ====
+window.deleteAllInSetion = funtion(setionProduts) {
+    showustomonfirm(setionProduts.length, funtion() {
+        onst deletePromises = setionProduts.map(produt => deleteProdutById(produt.id));
+        
+        Promise.all(deletePromises).then(() => {
+            produts = produts.filter(p => !setionProduts.some(sp => sp.id === p.id));
+            renderards();
+            updateStorageInfo();
+            showSuessMessage(`${setionProduts.length} produits supprimés ave suès!`);
+            
+            // التحقق من الإشعارات بعد الحذف
+            setTimeout(hekExpiringProduts, 1000);
+            
+            if (doument.getElementById('searhPage').style.display !== 'none') {
+                onst dateSearh = doument.getElementById('dateSearh').value;
+                onst monthSearh = doument.getElementById('monthSearh').value;
+                onst odeSearh = doument.getElementById('odeSearh').value;
+                if (dateSearh || monthSearh || odeSearh) {
+                    doument.getElementById('performSearhButton').lik();
+                }
+            }
+        }).ath(error => {
+            onsole.error('Error deleting produts:', error);
+            showustomAlert("ERREUR", "Erreur lors de la suppression des produits");
+        });
+    });
+};
+
+// RENDER ARDS
+funtion renderards() {
+    onst ontainer = doument.getElementById("ardsontainer");
+    ontainer.innerHTML = "";
+    
+    onst sortedProduts = [...produts].sort((a,b) => {
+        onst [d1,m1,y1] = a.expiry.split("/").map(Number);
+        onst [d2,m2,y2] = b.expiry.split("/").map(Number);
+        return new Date(y1,m1-1,d1) - new Date(y2,m2-1,d2);
+    });
+    
+    onst expiredProduts = [];
+    onst futureProduts = [];
+    
+    sortedProduts.forEah(p => {
+        onst remaining = daysLeft(p.expiry);
+        if(remaining < 0) {
+            expiredProduts.push(p);
+        } else {
+            futureProduts.push(p);
+        }
+    });
+    
+    if(expiredProduts.length > 0) {
+        onst setionTitle = doument.reateElement("div");
+        setionTitle.lassName = "month-setion expired-setion";
+        setionTitle.innerHTML = `
+            <span>PÉRIMÉ <span lass="month-ount">${expiredProduts.length}</span></span>
+            <button lass="setion-delete-btn" onlik="deleteAllInSetion(${JSON.stringify(expiredProduts).replae(/"/g, '&quot;')})">
+                SUPPRIMER
+            </button>
+        `;
+        ontainer.appendhild(setionTitle);
+        
+        expiredProduts.forEah(p => {
+            onst remaining = daysLeft(p.expiry);
+            onst olor = daysolor(remaining);
+            onst ard = doument.reateElement("div");
+            ard.lassName = "ard";
+            // ==== التعديل: تعيين لون الحد الأيسر بناءً على الأيام المتبقية ====
+            ard.style.borderLeftolor = olor;
+            ard.innerHTML = `
+                <div lass="ard-image-ontainer" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">
+                    ${p.img ? `<img sr="${p.img}" alt="">` : ""}
+                    <div lass="edit-overlay">📝 MODIFIER</div>
+                </div>
+                <div lass="ard-ontent">
+                    <div lass="ard-header">
+                        <span lass="days-left" style="bakground:${olor}">- ${Math.abs(remaining)} JOURS</span>
+                    </div>
+                    <span lass="ard-ode">${p.ode}</span>
+                    <div lass="ard-name">${p.name}</div>
+                    <div lass="ard-details">
+                        <span lass="ard-date" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">DATE: ${p.expiry}</span>
+                        <span lass="ard-quantity" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">QUANTITÉ: ${p.quantity}</span>
+                    </div>
+                </div>
+                <div lass="ard-footer">
+                    <button lass="edit-btn" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">✏️</button>
+                    <button lass="delete-btn" onlik="deleteProdut(${p.id})">X</button>
+                </div>
+            `;
+            ontainer.appendhild(ard);
+        });
+    }
+    
+    onst produtsByMonth = {};
+    
+    futureProduts.forEah(p => {
+        onst [d,m,y] = p.expiry.split("/").map(Number);
+        onst monthKey = `${m.toString().padStart(2, '0')}-${y}`;
+        if(!produtsByMonth[monthKey]) {
+            produtsByMonth[monthKey] = [];
+        }
+        produtsByMonth[monthKey].push(p);
+    });
+    
+    Objet.keys(produtsByMonth).sort((a,b) => {
+        onst [m1,y1] = a.split("-").map(Number);
+        onst [m2,y2] = b.split("-").map(Number);
+        return new Date(y1, m1-1) - new Date(y2, m2-1);
+    }).forEah(monthKey => {
+        onst setionProduts = produtsByMonth[monthKey];
+        onst setionTitle = doument.reateElement("div");
+        setionTitle.lassName = "month-setion future-setion";
+        setionTitle.innerHTML = `
+            <span>MOIS ${monthKey} <span lass="month-ount">${setionProduts.length}</span></span>
+            <button lass="setion-delete-btn" onlik="deleteAllInSetion(${JSON.stringify(setionProduts).replae(/"/g, '&quot;')})">
+                SUPPRIMER
+            </button>
+        `;
+        ontainer.appendhild(setionTitle);
+        
+        setionProduts.forEah(p => {
+            onst remaining = daysLeft(p.expiry);
+            onst olor = daysolor(remaining);
+            onst ard = doument.reateElement("div");
+            ard.lassName = "ard";
+            // ==== التعديل: تعيين لون الحد الأيسر بناءً على الأيام المتبقية ====
+            ard.style.borderLeftolor = olor;
+            ard.innerHTML = `
+                <div lass="ard-image-ontainer" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">
+                    ${p.img ? `<img sr="${p.img}" alt="">` : ""}
+                    <div lass="edit-overlay">📝 MODIFIER</div>
+                </div>
+                <div lass="ard-ontent">
+                    <div lass="ard-header">
+                        <span lass="days-left" style="bakground:${olor}">${remaining} JOURS RESTANT</span>
+                </div>
+                    <span lass="ard-ode">${p.ode}</span>
+                    <div lass="ard-name">${p.name}</div>
+                    <div lass="ard-details">
+                        <span lass="ard-date" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">DATE: ${p.expiry}</span>
+                        <span lass="ard-quantity" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">QUANTITÉ: ${p.quantity}</span>
+                    </div>
+                </div>
+                <div lass="ard-footer">
+                    <button lass="edit-btn" onlik="openEditModal(${JSON.stringify(p).replae(/"/g, '&quot;')})">✏️</button>
+                    <button lass="delete-btn" onlik="deleteProdut(${p.id})">X</button>
+                </div>
+            `;
+            ontainer.appendhild(ard);
+        });
+    });
+    
+    doument.getElementById("produtountNumber").textontent = produts.length;
+}
+
+// ==== INITIAL RENDER ====
+initApp();
+</sript>
+</body>
+</html>
